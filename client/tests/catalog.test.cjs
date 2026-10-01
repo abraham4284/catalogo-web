@@ -36,6 +36,34 @@ const product = {
 }
 const pagination = { page: 1, currentPage: 1, limit: 24, total: 1, totalRecords: 1, totalPages: 1 }
 
+test('catalog URL filters normalize invalid values and preserve navigation', () => {
+  const { load, src } = loadCatalog()
+  const { readCatalogFilters, getCatalogHref } = load(path.join(src, 'features/catalog/utils/catalog-url.ts'))
+  for (const value of ['-1', '0', '1.5', 'NaN', 'Infinity', '1e3', '9007199254740992']) {
+    const filters = readCatalogFilters(new URLSearchParams({ page: value, category: value }))
+    assert.equal(filters.page, 1)
+    assert.equal(filters.category, undefined)
+  }
+  const filters = readCatalogFilters(new URLSearchParams('search=++auricular++&category=3&page=2'))
+  assert.deepEqual(filters, { page: 2, category: 3, search: 'auricular' })
+  assert.equal(getCatalogHref({ ...filters, page: 1 }), '/productos?search=auricular&category=3')
+  assert.equal(getCatalogHref({ ...filters, category: undefined, page: 1 }), '/productos?search=auricular')
+  assert.equal(getCatalogHref({ ...filters, search: '', page: 1 }), '/productos?category=3')
+  assert.equal(getCatalogHref({ page: 1 }), '/productos')
+  assert.equal(readCatalogFilters(new URLSearchParams({ search: 'x'.repeat(200) })).search.length, 150)
+})
+
+test('catalog presentation errors hide technical messages and omit cancellations', () => {
+  const { load, src } = loadCatalog()
+  const { CatalogError } = load(path.join(src, 'features/catalog/api/catalog.error.ts'))
+  const { getCatalogPresentationError } = load(path.join(src, 'features/catalog/utils/catalog-presentation-error.ts'))
+  for (const code of ['NETWORK', 'HTTP', 'INVALID_RESPONSE', 'INVALID_INPUT']) {
+    const message = getCatalogPresentationError(new CatalogError(code, 'private details', { statusCode: 404 }))
+    assert.equal(message.includes('private'), false)
+  }
+  assert.equal(getCatalogPresentationError(new CatalogError('NETWORK', 'private', { isCancelled: true })), undefined)
+})
+
 test('catalog boundary: contracts, inputs, transport and lazy configuration', async (t) => {
   const { load, src, runtimeEnv } = loadCatalog()
   const api = load(path.join(src, 'features/catalog/api/catalog.api.ts'))
@@ -98,8 +126,12 @@ test('catalog boundary: contracts, inputs, transport and lazy configuration', as
     }
     success({ ...product, gallery: [{ imageUrl: '/image.png', altText: null, sortOrder: 0.5 }] })
     await assert.rejects(api.getCatalogProductById(2), rejectsWith('INVALID_RESPONSE'))
+    success({ ...product, gallery: [{ imageUrl: '/image.png', altText: null, sortOrder: -1 }] })
+    await assert.rejects(api.getCatalogProductById(2), rejectsWith('INVALID_RESPONSE'))
     success({ items: [], pagination: { ...pagination, total: 0, totalRecords: 0, totalPages: 0 } })
-    assert.equal((await api.getCatalogProducts()).pagination.totalPages, 0)
+    await assert.rejects(api.getCatalogProducts(), rejectsWith('INVALID_RESPONSE'))
+    success({ items: [], pagination: { ...pagination, total: 0, totalRecords: 0, totalPages: 1 } })
+    assert.equal((await api.getCatalogProducts()).pagination.totalPages, 1)
   })
 
   await t.test('backend errors preserve status and fields; malformed bodies stay safe', async () => {

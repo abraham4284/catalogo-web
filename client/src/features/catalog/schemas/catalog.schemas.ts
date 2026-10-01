@@ -20,7 +20,7 @@ export const catalogProductCategorySchema = catalogCategorySchema
 export const catalogProductImageSchema = z.object({
   imageUrl: z.string(),
   altText: z.string().nullable(),
-  sortOrder: z.number().int(),
+  sortOrder: z.number().int().nonnegative(),
 })
 
 export const catalogProductListItemSchema = z.object({
@@ -43,7 +43,7 @@ export const catalogPaginationSchema = z.object({
   limit: z.number().int().min(1).max(60),
   total: z.number().int().nonnegative(),
   totalRecords: z.number().int().nonnegative(),
-  totalPages: z.number().int().nonnegative(),
+  totalPages: z.number().int().positive(),
 })
 
 export const catalogProductsResponseSchema = z.object({
