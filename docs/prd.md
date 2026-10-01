@@ -40,9 +40,9 @@ DTO público del producto en listado:
 
 Categorías: array de `{ idProductCategory: number, name: string }` con ID entero positivo.
 
-Detalle: los mismos campos más `gallery: [{ imageUrl: string, altText: string | null, sortOrder: number }]`; sortOrder entero. Las imágenes se aceptan como strings porque el contrato no garantiza URLs absolutas; pueden ser rutas relativas.
+Detalle: los mismos campos más `gallery: [{ imageUrl: string, altText: string | null, sortOrder: number }]`; sortOrder entero no negativo (restricción DB confirmada en F3). Las imágenes se aceptan como strings porque el contrato no garantiza URLs absolutas; pueden ser rutas relativas.
 
-Listado paginado: `{ items: ProductListItem[], pagination: { page, currentPage, limit, total, totalRecords, totalPages } }`. Todos los campos de paginación son enteros; page/currentPage positivos, limit entre 1 y 60 y contadores no negativos. Se preservan `page / currentPage` y `total / totalRecords`; totalPages puede ser 0 para una lista vacía.
+Listado paginado: `{ items: ProductListItem[], pagination: { page, currentPage, limit, total, totalRecords, totalPages } }`. Todos los campos de paginación son enteros; page/currentPage/totalPages positivos, limit entre 1 y 60 y total/totalRecords no negativos. Se preservan `page / currentPage` y `total / totalRecords`; totalPages es al menos 1 incluso para una lista vacía, según `Math.max(1, ceil(total / limit))` confirmado en F3.
 
 Envelope exitoso: `{ status: true, message: string, data: ... }`. Envelope de error: `{ status: false, message: string, errors?: { field: string, message: string }[] }`. Un fallo HTTP también puede devolver un body que no respete el contrato.
 

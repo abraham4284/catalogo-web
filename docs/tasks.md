@@ -21,7 +21,13 @@
 - [x] Estados error/loading
 
 ## F3 — Home + Catalog
-- [ ] TODO
+- [x] Fetching React para Home y catálogo
+- [x] ProductCard y ProductGrid
+- [x] Búsqueda y categorías mediante URL
+- [x] Paginación
+- [x] Estados loading/error/empty
+- [x] Home con datos reales
+- [x] CatalogPage con datos reales
 
 ## F4 — Product Detail + Gallery
 - [ ] TODO
