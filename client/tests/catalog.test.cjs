@@ -36,6 +36,17 @@ const product = {
 }
 const pagination = { page: 1, currentPage: 1, limit: 24, total: 1, totalRecords: 1, totalPages: 1 }
 
+test('catalog configuration rejects malformed URLs with a safe configuration error', () => {
+  const { load, src, runtimeEnv } = loadCatalog()
+  const { getCatalogApiUrl } = load(path.join(src, 'config/env.ts'))
+  for (const value of [undefined, '', 'not a URL', 'https://', 'ftp://catalog.invalid']) {
+    runtimeEnv.VITE_CATALOG_API_URL = value
+    assert.throws(getCatalogApiUrl, { message: 'Configurá VITE_CATALOG_API_URL con una URL HTTP o HTTPS válida.' })
+  }
+  runtimeEnv.VITE_CATALOG_API_URL = ' https://catalog.invalid/api/public '
+  assert.equal(getCatalogApiUrl(), 'https://catalog.invalid/api/public')
+})
+
 test('product route accepts only safe positive decimal IDs', () => {
   const { load, src } = loadCatalog()
   const { parseCatalogProductIdParam: parse } = load(path.join(src, 'features/catalog/utils/catalog-product-route.ts'))
@@ -181,6 +192,10 @@ test('catalog boundary: contracts, inputs, transport and lazy configuration', as
       status: 500, data: '<html>private</html>', config, headers: {}, statusText: 'Failure',
     })
     await assert.rejects(api.getCatalogBusiness(), rejectsWith('INVALID_RESPONSE', (error) => error.statusCode === 500 && !error.message.includes('private')))
+    failure = (config) => new axios.AxiosError('Not Found', 'ERR_BAD_REQUEST', config, undefined, {
+      status: 404, data: '<html>Not Found</html>', config, headers: {}, statusText: 'Not Found',
+    })
+    await assert.rejects(api.getCatalogProductById(2), rejectsWith('INVALID_RESPONSE', (error) => error.statusCode === 404))
     failure = undefined
     payload = { status: false, message: 'Error interno' }
     await assert.rejects(api.getCatalogBusiness(), rejectsWith('HTTP'))

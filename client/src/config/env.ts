@@ -9,7 +9,13 @@ export function getWhatsAppNumber(): string {
 const catalogApiUrlSchema = z.string()
   .trim()
   .url()
-  .refine((value) => ['http:', 'https:'].includes(new URL(value).protocol))
+  .refine((value) => {
+    try {
+      return ['http:', 'https:'].includes(new URL(value).protocol)
+    } catch {
+      return false
+    }
+  })
 
 export function getCatalogApiUrl(): string {
   const result = catalogApiUrlSchema.safeParse(import.meta.env.VITE_CATALOG_API_URL)
