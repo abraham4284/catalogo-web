@@ -3,13 +3,13 @@ import { HomePage } from '@/pages/home/HomePage'
 import { NotFoundPage } from '@/pages/not-found/NotFoundPage'
 import { CatalogPage } from '@/pages/catalog/CatalogPage'
 import { ProductDetailPage } from '@/pages/product/ProductDetailPage'
-import { StoreLayout } from '@/shared/components/layout/StoreLayout'
+import { StoreRoute } from './StoreRoute'
 import { CartPage } from '@/pages/cart/CartPage'
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    Component: StoreLayout,
+    Component: StoreRoute,
     children: [
       { index: true, Component: HomePage },
       { path: 'productos', Component: CatalogPage },

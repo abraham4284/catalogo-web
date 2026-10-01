@@ -54,7 +54,12 @@
 - [x] Pruebas del handoff
 
 ## F7 — Responsive / accessibility / performance
-- [ ] TODO
+- [x] Auditoría responsive de shell y páginas (estructura; navegador sin configuración)
+- [x] Navegación por teclado y focus management
+- [x] Revisión semántica/ARIA
+- [x] Robustez ante contenido largo
+- [x] Optimización de requests de categorías
+- [x] Revisión de imágenes/CLS y bundle
 
 ## F8 — Technical QA
 - [ ] TODO
