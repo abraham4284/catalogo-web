@@ -50,7 +50,7 @@ F2 implementa `shared/api/catalog-http.ts` (Axios lazy, timeout 15 s, sin creden
 
 `catalog.error.ts` normaliza INVALID_INPUT, INVALID_RESPONSE, HTTP y NETWORK. Los fallos HTTP con body ajeno al contrato son INVALID_RESPONSE y conservan statusCode. Cancelaciones conservan `isCancelled` sin añadir otro código; las funciones admiten AbortSignal opcional. Los mensajes backend/fieldErrors son internos: `catalog-presentation-error.ts` proporciona mensajes seguros. Loading/error/empty son primitives accesibles usadas por las páginas.
 
-F3 incorpora `useCatalogHome` (negocio, categorías y primeros 8 productos en paralelo) y `useCatalogListing` (categorías y listado de 24 productos). Los efectos cancelan mediante AbortController; callbacks obsoletos no publican datos/errores y el listado oculta datos de otra query. Sin estado global ni fetching desde componentes visuales.
+`useCatalogHome` obtiene negocio, categorías y primeros 8 productos en paralelo. `useCatalogListing` carga categorías al montar y productos (24 por página) por query mediante efectos/controladores independientes. Expone estados separados para mantener filtros visibles al consultar productos y tratar fallos de categorías sin bloquear resultados. Los efectos cancelan mediante AbortController; callbacks obsoletos no publican datos/errores y el listado oculta datos de otra query. Sin cache global ni fetching desde componentes visuales.
 
 `catalog-url.ts` centraliza parsing seguro y construcción de enlaces para search/category/page. La URL es la fuente de verdad; cambios de búsqueda/categoría reinician página, paginación conserva filtros. Los parámetros manuales inválidos se normalizan antes de consultar. Si una respuesta exitosa confirma page > totalPages, CatalogPage usa Navigate con replace a la última página válida conservando filtros. Pages consumen exclusivamente el barrel público de la feature. `CatalogPaginationControls` es el nombre público del componente, separado del tipo DTO `CatalogPagination`.
 
@@ -76,6 +76,8 @@ CartPage compone cart y whatsapp mediante sus barrels públicos; las features no
 Flujo conceptual: UI → Application / Feature logic → Domain rules → Infrastructure boundary. Las reglas puras de dominio no importan React, Axios ni almacenamiento; los módulos de infraestructura adaptan contratos externos. Separar responsabilidades sin interfaces/capas vacías.
 
 ## Baseline F0
+StoreRoute, en app, compone StoreLayout y mueve el foco a main-content únicamente al cambiar pathname. No reacciona a query/hash ni modifica el foco del montaje inicial; el skip link mantiene navegación nativa al main enfocable.
+
 `main.tsx` monta `app/App.tsx`; App entrega el router con rutas `/` y `*`. Home y Not Found son mínimas. Alias `@/*` apunta a `src/*` en TypeScript y Vite; shadcn genera UI y utilidades dentro de `shared`. Se mantiene el preset existente, incluidos sus radios explícitos, sin refactor visual.
 
 ESLint permite la exportación `buttonVariants` únicamente en el botón shadcn para conservar su contrato generado; la regla de Fast Refresh sigue activa para los demás archivos.
