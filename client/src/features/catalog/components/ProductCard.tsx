@@ -1,17 +1,14 @@
 import { Link } from 'react-router-dom'
 import type { CatalogProductListItem } from '../types/catalog.types'
 import { formatCatalogPrice } from '../utils/catalog-price'
+import { CatalogImage } from './CatalogImage'
 
 export function ProductCard({ product }: { product: CatalogProductListItem }) {
   return (
     <article className="min-w-0">
       <Link to={`/productos/${product.idProduct}`} className="group block space-y-3 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">
         <div className="flex aspect-square items-center justify-center overflow-hidden rounded-lg bg-muted">
-          {product.imageUrl ? (
-            <img src={product.imageUrl} alt={product.name} loading="lazy" className="h-full w-full object-contain" />
-          ) : (
-            <span className="px-4 text-center text-sm text-muted-foreground">Sin imagen</span>
-          )}
+          <CatalogImage src={product.imageUrl} alt={product.name} loading="lazy" />
         </div>
         <div className="space-y-1 break-words">
           <p className="text-xs text-muted-foreground">{product.category.name}</p>

@@ -1,4 +1,4 @@
 export type CatalogRequestState<T> =
   | { status: 'loading' }
   | { status: 'success'; data: T }
-  | { status: 'error'; message: string }
+  | { status: 'error'; message: string; reason?: 'not-found' }
