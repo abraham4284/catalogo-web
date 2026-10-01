@@ -1,8 +1,10 @@
 # Estado vigente
 
-Current phase: F0 completada. Próxima fase: F1.
+Current phase: F1 completada. Próxima fase: F2.
 
-- Frontend: React + TypeScript + Vite Storefront; baseline Router `/` y `*`, Home/Not Found mínimas.
+- Frontend: React + TypeScript + Vite Storefront; shell público compartido con StoreLayout, Header y Footer neutrales y responsive.
+- Routing: `/`, `/productos`, `/productos/:idProduct` y `*` dentro del layout; Home, catálogo y detalle mínimos, Not Found con regreso al inicio.
+- Environment: `config/env.ts` centraliza VITE_CATALOG_API_URL con validación lazy Zod; `.env.example` disponible y configuraciones locales ignoradas. El shell funciona sin URL configurada.
 - Backend: backend comercial Cajora desplegado separadamente.
 - Catalog API: disponible mediante Cajora Public API según contrato provisto; sin integración frontend todavía.
 - Database: DB_COMERCIO independiente de Cajora SaaS DB.
