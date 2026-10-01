@@ -19,4 +19,14 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    files: ['src/shared/components/ui/button.tsx'],
+    rules: {
+      // shadcn exposes variants so other primitives can reuse the button styles.
+      'react-refresh/only-export-components': [
+        'error',
+        { allowConstantExport: true, allowExportNames: ['buttonVariants'] },
+      ],
+    },
+  },
 ])
