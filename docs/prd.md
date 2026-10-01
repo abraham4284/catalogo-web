@@ -7,7 +7,7 @@ Storefront público rápido, mobile-first y simple para exhibir productos del co
 Identidad básica del negocio, Home, catálogo, categorías, búsqueda, filtro por categoría, listado paginado, detalle de producto, portada y galería, precio, disponibilidad, carrito local, cierre por WhatsApp y responsive.
 
 ## Contrato externo disponible: Cajora Public API
-Contrato provisto para el proyecto; F0 no realiza integración ni verifica el backend.
+Contrato confirmado en el documento F2 e implementado en la frontera frontend. No se verificó contra producción. `VITE_CATALOG_API_URL` representa el prefijo completo `/api/public`; las funciones agregan `/catalog` y sus subrutas.
 
 ```http
 GET /api/public/catalog
@@ -16,26 +16,37 @@ GET /api/public/catalog/products
 GET /api/public/catalog/products/:idProduct
 ```
 
-El listado acepta `page`, `limit`, `search`, `idProductCategory`. Defaults conocidos: `page = 1`, `limit = 24`, máximo `limit = 60`.
+El listado acepta `page` (entero >= 1), `limit` (entero entre 1 y 60), `search` (trim, máximo 150 caracteres) e `idProductCategory` (entero positivo). `idProduct` también es entero positivo. Defaults backend: `page = 1`, `limit = 24`; filtros vacíos se omiten.
 
-DTO público del negocio (campos disponibles; tipos y nulabilidad se validarán en F2):
+DTO público del negocio:
 
-```text
-{ name, slug, logoUrl, businessType }
+```ts
+{ name: string, slug: string, logoUrl: string | null, businessType: string | null }
 ```
 
 DTO público del producto en listado:
 
-```text
+```ts
 {
-  idProduct, name, description, price, imageUrl,
-  category: { idProductCategory, name },
-  available
+  idProduct: number,
+  name: string,
+  description: string | null,
+  price: number,
+  imageUrl: string | null,
+  category: { idProductCategory: number, name: string },
+  available: boolean
 }
 ```
 
-Detalle: los mismos campos más `gallery: [{ imageUrl, altText, sortOrder }]`.
-No asumir campos administrativos ni exponer/depender de `idBusiness`, costo, stock exacto, depósito, barcode, precio mayorista o timestamps internos. El formato del envelope y el DTO de categorías se confirmarán en F2.
+Categorías: array de `{ idProductCategory: number, name: string }` con ID entero positivo.
+
+Detalle: los mismos campos más `gallery: [{ imageUrl: string, altText: string | null, sortOrder: number }]`; sortOrder entero. Las imágenes se aceptan como strings porque el contrato no garantiza URLs absolutas; pueden ser rutas relativas.
+
+Listado paginado: `{ items: ProductListItem[], pagination: { page, currentPage, limit, total, totalRecords, totalPages } }`. Todos los campos de paginación son enteros; page/currentPage positivos, limit entre 1 y 60 y contadores no negativos. Se preservan `page / currentPage` y `total / totalRecords`; totalPages puede ser 0 para una lista vacía.
+
+Envelope exitoso: `{ status: true, message: string, data: ... }`. Envelope de error: `{ status: false, message: string, errors?: { field: string, message: string }[] }`. Un fallo HTTP también puede devolver un body que no respete el contrato.
+
+No asumir campos administrativos ni exponer/depender de `idBusiness`, costo, stock exacto, depósito, barcode, precio mayorista o timestamps internos.
 
 ## Carrito y conversión
 Primera versión prevista: Zustand + localStorage; agregar, quitar, cambiar cantidades, vaciar y calcular total. Sin backend de carrito/pedidos en el MVP. El frontend prepara un mensaje y abre WhatsApp; el flujo web termina allí. La venta se registra manualmente en Cajora.
