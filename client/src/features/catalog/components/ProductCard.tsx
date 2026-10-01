@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { CatalogProductListItem } from '../types/catalog.types'
-import { formatCatalogPrice } from '../utils/catalog-price'
+import { formatCurrency } from '@/shared/utils/format-currency'
 import { CatalogImage } from './CatalogImage'
 
 export function ProductCard({ product }: { product: CatalogProductListItem }) {
@@ -13,7 +13,7 @@ export function ProductCard({ product }: { product: CatalogProductListItem }) {
         <div className="space-y-1 break-words">
           <p className="text-xs text-muted-foreground">{product.category.name}</p>
           <h3 className="font-medium group-hover:underline underline-offset-4">{product.name}</h3>
-          <p className="font-semibold">{formatCatalogPrice(product.price)}</p>
+          <p className="font-semibold">{formatCurrency(product.price)}</p>
           <p className="text-sm text-muted-foreground">{product.available ? 'Disponible' : 'No disponible'}</p>
         </div>
       </Link>

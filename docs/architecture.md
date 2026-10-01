@@ -60,6 +60,13 @@ F3 incorpora `useCatalogHome` (negocio, categorías y primeros 8 productos en pa
 
 Pruebas de frontera sin red: desde `client/`, `node --test tests/catalog.test.cjs`. Usan TypeScript instalado para cargar módulos en memoria y un adaptador Axios simulado, sin dependencias adicionales.
 
+## Carrito local
+`features/cart/domain/cart.ts` calcula subtotal, total y unidades sin infraestructura. Schemas Zod y tipos derivados definen un snapshot mínimo idProduct/name/price/quantity. `cart.store.ts` usa Zustand persist, versión 1 y partialize solo de items. `cart.storage.ts` aísla localStorage, valida el envelope/estado al leer y devuelve vacío ante JSON corrupto, versión incompatible, filas duplicadas o campos inválidos; acceso/escritura bloqueados no rompen el store en memoria. Totales no se persisten.
+
+ProductDetail acepta un slot genérico actions; ProductDetailPage compone AddToCartButton desde el barrel cart con snapshot y available. Catalog no depende de cart; cart no depende de DTOs catalog. CartPage compone filas/resumen, y Header ofrece un enlace estático sin estado. `shared/utils/format-currency.ts` comparte el formatter es-AR/ARS entre ambas features.
+
+Snapshots locales no garantizan precio/disponibilidad actuales ni reservan stock. Re-agregar actualiza nombre/precio y aumenta cantidad; no se revalida el carrito contra backend. Pruebas: `node --test tests/cart.test.cjs`, con store real, almacenamiento simulado y sin DOM ni dependencias nuevas.
+
 ## Clean Architecture pragmática
 Flujo conceptual: UI → Application / Feature logic → Domain rules → Infrastructure boundary. Las reglas puras de dominio no importan React, Axios ni almacenamiento; los módulos de infraestructura adaptan contratos externos. Separar responsabilidades sin interfaces/capas vacías.
 

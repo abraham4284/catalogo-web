@@ -38,7 +38,12 @@
 - [x] Corrección de página fuera de rango en catálogo
 
 ## F5 — Cart
-- [ ] TODO
+- [x] Dominio y tipos del carrito
+- [x] Zustand + localStorage con validación
+- [x] Agregar producto desde detalle
+- [x] CartPage y controles de cantidad
+- [x] Totales y estado vacío
+- [x] Ruta y navegación al carrito
 
 ## F6 — WhatsApp checkout handoff
 - [ ] TODO
