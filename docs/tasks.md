@@ -62,4 +62,11 @@
 - [x] Revisión de imágenes/CLS y bundle
 
 ## F8 — Technical QA
-- [ ] TODO
+- [x] Auditoría completa de código, arquitectura, configuración y documentación
+- [x] Revisión runtime: rutas, filtros, requests/cancelación, galería, carrito y WhatsApp
+- [x] Revisión de seguridad y accesibilidad; correcciones comprobadas
+- [x] Responsive y teclado en navegador local sin configuración real
+- [x] Pruebas de catálogo/carrito/WhatsApp, lint y build
+- [x] Informe QA y checklist deployment (`docs/qa-report.md`)
+- [ ] Smoke test de backend/hosting reales (posterior al deployment)
+- [ ] Auditoría de vulnerabilidades concluyente (endpoint no disponible durante F8)

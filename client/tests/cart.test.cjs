@@ -97,7 +97,20 @@ test('cart domain, schemas, persistence and real Zustand actions', async (t) => 
       values.set('catalogo-web-cart', '{broken')
       assert.deepEqual(loadCart()('store/cart.store').useCartStore.getState().items, [])
     })
-    await t.test('unavailable or full storage leaves in-memory actions usable', () => {
+    await t.test('full storage leaves hydrated cart and in-memory actions usable', () => {
+      values.set('catalogo-web-cart', JSON.stringify({ version: 1, state: { items: [item] } }))
+      Object.defineProperty(globalThis, 'localStorage', {
+        configurable: true,
+        value: { ...memoryStorage, setItem() { throw new Error('QuotaExceededError') } },
+      })
+      const store = loadCart()('store/cart.store').useCartStore
+      assert.equal(store.getState().items[0].quantity, 2)
+      assert.doesNotThrow(() => store.getState().incrementItem(1))
+      assert.equal(store.getState().items[0].quantity, 3)
+      assert.doesNotThrow(() => store.getState().clearCart())
+      assert.deepEqual(store.getState().items, [])
+    })
+    await t.test('unavailable storage leaves in-memory actions usable', () => {
       Object.defineProperty(globalThis, 'localStorage', { configurable: true, get() { throw new Error('denied') } })
       const store = loadCart()('store/cart.store').useCartStore
       assert.doesNotThrow(() => store.getState().addItem(snapshot))

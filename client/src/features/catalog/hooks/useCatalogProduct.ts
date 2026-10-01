@@ -19,7 +19,7 @@ export function useCatalogProduct(idProduct: number): CatalogRequestState<Catalo
     }).catch((error: unknown) => {
       if (signal.aborted) return
       if (error instanceof CatalogError && error.isCancelled) return
-      if (error instanceof CatalogError && error.code === 'HTTP' && error.statusCode === 404) {
+      if (error instanceof CatalogError && error.statusCode === 404) {
         setResult({ id: idProduct, state: { status: 'error', reason: 'not-found', message: 'Producto no disponible' } })
         return
       }
