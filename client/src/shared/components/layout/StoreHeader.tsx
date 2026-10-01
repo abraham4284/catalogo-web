@@ -21,6 +21,11 @@ export function StoreHeader() {
                 Productos
               </NavLink>
             </li>
+            <li>
+              <NavLink to="/carrito" className={`inline-block py-2 text-muted-foreground hover:text-foreground aria-[current=page]:text-foreground aria-[current=page]:underline underline-offset-8 ${focusClasses}`}>
+                Carrito
+              </NavLink>
+            </li>
           </ul>
         </nav>
       </div>

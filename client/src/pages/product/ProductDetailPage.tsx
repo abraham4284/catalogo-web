@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
+import { AddToCartButton } from '@/features/cart'
 import {
   parseCatalogProductIdParam, useCatalogProduct, ProductDetail,
   ProductUnavailableState, CatalogLoadingState, CatalogErrorState,
@@ -6,7 +7,10 @@ import {
 
 function ProductContent({ idProduct }: { idProduct: number }) {
   const state = useCatalogProduct(idProduct)
-  if (state.status === 'success') return <ProductDetail product={state.data} />
+  if (state.status === 'success') {
+    const { idProduct, name, price, available } = state.data
+    return <ProductDetail product={state.data} actions={<AddToCartButton product={{ idProduct, name, price }} available={available} />} />
+  }
   if (state.status === 'error' && state.reason === 'not-found') return <ProductUnavailableState />
   return (
     <section className="space-y-4">
