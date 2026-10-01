@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useCartStore, CartItemRow, CartSummary } from '@/features/cart'
+import { WhatsAppCheckoutLink } from '@/features/whatsapp'
 
 export function CartPage() {
   const items = useCartStore((state) => state.items)
@@ -16,7 +17,10 @@ export function CartPage() {
         <>
           <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
             <ul className="min-w-0">{items.map((item) => <CartItemRow key={item.idProduct} item={item} />)}</ul>
-            <div className="min-w-0"><CartSummary items={items} /></div>
+            <div className="min-w-0 space-y-6">
+              <CartSummary items={items} />
+              <WhatsAppCheckoutLink items={items} />
+            </div>
           </div>
           <div className="flex flex-wrap items-center gap-6">
             <Link to="/productos" className="underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring">Seguir viendo productos</Link>

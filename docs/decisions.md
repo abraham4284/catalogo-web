@@ -23,3 +23,6 @@ Decisión: carrito genera mensaje y abre WhatsApp. Razón: conversión simple. C
 
 ## DEC-008 — Future content systems stay separable
 Decisión: blog posible con API/DB propias. Razón: independencia del contenido y el comercio. Consecuencia: múltiples clientes HTTP por dominio, sin mezclar datos con Cajora.
+
+## DEC-009 — WhatsApp contact configured by environment for MVP
+Decisión: configurar el contacto mediante VITE_WHATSAPP_NUMBER con validación lazy. Razón: CatalogBusiness todavía no publica contacto y existe un único Storefront comercial; evita acoplar Cajora a una necesidad aún no multi-tenant pública. Consecuencia: el número es público y puede migrarse posteriormente a configuración del negocio/API sin cambiar el dominio del carrito.
