@@ -16,9 +16,9 @@
 - [x] Configuración runtime/env
 
 ## F2 — Cajora Public Catalog integration
-- [ ] HTTP client, schemas Zod, DTO types y catalog API
-- [ ] Categories, product list y product detail
-- [ ] Estados error/loading
+- [x] HTTP client, schemas Zod, DTO types y catalog API
+- [x] Categories, product list y product detail
+- [x] Estados error/loading
 
 ## F3 — Home + Catalog
 - [ ] TODO
