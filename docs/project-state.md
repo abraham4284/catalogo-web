@@ -1,6 +1,6 @@
 # Estado vigente
 
-Current phase: F6 completada. Próxima fase: F7.
+Current phase: F7 completada. Próxima fase: F8.
 
 - Frontend: React + TypeScript + Vite Storefront; shell público compartido con StoreLayout, Header y Footer neutrales y responsive.
 - Routing: `/`, `/productos`, `/productos/:idProduct`, `/carrito` y `*` dentro del layout; detalle consume API real, Not Found con regreso al inicio. IDs de producto inválidos no montan fetching ni hacen requests. Header enlaza al carrito sin store ni contador.
@@ -18,5 +18,7 @@ Current phase: F6 completada. Próxima fase: F7.
 - Customer authentication: fuera de alcance.
 - Blog: posibilidad futura, fuera del MVP.
 - Architecture: features + Clean Architecture pragmática; shadcn en shared.
+- Accessibility / responsive: revisión estructural aplicada; Header mobile en dos filas, controles de cantidad de 44 px y wrapping seguro en main/filas. StoreRoute enfoca main al cambiar pathname, sin robar foco por queries; skip link verificado. Miniaturas conservan nombre accesible en botón e imagen interna decorativa. Categorías se cargan solo al montar listado, independientes de productos por query; se conservan durante loading/error de productos.
 - Git: `dev → qa → master`.
-- Validation: `npm run lint` y `npm run build` pasan sin warnings; 11 pruebas catálogo, 7 carrito y 4 WhatsApp pasan con `node --test tests/catalog.test.cjs tests/cart.test.cjs tests/whatsapp.test.cjs`. Persistencia usa almacenamiento en memoria y store Zustand real, sin React DOM. Sin requests automáticas a producción, apertura/envío real de WhatsApp ni verificación visual contra backend real.
+- Validation: `npm run lint` y `npm run build` pasan sin warnings; 11 pruebas catálogo, 7 carrito y 4 WhatsApp pasan con `node --test tests/catalog.test.cjs tests/cart.test.cjs tests/whatsapp.test.cjs`. Bundle JS ~480 kB (~150 kB gzip), sin aviso de chunks grandes. Persistencia usa almacenamiento en memoria y store Zustand real, sin React DOM.
+- Manual verification: navegador local disponible; /, /productos, /productos/1, /carrito y Not Found inspeccionados en 320/375/768/1024/1440 px con API/contacto vacíos. Estados de error y carrito vacío sin overflow, h1 único; foco de ruta, búsqueda sin robo de foco y skip link verificados. Estados con datos/galería/carrito lleno revisados por estructura, sin validación visual con datos reales. Sin requests a producción ni apertura/envío real de WhatsApp.
