@@ -11,9 +11,9 @@
 - [x] Build
 
 ## F1 — Application shell
-- [ ] StoreLayout, Header y Footer
-- [ ] Routing definitivo inicial y Not Found
-- [ ] Configuración runtime/env
+- [x] StoreLayout, Header y Footer
+- [x] Routing definitivo inicial y Not Found
+- [x] Configuración runtime/env
 
 ## F2 — Cajora Public Catalog integration
 - [ ] HTTP client, schemas Zod, DTO types y catalog API
