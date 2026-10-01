@@ -52,7 +52,11 @@ F2 implementa `shared/api/catalog-http.ts` (Axios lazy, timeout 15 s, sin creden
 
 F3 incorpora `useCatalogHome` (negocio, categorías y primeros 8 productos en paralelo) y `useCatalogListing` (categorías y listado de 24 productos). Los efectos cancelan mediante AbortController; callbacks obsoletos no publican datos/errores y el listado oculta datos de otra query. Sin estado global ni fetching desde componentes visuales.
 
-`catalog-url.ts` centraliza parsing seguro y construcción de enlaces para search/category/page. La URL es la fuente de verdad; cambios de búsqueda/categoría reinician página, paginación conserva filtros. Los parámetros manuales inválidos se normalizan antes de consultar; no se reescribe la URL automáticamente. Pages consumen exclusivamente el barrel público de la feature. `CatalogPaginationControls` es el nombre público del componente, separado del tipo DTO `CatalogPagination`.
+`catalog-url.ts` centraliza parsing seguro y construcción de enlaces para search/category/page. La URL es la fuente de verdad; cambios de búsqueda/categoría reinician página, paginación conserva filtros. Los parámetros manuales inválidos se normalizan antes de consultar. Si una respuesta exitosa confirma page > totalPages, CatalogPage usa Navigate con replace a la última página válida conservando filtros. Pages consumen exclusivamente el barrel público de la feature. `CatalogPaginationControls` es el nombre público del componente, separado del tipo DTO `CatalogPagination`.
+
+`catalog-product-route.ts` valida IDs decimales positivos seguros antes de montar el fetching. `useCatalogProduct` asocia resultados al ID solicitado y aborta al cambiar/desmontar; mantiene CatalogRequestState con reason opcional not-found para HTTP 404. La página monta contenido por ID para reiniciar datos y selección de imágenes.
+
+`catalog-gallery.ts` construye portada y galería ordenada/deduplicada sin mutar el DTO. ProductGallery recibe solo nombre, portada y galería, controla miniaturas accesibles y reserva aspect ratio. CatalogImage comparte el fallback de imágenes ausentes/rotas entre detalle y cards; su estado se reinicia al cambiar URL. ProductDetail presenta el contrato público con el formatter y enlaces existentes, sin HTML externo ni lógica de compra.
 
 Pruebas de frontera sin red: desde `client/`, `node --test tests/catalog.test.cjs`. Usan TypeScript instalado para cargar módulos en memoria y un adaptador Axios simulado, sin dependencias adicionales.
 

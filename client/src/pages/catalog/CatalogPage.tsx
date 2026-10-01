@@ -1,6 +1,6 @@
-import { useSearchParams } from 'react-router-dom'
+import { Navigate, useSearchParams } from 'react-router-dom'
 import {
-  useCatalogListing, readCatalogFilters, createCatalogSearchParams,
+  useCatalogListing, readCatalogFilters, createCatalogSearchParams, getCatalogHref,
   CatalogSearch, CategoryFilter, CatalogPaginationControls, ProductGrid,
   CatalogLoadingState, CatalogErrorState, CatalogEmptyState,
 } from '@/features/catalog'
@@ -9,6 +9,10 @@ export function CatalogPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const filters = readCatalogFilters(searchParams)
   const state = useCatalogListing(filters)
+
+  if (state.status === 'success' && filters.page > state.data.products.pagination.totalPages) {
+    return <Navigate replace to={getCatalogHref({ ...filters, page: state.data.products.pagination.totalPages })} />
+  }
 
   return (
     <div className="min-w-0 space-y-6">

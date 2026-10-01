@@ -30,7 +30,12 @@
 - [x] CatalogPage con datos reales
 
 ## F4 — Product Detail + Gallery
-- [ ] TODO
+- [x] Validación de idProduct y fetching de detalle
+- [x] ProductDetail responsive
+- [x] Galería con portada y thumbnails
+- [x] Estados loading/error/producto no disponible
+- [x] Navegación hacia catálogo y categoría
+- [x] Corrección de página fuera de rango en catálogo
 
 ## F5 — Cart
 - [ ] TODO
