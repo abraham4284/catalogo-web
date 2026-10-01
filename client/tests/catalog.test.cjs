@@ -36,6 +36,40 @@ const product = {
 }
 const pagination = { page: 1, currentPage: 1, limit: 24, total: 1, totalRecords: 1, totalPages: 1 }
 
+test('product route accepts only safe positive decimal IDs', () => {
+  const { load, src } = loadCatalog()
+  const { parseCatalogProductIdParam: parse } = load(path.join(src, 'features/catalog/utils/catalog-product-route.ts'))
+  for (const value of [undefined, '', '0', '-1', '1.5', '1e3', 'NaN', 'Infinity', 'abc', ' 2 ', '9007199254740992']) {
+    assert.equal(parse(value), undefined, String(value))
+  }
+  assert.equal(parse('2'), 2)
+  assert.equal(parse('002'), 2)
+  assert.equal(parse(String(Number.MAX_SAFE_INTEGER)), Number.MAX_SAFE_INTEGER)
+})
+
+test('gallery keeps cover first, sorts without mutation and deduplicates URLs', () => {
+  const { load, src } = loadCatalog()
+  const { buildCatalogGallery: build } = load(path.join(src, 'features/catalog/utils/catalog-gallery.ts'))
+  const gallery = [
+    { imageUrl: '/last.png', altText: 'Última', sortOrder: 3 },
+    { imageUrl: '/cover.png', altText: 'Duplicada', sortOrder: 0 },
+    { imageUrl: '/first.png', altText: '  ', sortOrder: 1 },
+    { imageUrl: '/first.png', altText: 'Duplicada', sortOrder: 2 },
+    { imageUrl: '/middle.png', altText: null, sortOrder: 2 },
+  ]
+  const before = structuredClone(gallery)
+  assert.deepEqual(build({ name: 'Producto', imageUrl: '/cover.png', gallery }), [
+    { imageUrl: '/cover.png', alt: 'Producto' },
+    { imageUrl: '/first.png', alt: 'Producto' },
+    { imageUrl: '/middle.png', alt: 'Producto' },
+    { imageUrl: '/last.png', alt: 'Última' },
+  ])
+  assert.deepEqual(gallery, before)
+  assert.equal(build({ name: 'Producto', imageUrl: null, gallery })[0].imageUrl, '/cover.png')
+  assert.deepEqual(build({ name: 'Producto', imageUrl: null, gallery: [] }), [])
+  assert.deepEqual(build({ name: 'Producto', imageUrl: '/cover.png', gallery: [] }), [{ imageUrl: '/cover.png', alt: 'Producto' }])
+})
+
 test('catalog URL filters normalize invalid values and preserve navigation', () => {
   const { load, src } = loadCatalog()
   const { readCatalogFilters, getCatalogHref } = load(path.join(src, 'features/catalog/utils/catalog-url.ts'))
