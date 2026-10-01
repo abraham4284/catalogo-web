@@ -67,6 +67,11 @@ ProductDetail acepta un slot genérico actions; ProductDetailPage compone AddToC
 
 Snapshots locales no garantizan precio/disponibilidad actuales ni reservan stock. Re-agregar actualiza nombre/precio y aumenta cantidad; no se revalida el carrito contra backend. Pruebas: `node --test tests/cart.test.cjs`, con store real, almacenamiento simulado y sin DOM ni dependencias nuevas.
 
+## WhatsApp handoff
+CartPage compone cart y whatsapp mediante sus barrels públicos; las features no se importan entre sí. WhatsAppCheckoutItem define solo nombre/precio/cantidad. `domain/whatsapp-message.ts` construye texto determinista con nombres normalizados y formatter monetario compartido; `utils/whatsapp-url.ts` valida destino y codifica el mensaje con encodeURIComponent.
+
+`utils/whatsapp-checkout.ts` une configuración lazy y funciones puras, devolviendo undefined ante carrito vacío, configuración inválida o mensaje no generable. WhatsAppCheckoutLink renderiza un enlace real wa.me con target=_blank y rel=noopener noreferrer, o CTA deshabilitado con mensaje seguro. Sin llamadas HTTP, datos personales adicionales ni limpieza del carrito. Pruebas puras/configuración: `node --test tests/whatsapp.test.cjs`.
+
 ## Clean Architecture pragmática
 Flujo conceptual: UI → Application / Feature logic → Domain rules → Infrastructure boundary. Las reglas puras de dominio no importan React, Axios ni almacenamiento; los módulos de infraestructura adaptan contratos externos. Separar responsabilidades sin interfaces/capas vacías.
 

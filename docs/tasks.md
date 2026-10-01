@@ -46,7 +46,12 @@
 - [x] Ruta y navegación al carrito
 
 ## F6 — WhatsApp checkout handoff
-- [ ] TODO
+- [x] Configuración pública de número WhatsApp
+- [x] Generación pura del mensaje
+- [x] Construcción segura de URL wa.me
+- [x] CTA desde carrito
+- [x] Manejo de configuración ausente
+- [x] Pruebas del handoff
 
 ## F7 — Responsive / accessibility / performance
 - [ ] TODO

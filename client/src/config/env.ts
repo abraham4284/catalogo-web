@@ -1,5 +1,11 @@
 import { z } from 'zod'
 
+const whatsAppNumberSchema = z.string().regex(/^\d{8,15}$/)
+
+export function getWhatsAppNumber(): string {
+  return whatsAppNumberSchema.parse(import.meta.env.VITE_WHATSAPP_NUMBER)
+}
+
 const catalogApiUrlSchema = z.string()
   .trim()
   .url()
