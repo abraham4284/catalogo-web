@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { ProductCommerceActions } from '@/app/compositions/ProductCommerceActions'
 import {
   useCatalogHome, ProductGrid, CatalogLoadingState, CatalogErrorState,
   CatalogEmptyState, getCatalogHref,
@@ -35,7 +36,7 @@ export function HomePage() {
               <h2 id="home-products" className="text-2xl font-semibold">Productos</h2>
               <Link to="/productos" className="underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">Ver todos los productos</Link>
             </div>
-            {state.data.products.items.length > 0 ? <ProductGrid products={state.data.products.items} /> : <CatalogEmptyState />}
+            {state.data.products.items.length > 0 ? <ProductGrid products={state.data.products.items} renderActions={(product) => <ProductCommerceActions product={product} />} /> : <CatalogEmptyState />}
           </section>
         </>
       )}

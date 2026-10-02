@@ -1,4 +1,5 @@
 import { Navigate, useSearchParams } from 'react-router-dom'
+import { ProductCommerceActions } from '@/app/compositions/ProductCommerceActions'
 import {
   useCatalogListing, readCatalogFilters, createCatalogSearchParams, getCatalogHref,
   CatalogSearch, CategoryFilter, CatalogPaginationControls, ProductGrid,
@@ -30,7 +31,7 @@ export function CatalogPage() {
               {state.data.pagination.totalRecords} productos
             </h2>
             {state.data.items.length > 0
-              ? <ProductGrid products={state.data.items} />
+              ? <ProductGrid products={state.data.items} renderActions={(product) => <ProductCommerceActions product={product} />} />
               : <CatalogEmptyState filtered={Boolean(filters.search || filters.category)} />}
           </section>
           <CatalogPaginationControls currentPage={state.data.pagination.currentPage} totalPages={state.data.pagination.totalPages} filters={filters} />

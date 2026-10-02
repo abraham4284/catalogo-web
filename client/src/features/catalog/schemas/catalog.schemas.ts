@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { productRichContentSchema } from './catalog-rich-content.schemas'
 
 export const catalogProductIdSchema = z.number().int().positive()
 
@@ -23,7 +24,7 @@ export const catalogProductImageSchema = z.object({
   sortOrder: z.number().int().nonnegative(),
 })
 
-export const catalogProductListItemSchema = z.object({
+const catalogProductBaseSchema = z.object({
   idProduct: catalogProductIdSchema,
   name: z.string(),
   description: z.string().nullable(),
@@ -31,10 +32,16 @@ export const catalogProductListItemSchema = z.object({
   imageUrl: z.string().nullable(),
   category: catalogProductCategorySchema,
   available: z.boolean(),
+  stockAvailable: z.number().int().nonnegative(),
 })
 
-export const catalogProductDetailSchema = catalogProductListItemSchema.extend({
+export const catalogProductListItemSchema = catalogProductBaseSchema.extend({
+  secondaryImageUrl: z.string().nullable(),
+})
+
+export const catalogProductDetailSchema = catalogProductBaseSchema.extend({
   gallery: z.array(catalogProductImageSchema),
+  richContent: productRichContentSchema.nullable(),
 })
 
 export const catalogPaginationSchema = z.object({

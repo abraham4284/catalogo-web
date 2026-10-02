@@ -1,5 +1,7 @@
 # Technical QA — F8
 
+Nota F9: este informe conserva el QA histórico del baseline anterior (contrato previo y carrito v1). El contrato comercial, persistencia v2 y sus validaciones actuales se documentan en `docs/f9-validation.md`; los tamaños/conteos F8 no representan el build vigente.
+
 ## Scope
 QA técnico PASS para deployment/pruebas reales; no certifica producción. Revisado el 2026-10-01 sobre `dev`, base `057a1f2` más cambios locales F8 (sin commit automático).
 

@@ -3,3 +3,9 @@ export type WhatsAppCheckoutItem = {
   price: number
   quantity: number
 }
+
+export type WhatsAppProductInquiry = {
+  name: string
+  price: number
+  available: boolean
+}

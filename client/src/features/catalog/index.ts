@@ -14,6 +14,7 @@ export { useCatalogListing } from './hooks/useCatalogListing'
 export { useCatalogProduct } from './hooks/useCatalogProduct'
 export { parseCatalogProductIdParam } from './utils/catalog-product-route'
 export { ProductDetail } from './components/ProductDetail'
+export { isCatalogProductAvailable } from './utils/catalog-availability'
 export { ProductUnavailableState } from './components/ProductUnavailableState'
 export { readCatalogFilters, createCatalogSearchParams, getCatalogHref } from './utils/catalog-url'
 export type { CatalogFilters } from './utils/catalog-url'
@@ -24,6 +25,8 @@ export type {
   CatalogProductImage,
   CatalogProductListItem,
   CatalogProductDetail,
+  ProductRichContent,
+  ProductRichContentBlock,
   CatalogPagination,
   CatalogProductsResponse,
   CatalogProductsQuery,

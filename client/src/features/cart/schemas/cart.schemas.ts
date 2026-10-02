@@ -6,6 +6,9 @@ export const addCartItemInputSchema = z.object({
   idProduct: positiveSafeInteger,
   name: z.string().trim().min(1),
   price: z.number().finite(),
+  imageUrl: z.string().nullable(),
+  available: z.boolean(),
+  stockAvailable: z.number().int().nonnegative(),
 })
 
 export const cartItemSchema = addCartItemInputSchema.extend({ quantity: positiveSafeInteger })
@@ -17,6 +20,6 @@ export const cartStateSchema = z.object({
 })
 
 export const cartStorageEnvelopeSchema = z.object({
-  version: z.literal(1),
+  version: z.literal(2),
   state: cartStateSchema,
 })
