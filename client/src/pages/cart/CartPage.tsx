@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useCartStore, CartItemRow, CartSummary } from '@/features/cart'
+import { useCartStore, CartItemRow, CartSummary, isCartReadyForInquiry } from '@/features/cart'
 import { WhatsAppCheckoutLink } from '@/features/whatsapp'
 
 export function CartPage() {
@@ -19,7 +19,12 @@ export function CartPage() {
             <ul className="min-w-0">{items.map((item) => <CartItemRow key={item.idProduct} item={item} />)}</ul>
             <div className="min-w-0 space-y-6">
               <CartSummary items={items} />
-              <WhatsAppCheckoutLink items={items} />
+              {isCartReadyForInquiry(items) ? <WhatsAppCheckoutLink items={items} /> : (
+                <div className="space-y-3">
+                  <button type="button" disabled className="min-h-11 bg-primary px-5 py-3 text-primary-foreground opacity-50">Consultar por WhatsApp</button>
+                  <p role="status" className="text-sm">Revisá los productos con cambios de disponibilidad antes de continuar.</p>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-6">

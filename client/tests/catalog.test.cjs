@@ -32,9 +32,60 @@ function loadCatalog() {
 const category = { idProductCategory: 1, name: 'Categoría de prueba' }
 const product = {
   idProduct: 2, name: 'Producto de prueba', description: null, price: 10,
-  imageUrl: null, category, available: false,
+  imageUrl: null, category, available: false, stockAvailable: 0, secondaryImageUrl: null,
 }
+const detailProduct = { ...product }
+delete detailProduct.secondaryImageUrl
+const detailFixture = { ...detailProduct, gallery: [], richContent: null }
 const pagination = { page: 1, currentPage: 1, limit: 24, total: 1, totalRecords: 1, totalPages: 1 }
+
+test('list validates stock and nullable secondary image without detail fields', () => {
+  const { load, src } = loadCatalog()
+  const { catalogProductListItemSchema: schema } = load(path.join(src, 'features/catalog/schemas/catalog.schemas.ts'))
+  assert.deepEqual(schema.parse(product), product)
+  assert.equal(schema.parse({ ...product, stockAvailable: 5, secondaryImageUrl: '/secondary.png' }).secondaryImageUrl, '/secondary.png')
+  for (const stockAvailable of [-1, 1.5, Infinity, Number.MAX_SAFE_INTEGER + 1]) {
+    assert.equal(schema.safeParse({ ...product, stockAvailable }).success, false)
+  }
+  assert.equal(schema.safeParse({ ...product, secondaryImageUrl: 3 }).success, false)
+  const parsed = schema.parse({ ...product, gallery: [], richContent: null })
+  assert.equal('gallery' in parsed, false)
+  assert.equal('richContent' in parsed, false)
+})
+
+test('detail validates rich content v1 and does not require secondary image', () => {
+  const { load, src } = loadCatalog()
+  const { catalogProductDetailSchema: schema } = load(path.join(src, 'features/catalog/schemas/catalog.schemas.ts'))
+  assert.deepEqual(schema.parse(detailFixture), detailFixture)
+  const richContent = { version: 1, blocks: [
+    { type: 'heading', level: 2, text: 'Información' },
+    { type: 'heading', level: 3, text: 'Cuidados' },
+    { type: 'paragraph', text: '<script>texto, no HTML</script>' },
+    { type: 'list', style: 'bullet', items: ['A', 'B'] },
+    { type: 'list', style: 'numbered', items: ['Paso 1'] },
+    { type: 'specs', items: [{ label: 'Material', value: 'Acero' }] },
+  ] }
+  assert.deepEqual(schema.parse({ ...detailFixture, richContent }).richContent, richContent)
+  assert.equal(schema.safeParse({ ...detailFixture, richContent: { version: 1, blocks: [] } }).success, true)
+  for (const invalid of [
+    { version: 2, blocks: [] },
+    { version: 1, blocks: [{ type: 'heading', level: 1, text: 'H1' }] },
+    { version: 1, blocks: [{ type: 'paragraph', text: 5 }] },
+    { version: 1, blocks: [{ type: 'list', style: 'other', items: ['A'] }] },
+    { version: 1, blocks: [{ type: 'list', style: 'bullet', items: [5] }] },
+    { version: 1, blocks: [{ type: 'specs', items: [{ label: 'Peso' }] }] },
+    { version: 1, blocks: [{ type: 'html', text: '<b>A</b>' }] },
+  ]) assert.equal(schema.safeParse({ ...detailFixture, richContent: invalid }).success, false)
+  for (const stockAvailable of [-1, 1.5]) assert.equal(schema.safeParse({ ...detailFixture, stockAvailable }).success, false)
+})
+
+test('availability requires both published availability and positive stock', () => {
+  const { load, src } = loadCatalog()
+  const { isCatalogProductAvailable: available } = load(path.join(src, 'features/catalog/utils/catalog-availability.ts'))
+  assert.equal(available({ available: true, stockAvailable: 5 }), true)
+  assert.equal(available({ available: true, stockAvailable: 0 }), false)
+  assert.equal(available({ available: false, stockAvailable: 5 }), false)
+})
 
 test('catalog configuration rejects malformed URLs with a safe configuration error', () => {
   const { load, src, runtimeEnv } = loadCatalog()
@@ -149,7 +200,7 @@ test('catalog boundary: contracts, inputs, transport and lazy configuration', as
     assert.deepEqual(lastConfig.params, { page: 1, limit: 60, search: 'prueba' })
     await api.getCatalogProducts({ search: '   ', idProductCategory: undefined })
     assert.deepEqual(lastConfig.params, {})
-    const detail = { ...product, gallery: [{ imageUrl: '/relative.png', altText: null, sortOrder: 0 }] }
+    const detail = { ...detailFixture, gallery: [{ imageUrl: '/relative.png', altText: null, sortOrder: 0 }] }
     success(detail)
     assert.deepEqual(await api.getCatalogProductById(2), detail)
     assert.equal(lastConfig.url, '/catalog/products/2')
@@ -169,9 +220,9 @@ test('catalog boundary: contracts, inputs, transport and lazy configuration', as
       payload = data
       await assert.rejects(api.getCatalogProductById(2), rejectsWith('INVALID_RESPONSE'))
     }
-    success({ ...product, gallery: [{ imageUrl: '/image.png', altText: null, sortOrder: 0.5 }] })
+    success({ ...detailFixture, gallery: [{ imageUrl: '/image.png', altText: null, sortOrder: 0.5 }] })
     await assert.rejects(api.getCatalogProductById(2), rejectsWith('INVALID_RESPONSE'))
-    success({ ...product, gallery: [{ imageUrl: '/image.png', altText: null, sortOrder: -1 }] })
+    success({ ...detailFixture, gallery: [{ imageUrl: '/image.png', altText: null, sortOrder: -1 }] })
     await assert.rejects(api.getCatalogProductById(2), rejectsWith('INVALID_RESPONSE'))
     success({ items: [], pagination: { ...pagination, total: 0, totalRecords: 0, totalPages: 0 } })
     await assert.rejects(api.getCatalogProducts(), rejectsWith('INVALID_RESPONSE'))
