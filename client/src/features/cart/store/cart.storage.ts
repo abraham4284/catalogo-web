@@ -15,9 +15,9 @@ export function parsePersistedCart(raw: string | null): PersistedCartState {
 export const cartStorage: PersistStorage<PersistedCartState> = {
   getItem(name) {
     try {
-      return { state: parsePersistedCart(globalThis.localStorage.getItem(name)), version: 1 }
+      return { state: parsePersistedCart(globalThis.localStorage.getItem(name)), version: 2 }
     } catch {
-      return { state: { items: [] }, version: 1 }
+      return { state: { items: [] }, version: 2 }
     }
   },
   setItem(name, value) {

@@ -4,6 +4,23 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.product-card-secondary {
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .product-card-image:hover .product-card-secondary {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card-secondary {
+    transition: none;
+  }
+}
+
 @theme inline {
     --font-sans: ui-sans-serif, system-ui, sans-serif;
     --font-heading: var(--font-sans);

@@ -70,3 +70,14 @@
 - [x] Informe QA y checklist deployment (`docs/qa-report.md`)
 - [ ] Smoke test de backend/hosting reales (posterior al deployment)
 - [ ] Auditoría de vulnerabilidades concluyente (endpoint no disponible durante F8)
+
+## F9 — Cajora product contract + commercial UX
+- [x] Contrato stock/secondary image/rich content y schemas derivados
+- [x] ProductCard con descripción, hover y acciones rápidas desde Home/Catálogo
+- [x] Consulta individual por WhatsApp y composición del detalle
+- [x] Product Detail con rich content semántico
+- [x] Carrito v2 consciente de stock y checkout condicionado
+- [x] Imagen de producto en carrito con fallback compartido
+- [x] Reconciliación de snapshots sin requests extra ni recortes silenciosos
+- [x] Tests, responsive con fixtures locales, lint y build
+- [x] Documentación y validaciones F9 (`docs/f9-validation.md`)

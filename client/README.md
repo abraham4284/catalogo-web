@@ -1,6 +1,6 @@
 # Storefront frontend
 
-Frontend público independiente de Cajora: Home, catálogo con búsqueda/categorías/paginación, detalle/galería, carrito local y consulta por WhatsApp. MVP técnico F8; integración y hosting reales pendientes de smoke test.
+Frontend público independiente de Cajora: Home, catálogo con búsqueda/categorías/paginación, detalle/galería, carrito local y consulta por WhatsApp. F9 incorpora contrato de stock público, imágenes secundarias, rich content, acciones rápidas y carrito v2 con reconciliación. Integración y hosting reales pendientes de smoke test. Validaciones actuales: [F9](../docs/f9-validation.md); QA histórico/checklist operativo: [F8](../docs/qa-report.md).
 
 Stack: React 19, TypeScript, Vite, Tailwind CSS 4, shadcn/ui, React Router, Axios, Zod, Zustand y ESLint; npm como gestor.
 

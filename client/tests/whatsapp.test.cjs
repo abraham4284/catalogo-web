@@ -94,3 +94,39 @@ test('number configuration is lazy, strict and unavailable configuration is safe
   assert.deepEqual(items, before)
   assert.equal(getWhatsAppCheckoutHref([]), undefined)
 })
+
+test('product inquiry normalizes names and includes published price without stock or IDs', () => {
+  const { load } = loadWhatsApp()
+  const { buildWhatsAppProductInquiryMessage: build } = load('features/whatsapp/domain/whatsapp-product-inquiry')
+  const { formatCurrency } = load('shared/utils/format-currency')
+  const product = Object.freeze({ name: '  Producto\n& café 😀 ', price: 35000, available: true, stockAvailable: 9876, idProduct: 6543 })
+  const message = build(product)
+  assert.ok(message.includes('Producto & café 😀'))
+  assert.ok(message.includes(`Precio publicado: ${formatCurrency(35000)}`))
+  assert.ok(message.includes('confirmar precio y disponibilidad'))
+  for (const forbidden of ['stockAvailable', '9876', '6543', 'depósito', 'idProduct']) assert.equal(message.includes(forbidden), false)
+  const unavailable = build({ ...product, available: false })
+  assert.ok(unavailable.includes('consultar por la disponibilidad de Producto & café 😀'))
+  assert.ok(unavailable.includes('Precio publicado:'))
+  assert.equal(product.name, '  Producto\n& café 😀 ')
+  assert.throws(() => build({ ...product, name: '  ' }))
+  assert.throws(() => build({ ...product, price: Infinity }))
+})
+
+test('individual inquiry URL encodes one text parameter and tolerates missing configuration', () => {
+  const { load, runtimeEnv } = loadWhatsApp()
+  const { getWhatsAppProductInquiryHref: href } = load('features/whatsapp/utils/whatsapp-product-inquiry')
+  const { buildWhatsAppProductInquiryMessage: message } = load('features/whatsapp/domain/whatsapp-product-inquiry')
+  const product = { name: 'Café & té? #1 + 😀', price: 50, available: true }
+  assert.equal(href(product), undefined)
+  runtimeEnv.VITE_WHATSAPP_NUMBER = 'invalid'
+  assert.equal(href(product), undefined)
+  runtimeEnv.VITE_WHATSAPP_NUMBER = '5493811234567'
+  for (const available of [true, false]) {
+    const input = { ...product, available }
+    const url = new URL(href(input))
+    assert.equal(url.origin, 'https://wa.me')
+    assert.equal(url.searchParams.get('text'), message(input))
+    assert.deepEqual([...url.searchParams.keys()], ['text'])
+  }
+})
