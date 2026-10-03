@@ -2,7 +2,7 @@ import type { ProductRichContent } from '../types/catalog.types'
 
 export function ProductRichContentRenderer({ content }: { content: ProductRichContent }) {
   return (
-    <div className="min-w-0 space-y-5 break-words [overflow-wrap:anywhere]">
+    <div className="min-w-0 space-y-6 break-words leading-relaxed [overflow-wrap:anywhere]">
       {content.blocks.map((block, index) => {
         switch (block.type) {
           case 'heading':
@@ -18,8 +18,8 @@ export function ProductRichContentRenderer({ content }: { content: ProductRichCo
             </List>
           }
           case 'specs':
-            return <dl key={index} className="max-w-3xl divide-y border-y">
-              {block.items.map((item, itemIndex) => <div key={itemIndex} className="grid gap-1 py-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] sm:gap-4">
+            return <dl key={index} className="max-w-3xl divide-y overflow-hidden rounded-xl border bg-card">
+              {block.items.map((item, itemIndex) => <div key={itemIndex} className="grid gap-1 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] sm:gap-4">
                 <dt className="font-medium">{item.label}</dt>
                 <dd className="text-muted-foreground">{item.value}</dd>
               </div>)}

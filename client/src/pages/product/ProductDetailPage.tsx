@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { ProductCommerceActions } from '@/app/compositions/ProductCommerceActions'
 import {
   parseCatalogProductSlugParam, useCatalogProduct, ProductDetail,
@@ -25,7 +25,6 @@ export function ProductDetailPage() {
   if (slug === undefined) return <ProductUnavailableState />
   return (
     <div className="space-y-8">
-      <Link to="/productos" className="inline-block underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">← Volver a productos</Link>
       <ProductContent key={slug} slug={slug} />
     </div>
   )

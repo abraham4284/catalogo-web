@@ -12,7 +12,7 @@ export function CategoryFilter({ categories, filters }: CategoryFilterProps) {
       <ul className="flex w-max gap-2 px-1 py-1">
         {options.map((category) => (
           <li key={category.idProductCategory ?? 'all'}>
-            <Link to={getCatalogHref({ ...filters, page: 1, categorySlug: category.slug })} aria-current={filters.categorySlug === category.slug ? 'true' : undefined} className="block whitespace-nowrap border px-4 py-2 text-sm aria-[current=true]:bg-primary aria-[current=true]:text-primary-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2">
+            <Link to={getCatalogHref({ ...filters, page: 1, categorySlug: category.slug })} aria-current={filters.categorySlug === category.slug ? 'true' : undefined} className="flex min-h-11 items-center whitespace-nowrap rounded-full border px-4 py-2 text-sm aria-[current=true]:bg-primary aria-[current=true]:text-primary-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2">
               {category.name}
             </Link>
           </li>

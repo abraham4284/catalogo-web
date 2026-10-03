@@ -104,3 +104,15 @@
 - [x] Gate WhatsApp tras verificación y coherencia
 - [x] Tests, lint/build y QA responsive con fixtures
 - [x] Documentación docs/f10b-validation.md
+
+
+## F11 — Storefront visual / merchandising UX
+- [x] Announcement bar y Header neutral con contador de unidades desde app
+- [x] Hero con negocio/logo, CTA y banners informativos; contenido centralizado
+- [x] Categorías por slug, Cómo comprar y FAQ nativa
+- [x] ProductCard con enlace informativo único, badge y secundaria on-demand
+- [x] Breadcrumbs, panel comercial y galería vertical desktop/horizontal mobile
+- [x] Rich content, búsqueda, filtros, carrito y Footer coherentes
+- [x] Revalidación y gate WhatsApp F10B conservados y comprobados
+- [x] Suites, lint/build, QA responsive y teclado con fixtures locales
+- [x] Documentación y evidencia en docs/f11-validation.md
