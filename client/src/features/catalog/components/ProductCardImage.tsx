@@ -10,10 +10,11 @@ function SecondaryImage({ src }: { src: string }) {
 export function ProductCardImage({ imageUrl, secondaryImageUrl, name }: {
   imageUrl: string | null; secondaryImageUrl: string | null; name: string
 }) {
+  const [loadedSecondary, setLoadedSecondary] = useState<string>()
   return (
-    <div className="product-card-image relative flex aspect-square items-center justify-center overflow-hidden rounded-lg bg-muted">
+    <div onPointerEnter={(event) => { if (event.pointerType === 'mouse' || event.pointerType === 'pen') setLoadedSecondary(secondaryImageUrl ?? undefined) }} className="product-card-image relative flex aspect-square items-center justify-center overflow-hidden rounded-lg bg-muted">
       <ProductImage src={imageUrl} alt={name} loading="lazy" />
-      {secondaryImageUrl && secondaryImageUrl !== imageUrl && <SecondaryImage key={secondaryImageUrl} src={secondaryImageUrl} />}
+      {secondaryImageUrl && loadedSecondary === secondaryImageUrl && secondaryImageUrl !== imageUrl && <SecondaryImage key={secondaryImageUrl} src={secondaryImageUrl} />}
     </div>
   )
 }

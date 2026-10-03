@@ -10,14 +10,14 @@ export function CartItemRow({ item, verificationFailed = false }: { item: CartIt
   const increment = useCartStore((state) => state.incrementItem)
   const decrement = useCartStore((state) => state.decrementItem)
   const remove = useCartStore((state) => state.removeItem)
-  const buttonClass = 'min-h-11 min-w-11 border px-3 py-2 disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2'
+  const buttonClass = 'min-h-11 min-w-11 rounded-lg border bg-background px-3 py-2 disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2'
   return (
-    <li className="min-w-0 space-y-4 border-b py-6 first:pt-0">
+    <li className="min-w-0 space-y-4 rounded-xl border bg-card p-5 sm:p-6">
       <Link to={`/productos/${item.slug}`} aria-labelledby={`cart-product-${item.idProduct}`} className="flex min-w-0 items-start gap-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">
         <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted sm:size-24">
           <ProductImage src={item.imageUrl} alt={item.name} loading="lazy" />
         </div>
-        <h2 id={`cart-product-${item.idProduct}`} className="min-w-0 text-lg font-medium">{item.name}</h2>
+        <h2 id={`cart-product-${item.idProduct}`} className="min-w-0 break-words text-lg font-medium">{item.name}</h2>
       </Link>
       <div className="space-y-2">
         <p className="text-sm text-muted-foreground">Precio unitario: {formatCurrency(item.price)}</p>
