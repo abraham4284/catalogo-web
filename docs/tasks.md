@@ -93,5 +93,14 @@
 - [x] Suites específicas, lint/build y QA responsive con fixtures
 - [x] Documentación y evidencia docs/f10a-validation.md
 
-## F10B — Cart contract migration (pendiente)
-- [ ] Migrar persistencia/contrato y retirar adaptador v2 según alcance futuro
+## F10B — Cart contract migration
+- [x] Snapshot/persistencia v3 con slug y availabilityStatus
+- [x] Retiro de booleano legacy y adaptador temporal
+- [x] Enlaces públicos de carrito restaurados por slug
+- [x] Reconcile v3 con quantity preservada y unicidad defensiva
+- [x] Revalidación concurrente al entrar/cambiar conjunto
+- [x] Loading, error parcial/total y retry
+- [x] Stale stock / out_of_stock / on_order sin recortes ni eliminaciones
+- [x] Gate WhatsApp tras verificación y coherencia
+- [x] Tests, lint/build y QA responsive con fixtures
+- [x] Documentación docs/f10b-validation.md

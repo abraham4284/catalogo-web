@@ -14,7 +14,8 @@ function loadCart() {
     const output = ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
       compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true },
     }).outputText
-    const localRequire = (specifier) => specifier.startsWith('.')
+    const localRequire = (specifier) => specifier.startsWith('@/')
+      ? load(path.resolve(__dirname, '../src', `${specifier.slice(2)}.ts`)) : specifier.startsWith('.')
       ? load(path.resolve(path.dirname(filename), `${specifier}.ts`)) : require(specifier)
     new Function('require', 'module', 'exports', output)(localRequire, module, module.exports)
     return module.exports
@@ -22,29 +23,21 @@ function loadCart() {
   return (relative) => load(path.join(root, `${relative}.ts`))
 }
 
-const snapshot = { idProduct: 1, name: 'Producto', price: 12.5, imageUrl: '/product.png', available: true, stockAvailable: 5 }
+const snapshot = { idProduct: 1, slug: 'producto', name: 'Producto', price: 12.5, imageUrl: '/product.png', availabilityStatus: 'in_stock', stockAvailable: 5 }
 const item = { ...snapshot, quantity: 2 }
 
-test('F10A adapter keeps cart v2 and prevents on-order additions despite physical stock', () => {
+test('composition mapper preserves v3 fields and excludes catalog-only fields', () => {
   const load = loadCart()
-  const { toCartV2Snapshot: adapt } = load('../../app/compositions/product-cart-compatibility')
-  const { useCartStore: store } = load('store/cart.store')
-  store.getState().clearCart()
-  for (const availabilityStatus of ['out_of_stock', 'on_order']) {
-    const mapped = adapt({ ...snapshot, availabilityStatus, stockAvailable: 20, slug: 'producto', saleMode: 'on_order' })
-    assert.equal(mapped.available, false)
-    assert.equal('slug' in mapped || 'availabilityStatus' in mapped || 'saleMode' in mapped, false)
-    store.getState().addItem(mapped)
-    assert.deepEqual(store.getState().items, [])
+  const { toCartSnapshot: adapt } = load('../../app/compositions/catalog-cart-snapshot')
+  for (const availabilityStatus of ['in_stock', 'out_of_stock', 'on_order']) {
+    const input = { ...snapshot, availabilityStatus, stockAvailable: 20, saleMode: 'on_order', richContent: {} }
+    assert.deepEqual(adapt(input), { ...snapshot, availabilityStatus, stockAvailable: 20 })
   }
-  store.getState().addItem(adapt({ ...snapshot, availabilityStatus: 'in_stock' }))
-  assert.equal(store.getState().items.length, 1)
-  store.getState().clearCart()
 })
 
 test('cart domain, schemas, persistence and real Zustand actions', async (t) => {
   const load = loadCart()
-  const { calculateCartLineTotal, calculateCartTotal, calculateCartItemCount, isCartItemAvailable, isCartItemQuantityValid, isCartReadyForInquiry, canIncrementCartItem } = load('domain/cart')
+  const { calculateCartLineTotal, calculateCartTotal, calculateCartItemCount, isCartItemInStock, isCartItemQuantityValid, isCartReadyForInquiry, canIncrementCartItem } = load('domain/cart')
   const { cartItemSchema } = load('schemas/cart.schemas')
   const { parsePersistedCart } = load('store/cart.storage')
   await t.test('derived amounts and empty cart', () => {
@@ -59,28 +52,38 @@ test('cart domain, schemas, persistence and real Zustand actions', async (t) => 
       assert.equal(cartItemSchema.safeParse({ ...item, quantity }).success, false)
     }
     assert.equal(cartItemSchema.safeParse({ ...item, quantity: Number.MAX_SAFE_INTEGER }).success, true)
-    for (const invalid of [{ idProduct: 0 }, { idProduct: Number.MAX_SAFE_INTEGER + 1 }, { name: '  ' }, { price: Infinity }, { price: NaN }, { imageUrl: 3 }, { available: 'true' }, { stockAvailable: -1 }, { stockAvailable: 1.5 }]) {
+    for (const invalid of [{ idProduct: 0 }, { idProduct: Number.MAX_SAFE_INTEGER + 1 }, { name: '  ' }, { price: Infinity }, { price: NaN }, { imageUrl: 3 }, { availabilityStatus: 'other' }, { stockAvailable: -1 }, { stockAvailable: 1.5 }]) {
       assert.equal(cartItemSchema.safeParse({ ...item, ...invalid }).success, false)
     }
     assert.equal(cartItemSchema.safeParse({ ...item, imageUrl: null }).success, true)
-    assert.equal(cartItemSchema.safeParse({ ...item, available: false, stockAvailable: 0 }).success, true)
+    assert.equal(cartItemSchema.safeParse({ ...item, availabilityStatus: 'out_of_stock', stockAvailable: 0 }).success, true)
+    for (const slug of ['', ' Upper ', 'a--b', '-a', 'a-', '../a', 'a'.repeat(181)]) {
+      assert.equal(cartItemSchema.safeParse({ ...item, slug }).success, false)
+    }
+    for (const availabilityStatus of ['in_stock', 'out_of_stock', 'on_order']) {
+      const parsed = cartItemSchema.parse({ ...item, availabilityStatus, available: true })
+      assert.equal('available' in parsed, false)
+    }
+    const missingStatus = { ...item, available: true }; delete missingStatus.availabilityStatus
+    assert.equal(cartItemSchema.safeParse(missingStatus).success, false)
   })
   await t.test('persisted data validates version and rejects corruption or duplicates', () => {
-    const valid = JSON.stringify({ version: 2, state: { items: [{ ...item, name: ' Producto ', gallery: [] }], total: 999 } })
+    const valid = JSON.stringify({ version: 3, state: { items: [{ ...item, name: ' Producto ', gallery: [] }], total: 999 } })
     assert.deepEqual(parsePersistedCart(valid), { items: [item] })
-    for (const raw of [null, '', '{broken', 'null', '[]', JSON.stringify({ version: 1, state: { items: [item] } }), JSON.stringify({ version: 3, state: { items: [item] } }), JSON.stringify({ version: 2, state: { items: [item, item] } }), JSON.stringify({ version: 2, state: { items: [{ ...item, quantity: 0 }] } })]) {
+    for (const raw of [null, '', '{broken', 'null', '[]', JSON.stringify({ version: 1, state: { items: [item] } }), JSON.stringify({ version: 2, state: { items: [item] } }), JSON.stringify({ version: 4, state: { items: [item] } }), JSON.stringify({ version: 3, state: { items: [item, item] } }), JSON.stringify({ version: 3, state: { items: [{ ...item, quantity: 0 }] } })]) {
       assert.deepEqual(parsePersistedCart(raw), { items: [] })
     }
-    const inconsistent = { ...item, stockAvailable: 0, available: false }
-    assert.deepEqual(parsePersistedCart(JSON.stringify({ version: 2, state: { items: [inconsistent] } })), { items: [inconsistent] })
+    const inconsistent = { ...item, stockAvailable: 0, availabilityStatus: 'out_of_stock' }
+    assert.deepEqual(parsePersistedCart(JSON.stringify({ version: 3, state: { items: [inconsistent] } })), { items: [inconsistent] })
+    assert.deepEqual(parsePersistedCart(JSON.stringify({ version: 3, state: { items: [item, { ...item, idProduct: 2 }] } })), { items: [] })
   })
   await t.test('availability, quantity and readiness distinguish stock changes', () => {
-    assert.equal(isCartItemAvailable(item), true)
+    assert.equal(isCartItemInStock(item), true)
     assert.equal(isCartItemQuantityValid(item), true)
     assert.equal(isCartReadyForInquiry([item]), true)
     assert.equal(isCartReadyForInquiry([]), false)
-    for (const unavailable of [{ ...item, stockAvailable: 0 }, { ...item, available: false }]) {
-      assert.equal(isCartItemAvailable(unavailable), false)
+    for (const unavailable of [{ ...item, stockAvailable: 0 }, { ...item, availabilityStatus: 'out_of_stock' }, { ...item, availabilityStatus: 'on_order', stockAvailable: 20 }]) {
+      assert.equal(isCartItemInStock(unavailable), false)
       assert.equal(isCartReadyForInquiry([item, unavailable]), false)
       assert.equal(canIncrementCartItem(unavailable), false)
     }
@@ -105,13 +108,13 @@ test('cart domain, schemas, persistence and real Zustand actions', async (t) => 
       const store = loadCart()('store/cart.store').useCartStore
       store.getState().addItem(snapshot)
       assert.equal(store.getState().items[0].quantity, 1)
-      const updated = { ...snapshot, name: 'Nuevo nombre', price: 20, imageUrl: '/updated.png', stockAvailable: 3 }
+      const updated = { ...snapshot, slug: 'producto-actualizado', name: 'Nuevo nombre', price: 20, imageUrl: '/updated.png', stockAvailable: 3 }
       store.getState().addItem(updated)
       assert.deepEqual(store.getState().items, [{ ...updated, quantity: 2 }])
       store.getState().incrementItem(1)
       assert.equal(store.getState().items[0].quantity, 3)
       const saved = JSON.parse(values.get('catalogo-web-cart'))
-      assert.equal(saved.version, 2)
+      assert.equal(saved.version, 3)
       assert.deepEqual(Object.keys(saved.state), ['items'])
       assert.equal(saved.state.items[0].imageUrl, '/updated.png')
       const refreshed = loadCart()('store/cart.store').useCartStore
@@ -120,7 +123,7 @@ test('cart domain, schemas, persistence and real Zustand actions', async (t) => 
       refreshed.getState().decrementItem(1)
       refreshed.getState().decrementItem(1)
       assert.equal(refreshed.getState().items[0].quantity, 1)
-      refreshed.getState().addItem({ ...snapshot, idProduct: 2 })
+      refreshed.getState().addItem({ ...snapshot, idProduct: 2, slug: 'producto-2' })
       refreshed.getState().removeItem(1)
       assert.equal(refreshed.getState().items[0].idProduct, 2)
       refreshed.getState().clearCart()
@@ -147,8 +150,20 @@ test('cart domain, schemas, persistence and real Zustand actions', async (t) => 
       values.clear()
       const store = loadCart()('store/cart.store').useCartStore
       store.getState().addItem({ ...snapshot, stockAvailable: 0 })
-      store.getState().addItem({ ...snapshot, available: false })
+      store.getState().addItem({ ...snapshot, availabilityStatus: 'out_of_stock' })
+      store.getState().addItem({ ...snapshot, availabilityStatus: 'on_order', stockAvailable: 20 })
       assert.deepEqual(store.getState().items, [])
+    })
+    await t.test('mutations preserve unique slugs as well as IDs', () => {
+      values.clear()
+      const store = loadCart()('store/cart.store').useCartStore
+      store.getState().addItem(snapshot)
+      store.getState().addItem({ ...snapshot, idProduct: 2 })
+      assert.equal(store.getState().items.length, 1)
+      store.getState().addItem({ ...snapshot, idProduct: 2, slug: 'producto-2' })
+      store.getState().reconcileItem({ ...snapshot, slug: 'producto-2', price: 999 })
+      assert.equal(store.getState().items[0].slug, snapshot.slug)
+      assert.equal(store.getState().items[0].price, snapshot.price)
     })
     await t.test('reconcile updates snapshots without quantity changes or identical writes', () => {
       values.clear()
@@ -159,7 +174,7 @@ test('cart domain, schemas, persistence and real Zustand actions', async (t) => 
       store.getState().incrementItem(1)
       store.getState().incrementItem(1)
       store.getState().incrementItem(1)
-      const changed = { ...snapshot, name: 'Actualizado', price: 20, imageUrl: null, stockAvailable: 2 }
+      const changed = { ...snapshot, slug: 'producto-nuevo', name: 'Actualizado', price: 20, imageUrl: null, stockAvailable: 2 }
       store.getState().reconcileItem(changed)
       assert.deepEqual(store.getState().items, [{ ...changed, quantity: 4 }])
       const before = writes
@@ -171,13 +186,19 @@ test('cart domain, schemas, persistence and real Zustand actions', async (t) => 
       store.getState().decrementItem(1)
       store.getState().decrementItem(1)
       assert.equal(isCartReadyForInquiry(store.getState().items), true)
-      store.getState().reconcileItem({ ...changed, available: false, stockAvailable: 0, imageUrl: '/new.png' })
+      store.getState().reconcileItem({ ...changed, availabilityStatus: 'out_of_stock', stockAvailable: 0, imageUrl: '/new.png' })
       assert.equal(store.getState().items.length, 1)
       assert.equal(store.getState().items[0].quantity, 2)
-      assert.equal(store.getState().items[0].available, false)
+      assert.equal(store.getState().items[0].availabilityStatus, 'out_of_stock')
       assert.equal(store.getState().items[0].imageUrl, '/new.png')
       store.getState().incrementItem(1)
       assert.equal(store.getState().items[0].quantity, 2)
+      assert.equal(isCartReadyForInquiry(store.getState().items), false)
+      store.getState().reconcileItem({ ...changed, availabilityStatus: 'on_order', stockAvailable: 20 })
+      store.getState().incrementItem(1)
+      store.getState().decrementItem(1)
+      assert.equal(store.getState().items[0].quantity, 2)
+      assert.equal(store.getState().items[0].availabilityStatus, 'on_order')
       assert.equal(isCartReadyForInquiry(store.getState().items), false)
       store.getState().removeItem(1)
       assert.deepEqual(store.getState().items, [])
@@ -195,7 +216,7 @@ test('cart domain, schemas, persistence and real Zustand actions', async (t) => 
       assert.deepEqual(loadCart()('store/cart.store').useCartStore.getState().items, [])
     })
     await t.test('full storage leaves hydrated cart and in-memory actions usable', () => {
-      values.set('catalogo-web-cart', JSON.stringify({ version: 2, state: { items: [item] } }))
+      values.set('catalogo-web-cart', JSON.stringify({ version: 3, state: { items: [item] } }))
       Object.defineProperty(globalThis, 'localStorage', {
         configurable: true,
         value: { ...memoryStorage, setItem() { throw new Error('QuotaExceededError') } },
@@ -218,4 +239,44 @@ test('cart domain, schemas, persistence and real Zustand actions', async (t) => 
     if (previousStorage) Object.defineProperty(globalThis, 'localStorage', previousStorage)
     else delete globalThis.localStorage
   }
+})
+
+
+test('revalidation is concurrent, preserves identity, reports partial failures and ignores aborted results', async () => {
+  const load = loadCart()
+  const { revalidateCartProducts: verify, getCartVerificationKey: key } = load('../../app/compositions/cart-catalog-revalidation')
+  const targets = [{idProduct: 1, slug: 'producto'}, {idProduct: 2, slug: 'producto-2'}, {idProduct: 3, slug: 'producto-3'}]
+  assert.equal(key(targets), key([...targets].reverse().map(target => ({...target, quantity: 99, price: 300}))))
+  assert.notEqual(key(targets), key(targets.slice(1)))
+  const calls = []; const resolvers = []
+  const controller = new AbortController()
+  const pending = verify(targets, (slug, signal) => {
+    calls.push(slug); assert.equal(signal, controller.signal)
+    return new Promise(resolve => resolvers.push(resolve))
+  }, controller.signal)
+  assert.deepEqual(calls, targets.map(target => target.slug))
+  resolvers.forEach((resolve, i) => resolve({...snapshot, ...targets[i], price: 12000, availabilityStatus: ['in_stock','out_of_stock','on_order'][i], stockAvailable: 20}))
+  const result = await pending
+  assert.deepEqual(result.failedProductIds, [])
+  assert.equal(result.snapshots[0].price, 12000)
+  assert.equal(result.snapshots[1].availabilityStatus, 'out_of_stock')
+  assert.equal(result.snapshots[2].availabilityStatus, 'on_order')
+  const partial = await verify(targets, async slug => {
+    if (slug === 'producto-2') throw new Error('404 or network')
+    return {...snapshot, ...targets.find(target => target.slug === slug), price: 12000}
+  }, new AbortController().signal)
+  assert.deepEqual(partial.failedProductIds, [2])
+  assert.deepEqual(partial.snapshots.map(item => item.idProduct), [1,3])
+  for (const mismatch of [{ idProduct: 999 }, { slug: 'otro-producto' }, { name: '  ' }]) {
+    const result = await verify([targets[0]], async () => ({...snapshot, ...mismatch}), new AbortController().signal)
+    assert.deepEqual(result, { snapshots: [], failedProductIds: [1] })
+  }
+  let resolveLate
+  const cancelled = new AbortController()
+  const late = verify([targets[0]], () => new Promise(resolve => { resolveLate = resolve }), cancelled.signal)
+  cancelled.abort(); resolveLate(snapshot)
+  assert.equal(await late, undefined)
+  assert.equal(await verify(targets, () => { throw new Error('must not fetch') }, cancelled.signal), undefined)
+  const retried = await verify(targets, async slug => ({ ...snapshot, ...targets.find(target => target.slug === slug) }), new AbortController().signal)
+  assert.deepEqual(retried.failedProductIds, [])
 })
