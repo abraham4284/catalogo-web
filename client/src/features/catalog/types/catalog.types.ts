@@ -1,6 +1,8 @@
 import type { z } from 'zod'
 import type { productRichContentSchema, productRichContentBlockSchema } from '../schemas/catalog-rich-content.schemas'
 import type {
+  productSaleModeSchema,
+  productAvailabilityStatusSchema,
   catalogBusinessSchema,
   catalogCategorySchema,
   catalogProductCategorySchema,
@@ -25,3 +27,6 @@ export type CatalogPagination = z.infer<typeof catalogPaginationSchema>
 export type CatalogProductsResponse = z.infer<typeof catalogProductsResponseSchema>
 export type CatalogProductsQuery = z.input<typeof catalogProductsQuerySchema>
 export type CatalogFieldError = NonNullable<z.infer<typeof catalogErrorEnvelopeSchema>['errors']>[number]
+
+export type ProductSaleMode = z.infer<typeof productSaleModeSchema>
+export type ProductAvailabilityStatus = z.infer<typeof productAvailabilityStatusSchema>

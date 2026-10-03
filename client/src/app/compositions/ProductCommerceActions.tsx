@@ -1,22 +1,21 @@
 import { useEffect } from 'react'
-import { isCatalogProductAvailable, type CatalogProductDetail } from '@/features/catalog'
 import { AddToCartButton, useCartStore } from '@/features/cart'
 import { ProductInquiryLink } from '@/features/whatsapp'
 
-type CommerceProduct = Pick<CatalogProductDetail, 'idProduct' | 'name' | 'price' | 'imageUrl' | 'available' | 'stockAvailable'>
+import { toCartV2Snapshot, type CommerceProduct } from './product-cart-compatibility'
 
 export function ProductCommerceActions({ product }: { product: CommerceProduct }) {
-  const { idProduct, name, price, imageUrl, available, stockAvailable } = product
+  const { idProduct, name, price, imageUrl, availabilityStatus, stockAvailable } = product
   const reconcileItem = useCartStore((state) => state.reconcileItem)
   useEffect(() => {
-    reconcileItem({ idProduct, name, price, imageUrl, available, stockAvailable })
-  }, [reconcileItem, idProduct, name, price, imageUrl, available, stockAvailable])
+    reconcileItem(toCartV2Snapshot({ idProduct, name, price, imageUrl, availabilityStatus, stockAvailable }))
+  }, [reconcileItem, idProduct, name, price, imageUrl, availabilityStatus, stockAvailable])
 
-  const canPurchase = isCatalogProductAvailable(product)
+  const snapshot = toCartV2Snapshot(product)
   return (
     <div className="space-y-3">
-      {canPurchase && <AddToCartButton product={{ idProduct, name, price, imageUrl, available, stockAvailable }} />}
-      <ProductInquiryLink product={{ name, price, available: canPurchase }} />
+      {snapshot.available && <AddToCartButton product={snapshot} />}
+      <ProductInquiryLink product={{ name, price, availabilityStatus }} />
     </div>
   )
 }

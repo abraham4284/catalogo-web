@@ -81,3 +81,17 @@
 - [x] Reconciliación de snapshots sin requests extra ni recortes silenciosos
 - [x] Tests, responsive con fixtures locales, lint y build
 - [x] Documentación y validaciones F9 (`docs/f9-validation.md`)
+
+## F10A — Definitive Cajora contract: slugs / routing / tri-state availability
+- [x] Schemas de slugs compartidos, saleMode, availabilityStatus y availabilityNote
+- [x] Detail API y ruta /productos/:slug, cancelación y 404 neutral
+- [x] Filtro categoria con slug y categorySlug hacia API; navegación conserva filtros
+- [x] Disponibilidad triestado y nota de detalle como texto
+- [x] Consulta WhatsApp propia por los tres estados
+- [x] Adaptador temporal de carrito v2; ON_ORDER excluido y enlaces por ID retirados
+- [x] Límites públicos de rich content
+- [x] Suites específicas, lint/build y QA responsive con fixtures
+- [x] Documentación y evidencia docs/f10a-validation.md
+
+## F10B — Cart contract migration (pendiente)
+- [ ] Migrar persistencia/contrato y retirar adaptador v2 según alcance futuro

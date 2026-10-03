@@ -29,15 +29,50 @@ function loadCatalog() {
   return { load, src, runtimeEnv }
 }
 
-const category = { idProductCategory: 1, name: 'Categoría de prueba' }
+const category = { idProductCategory: 1, name: 'Categoría de prueba', slug: 'categoria-prueba' }
 const product = {
-  idProduct: 2, name: 'Producto de prueba', description: null, price: 10,
-  imageUrl: null, category, available: false, stockAvailable: 0, secondaryImageUrl: null,
+  idProduct: 2, slug: 'producto-prueba', name: 'Producto de prueba', description: null, price: 10,
+  imageUrl: null, category, saleMode: 'stock', availabilityStatus: 'out_of_stock', availabilityNote: null, stockAvailable: 0, secondaryImageUrl: null,
 }
 const detailProduct = { ...product }
 delete detailProduct.secondaryImageUrl
 const detailFixture = { ...detailProduct, gallery: [], richContent: null }
 const pagination = { page: 1, currentPage: 1, limit: 24, total: 1, totalRecords: 1, totalPages: 1 }
+
+test('definitive contract requires commercial fields and rejects legacy substitution', () => {
+  const { load, src } = loadCatalog()
+  const { catalogProductListItemSchema: schema } = load(path.join(src, 'features/catalog/schemas/catalog.schemas.ts'))
+  for (const availabilityStatus of ['in_stock', 'out_of_stock', 'on_order']) {
+    for (const availabilityNote of [null, '', '  ', 'Condiciones del encargo']) {
+      assert.equal(schema.safeParse({ ...product, availabilityStatus, availabilityNote, saleMode: 'on_order', stockAvailable: 20 }).success, true)
+    }
+  }
+  for (const invalid of [{ availabilityStatus: 'available' }, { saleMode: 'other' }, { availabilityNote: 5 }]) {
+    assert.equal(schema.safeParse({ ...product, ...invalid }).success, false)
+  }
+  const legacy = { ...product, available: true }
+  for (const key of ['slug', 'saleMode', 'availabilityStatus', 'availabilityNote']) {
+    const incomplete = { ...legacy }; delete incomplete[key]
+    assert.equal(schema.safeParse(incomplete).success, false)
+  }
+  assert.equal('available' in schema.parse(legacy), false)
+})
+
+test('rich content enforces definitive backend limits', () => {
+  const { load, src } = loadCatalog()
+  const { productRichContentSchema: schema } = load(path.join(src, 'features/catalog/schemas/catalog-rich-content.schemas.ts'))
+  for (const block of [
+    { type: 'heading', level: 2, text: 'x'.repeat(151) },
+    { type: 'paragraph', text: 'x'.repeat(3001) },
+    { type: 'list', style: 'bullet', items: [] },
+    { type: 'list', style: 'bullet', items: Array(31).fill('x') },
+    { type: 'list', style: 'bullet', items: ['x'.repeat(501)] },
+    { type: 'specs', items: [] },
+    { type: 'specs', items: [{ label: 'x'.repeat(101), value: 'x' }] },
+    { type: 'specs', items: [{ label: 'x', value: 'x'.repeat(501) }] },
+  ]) assert.equal(schema.safeParse({ version: 1, blocks: [block] }).success, false)
+  assert.equal(schema.safeParse({ version: 1, blocks: Array(31).fill({ type: 'paragraph', text: 'x' }) }).success, false)
+})
 
 test('list validates stock and nullable secondary image without detail fields', () => {
   const { load, src } = loadCatalog()
@@ -79,12 +114,12 @@ test('detail validates rich content v1 and does not require secondary image', ()
   for (const stockAvailable of [-1, 1.5]) assert.equal(schema.safeParse({ ...detailFixture, stockAvailable }).success, false)
 })
 
-test('availability requires both published availability and positive stock', () => {
+test('commercial availability labels come from status, independent of physical stock', () => {
   const { load, src } = loadCatalog()
-  const { isCatalogProductAvailable: available } = load(path.join(src, 'features/catalog/utils/catalog-availability.ts'))
-  assert.equal(available({ available: true, stockAvailable: 5 }), true)
-  assert.equal(available({ available: true, stockAvailable: 0 }), false)
-  assert.equal(available({ available: false, stockAvailable: 5 }), false)
+  const { getCatalogAvailabilityLabel: label } = load(path.join(src, 'features/catalog/utils/catalog-availability.ts'))
+  assert.equal(label('in_stock'), 'Disponible')
+  assert.equal(label('out_of_stock'), 'No disponible')
+  assert.equal(label('on_order'), 'Por encargo')
 })
 
 test('catalog configuration rejects malformed URLs with a safe configuration error', () => {
@@ -98,15 +133,16 @@ test('catalog configuration rejects malformed URLs with a safe configuration err
   assert.equal(getCatalogApiUrl(), 'https://catalog.invalid/api/public')
 })
 
-test('product route accepts only safe positive decimal IDs', () => {
+test('shared slugs validate route, product and category without normalization', () => {
   const { load, src } = loadCatalog()
-  const { parseCatalogProductIdParam: parse } = load(path.join(src, 'features/catalog/utils/catalog-product-route.ts'))
-  for (const value of [undefined, '', '0', '-1', '1.5', '1e3', 'NaN', 'Infinity', 'abc', ' 2 ', '9007199254740992']) {
-    assert.equal(parse(value), undefined, String(value))
+  const { parseCatalogProductSlugParam: parse } = load(path.join(src, 'features/catalog/utils/catalog-product-route.ts'))
+  const schemas = load(path.join(src, 'features/catalog/schemas/catalog.schemas.ts'))
+  for (const value of [undefined, '', '-a', 'a-', 'a--b', 'A', ' a ', 'a/b', 'ñ', 'a'.repeat(181)]) {
+    assert.equal(parse(value), undefined)
+    assert.equal(schemas.catalogCategorySchema.safeParse({ ...category, slug: value }).success, false)
+    assert.equal(schemas.catalogProductListItemSchema.safeParse({ ...product, slug: value }).success, false)
   }
-  assert.equal(parse('2'), 2)
-  assert.equal(parse('002'), 2)
-  assert.equal(parse(String(Number.MAX_SAFE_INTEGER)), Number.MAX_SAFE_INTEGER)
+  for (const value of ['producto-prueba', '123', 'a'.repeat(180)]) assert.equal(parse(value), value)
 })
 
 test('gallery keeps cover first, sorts without mutation and deduplicates URLs', () => {
@@ -132,21 +168,19 @@ test('gallery keeps cover first, sorts without mutation and deduplicates URLs', 
   assert.deepEqual(build({ name: 'Producto', imageUrl: '/cover.png', gallery: [] }), [{ imageUrl: '/cover.png', alt: 'Producto' }])
 })
 
-test('catalog URL filters normalize invalid values and preserve navigation', () => {
+test('catalog URL filters validate categoria and preserve search and pagination', () => {
   const { load, src } = loadCatalog()
-  const { readCatalogFilters, getCatalogHref } = load(path.join(src, 'features/catalog/utils/catalog-url.ts'))
-  for (const value of ['-1', '0', '1.5', 'NaN', 'Infinity', '1e3', '9007199254740992']) {
-    const filters = readCatalogFilters(new URLSearchParams({ page: value, category: value }))
-    assert.equal(filters.page, 1)
-    assert.equal(filters.category, undefined)
-  }
-  const filters = readCatalogFilters(new URLSearchParams('search=++auricular++&category=3&page=2'))
-  assert.deepEqual(filters, { page: 2, category: 3, search: 'auricular' })
-  assert.equal(getCatalogHref({ ...filters, page: 1 }), '/productos?search=auricular&category=3')
-  assert.equal(getCatalogHref({ ...filters, category: undefined, page: 1 }), '/productos?search=auricular')
-  assert.equal(getCatalogHref({ ...filters, search: '', page: 1 }), '/productos?category=3')
-  assert.equal(getCatalogHref({ page: 1 }), '/productos')
-  assert.equal(readCatalogFilters(new URLSearchParams({ search: 'x'.repeat(200) })).search.length, 150)
+  const { readCatalogFilters: read, getCatalogHref: href } = load(path.join(src, 'features/catalog/utils/catalog-url.ts'))
+  for (const page of ['-1', '0', '1.5', 'NaN', '9007199254740992']) assert.equal(read(new URLSearchParams({page})).page, 1)
+  for (const categoria of ['Upper', ' a ', 'a--b', '-a', 'a'.repeat(181)]) assert.equal(read(new URLSearchParams({categoria})).categorySlug, undefined)
+  const filters = read(new URLSearchParams('search=++auricular++&categoria=categoria-prueba&page=2'))
+  assert.deepEqual(filters, { page: 2, categorySlug: 'categoria-prueba', search: 'auricular' })
+  assert.equal(href(filters), '/productos?search=auricular&categoria=categoria-prueba&page=2')
+  assert.equal(href({ ...filters, page: 1 }), '/productos?search=auricular&categoria=categoria-prueba')
+  assert.equal(href({ ...filters, categorySlug: undefined, page: 1 }), '/productos?search=auricular')
+  assert.equal(href({ ...filters, search: '', page: 1 }), '/productos?categoria=categoria-prueba')
+  assert.equal(href({ page: 1 }), '/productos')
+  assert.equal(read(new URLSearchParams({search: 'x'.repeat(200)})).search.length, 150)
 })
 
 test('catalog presentation errors hide technical messages and omit cancellations', () => {
@@ -196,34 +230,38 @@ test('catalog boundary: contracts, inputs, transport and lazy configuration', as
     assert.deepEqual(await api.getCatalogCategories(), [category])
     assert.equal(lastConfig.url, '/catalog/categories')
     success({ items: [product], pagination })
-    assert.deepEqual(await api.getCatalogProducts({ search: '  prueba  ', page: 1, limit: 60 }), { items: [product], pagination })
-    assert.deepEqual(lastConfig.params, { page: 1, limit: 60, search: 'prueba' })
-    await api.getCatalogProducts({ search: '   ', idProductCategory: undefined })
+    assert.deepEqual(await api.getCatalogProducts({ search: '  prueba  ', page: 1, limit: 60, categorySlug: category.slug }), { items: [product], pagination })
+    assert.deepEqual(lastConfig.params, { page: 1, limit: 60, search: 'prueba', categorySlug: category.slug })
+    await api.getCatalogProducts({ search: '   ', categorySlug: undefined })
     assert.deepEqual(lastConfig.params, {})
+    await api.getCatalogProducts({ categorySlug: category.slug, idProductCategory: 999 })
+    assert.deepEqual(lastConfig.params, { categorySlug: category.slug })
     const detail = { ...detailFixture, gallery: [{ imageUrl: '/relative.png', altText: null, sortOrder: 0 }] }
     success(detail)
-    assert.deepEqual(await api.getCatalogProductById(2), detail)
-    assert.equal(lastConfig.url, '/catalog/products/2')
+    assert.deepEqual(await api.getCatalogProductBySlug('producto-prueba'), detail)
+    assert.equal(lastConfig.url, '/catalog/products/producto-prueba')
+    await api.getCatalogProductBySlug('123')
+    assert.equal(lastConfig.url, '/catalog/products/123')
   })
 
   await t.test('invalid input never makes a request', async () => {
     const before = calls
-    for (const query of [{ page: 0 }, { page: 1.5 }, { limit: 61 }, { limit: 0 }, { search: 'x'.repeat(151) }, { idProductCategory: -1 }]) {
+    for (const query of [{ page: 0 }, { page: 1.5 }, { limit: 61 }, { limit: 0 }, { search: 'x'.repeat(151) }, { categorySlug: 'Invalid' }]) {
       await assert.rejects(api.getCatalogProducts(query), rejectsWith('INVALID_INPUT', (error) => error.fieldErrors.length > 0))
     }
-    for (const id of [0, -1, 1.5, '2']) await assert.rejects(api.getCatalogProductById(id), rejectsWith('INVALID_INPUT'))
+    for (const slug of [0, undefined, '', ' a ', 'Upper', 'a--b', 'a'.repeat(181)]) await assert.rejects(api.getCatalogProductBySlug(slug), rejectsWith('INVALID_INPUT'))
     assert.equal(calls, before)
   })
 
   await t.test('invalid external contracts are INVALID_RESPONSE', async () => {
     for (const data of [null, '<html>error</html>', { status: true, message: 'OK', data: { ...product, price: '10' } }]) {
       payload = data
-      await assert.rejects(api.getCatalogProductById(2), rejectsWith('INVALID_RESPONSE'))
+      await assert.rejects(api.getCatalogProductBySlug('producto-prueba'), rejectsWith('INVALID_RESPONSE'))
     }
     success({ ...detailFixture, gallery: [{ imageUrl: '/image.png', altText: null, sortOrder: 0.5 }] })
-    await assert.rejects(api.getCatalogProductById(2), rejectsWith('INVALID_RESPONSE'))
+    await assert.rejects(api.getCatalogProductBySlug('producto-prueba'), rejectsWith('INVALID_RESPONSE'))
     success({ ...detailFixture, gallery: [{ imageUrl: '/image.png', altText: null, sortOrder: -1 }] })
-    await assert.rejects(api.getCatalogProductById(2), rejectsWith('INVALID_RESPONSE'))
+    await assert.rejects(api.getCatalogProductBySlug('producto-prueba'), rejectsWith('INVALID_RESPONSE'))
     success({ items: [], pagination: { ...pagination, total: 0, totalRecords: 0, totalPages: 0 } })
     await assert.rejects(api.getCatalogProducts(), rejectsWith('INVALID_RESPONSE'))
     success({ items: [], pagination: { ...pagination, total: 0, totalRecords: 0, totalPages: 1 } })
@@ -246,7 +284,7 @@ test('catalog boundary: contracts, inputs, transport and lazy configuration', as
     failure = (config) => new axios.AxiosError('Not Found', 'ERR_BAD_REQUEST', config, undefined, {
       status: 404, data: '<html>Not Found</html>', config, headers: {}, statusText: 'Not Found',
     })
-    await assert.rejects(api.getCatalogProductById(2), rejectsWith('INVALID_RESPONSE', (error) => error.statusCode === 404))
+    await assert.rejects(api.getCatalogProductBySlug('producto-prueba'), rejectsWith('INVALID_RESPONSE', (error) => error.statusCode === 404))
     failure = undefined
     payload = { status: false, message: 'Error interno' }
     await assert.rejects(api.getCatalogBusiness(), rejectsWith('HTTP'))
@@ -259,9 +297,13 @@ test('catalog boundary: contracts, inputs, transport and lazy configuration', as
     }
     failure = (config) => new axios.CanceledError('Canceled', config)
     await assert.rejects(api.getCatalogBusiness(), rejectsWith('NETWORK', (error) => error.isCancelled))
+    await assert.rejects(api.getCatalogProductBySlug('producto-prueba'), rejectsWith('NETWORK', (error) => error.isCancelled))
     failure = undefined
     const controller = new AbortController()
     controller.abort()
     await assert.rejects(api.getCatalogCategories(controller.signal), rejectsWith('NETWORK', (error) => error.isCancelled))
+    const before = calls
+    await assert.rejects(api.getCatalogProductBySlug('producto-prueba', controller.signal), rejectsWith('NETWORK', (error) => error.isCancelled))
+    assert.equal(calls, before)
   })
 })

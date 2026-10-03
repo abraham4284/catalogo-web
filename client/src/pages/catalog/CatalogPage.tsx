@@ -32,7 +32,7 @@ export function CatalogPage() {
             </h2>
             {state.data.items.length > 0
               ? <ProductGrid products={state.data.items} renderActions={(product) => <ProductCommerceActions product={product} />} />
-              : <CatalogEmptyState filtered={Boolean(filters.search || filters.category)} />}
+              : <CatalogEmptyState filtered={Boolean(filters.search || filters.categorySlug)} />}
           </section>
           <CatalogPaginationControls currentPage={state.data.pagination.currentPage} totalPages={state.data.pagination.totalPages} filters={filters} />
         </>

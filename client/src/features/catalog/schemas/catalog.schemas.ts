@@ -2,6 +2,9 @@ import { z } from 'zod'
 import { productRichContentSchema } from './catalog-rich-content.schemas'
 
 export const catalogProductIdSchema = z.number().int().positive()
+export const catalogSlugSchema = z.string().max(180).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+export const productSaleModeSchema = z.enum(['stock', 'on_order'])
+export const productAvailabilityStatusSchema = z.enum(['in_stock', 'out_of_stock', 'on_order'])
 
 export const catalogBusinessSchema = z.object({
   name: z.string(),
@@ -13,6 +16,7 @@ export const catalogBusinessSchema = z.object({
 export const catalogCategorySchema = z.object({
   idProductCategory: z.number().int().positive(),
   name: z.string(),
+  slug: catalogSlugSchema,
 })
 
 export const catalogProductCategorySchema = catalogCategorySchema
@@ -26,12 +30,15 @@ export const catalogProductImageSchema = z.object({
 
 const catalogProductBaseSchema = z.object({
   idProduct: catalogProductIdSchema,
+  slug: catalogSlugSchema,
   name: z.string(),
   description: z.string().nullable(),
   price: z.number(),
   imageUrl: z.string().nullable(),
   category: catalogProductCategorySchema,
-  available: z.boolean(),
+  saleMode: productSaleModeSchema,
+  availabilityStatus: productAvailabilityStatusSchema,
+  availabilityNote: z.string().nullable(),
   stockAvailable: z.number().int().nonnegative(),
 })
 
@@ -76,7 +83,7 @@ export const catalogProductsQuerySchema = z.object({
   page: z.number().int().positive().optional(),
   limit: z.number().int().min(1).max(60).optional(),
   search: z.string().trim().max(150).optional(),
-  idProductCategory: z.number().int().positive().optional(),
+  categorySlug: catalogSlugSchema.optional(),
 }).transform((query) => {
   if (query.search === '') delete query.search
   for (const key of Object.keys(query) as (keyof typeof query)[]) {

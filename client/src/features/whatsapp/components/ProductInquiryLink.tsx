@@ -1,9 +1,10 @@
+import { getWhatsAppProductInquiryLabel } from '../domain/whatsapp-product-inquiry'
 import type { WhatsAppProductInquiry } from '../types/whatsapp.types'
 import { getWhatsAppProductInquiryHref } from '../utils/whatsapp-product-inquiry'
 
 export function ProductInquiryLink({ product }: { product: WhatsAppProductInquiry }) {
   const href = getWhatsAppProductInquiryHref(product)
-  const label = product.available ? 'Consultar ahora' : 'Consultar disponibilidad'
+  const label = getWhatsAppProductInquiryLabel(product.availabilityStatus)
   const className = 'flex min-h-11 w-full items-center justify-center border px-4 py-3 text-center text-sm focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4'
   return (
     <div className="space-y-2">
