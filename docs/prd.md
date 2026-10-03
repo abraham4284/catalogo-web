@@ -69,3 +69,9 @@ Login/cuentas de clientes, autenticación pública, checkout backend, Mercado Pa
 
 ## Futuro
 Un blog podría tener su propia API/DB. El Storefront podrá consumirlo como otra fuente HTTP sin mezclar sus datos con Cajora.
+
+
+## Experiencia del Storefront — F11
+Home orienta a explorar el catálogo mediante hero con identidad pública del negocio, banners informativos, categorías reales y listado existente. Cómo comprar explica explorar, agregar productos disponibles o consultar encargos, y confirmar por WhatsApp. La FAQ aclara consultas, encargos, ausencia de reserva y confirmación de precio/disponibilidad.
+
+El shell muestra el total de unidades del carrito; cards reúnen la información en un enlace y conservan acciones independientes. El detalle incorpora breadcrumbs por slug, galería responsive y jerarquía comercial; catálogo y carrito mantienen filtros, estados y reglas vigentes. Copy estático centralizado y estética neutral configurable; sin nuevos datos comerciales ni promesas de envío/pago/promociones. La validación F11 no sustituye el smoke test de producción.

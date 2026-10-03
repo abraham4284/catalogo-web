@@ -20,3 +20,13 @@ Sans-serif neutral del sistema, sin JetBrains Mono global ni nueva dependencia t
 
 ## Accesibilidad
 HTML semántico, teclado, focus visible, labels, alt útil y contraste suficiente. F0 solo verifica rutas mínimas; las pantallas comerciales se desarrollan en fases posteriores.
+
+
+## F11 — Merchandising neutral
+Hero tipográfico con nombre/logo del negocio obtenido por el fetching existente, CTA al catálogo y ancla a Cómo comprar. La ilustración geométrica es CSS decorativo, sin assets externos, autoplay ni rubro implícito. Dos banners informativos, categorías de Cajora, tres pasos y FAQ con details/summary; el copy comercial se concentra en src/content/storefront-content.ts.
+
+Header compacto con announcement bar estática y contador de unidades accesible recibido por props. Se mantiene sin sticky para evitar superponer contenido/foco en mobile. Footer con Inicio, Productos y Carrito, sin links legales ficticios. Se usan radios explícitos en superficies comerciales; las primitives y sus presets se conservan.
+
+Cards con borde y radio, un solo enlace para imagen/información, precio destacado y badge triestado con texto. Las acciones son hermanas del enlace. La secundaria se monta al entrar mouse/pen, es decorativa y se retira si falla; touch usa portada/acciones sin depender de hover. Detalle con breadcrumbs, panel comercial neutral y nota de disponibilidad separada; miniaturas verticales desde lg y horizontales debajo en mobile, con scroll para múltiples imágenes. Rich content mantiene headings/listas/dl y medida de lectura. Carrito usa filas y resumen con superficies coherentes; ningún ajuste visual modifica sus reglas de stock.
+
+Referencias conceptuales: las bases Bellroy/Tiendanube Idea/Apple/Samsung ya documentadas, [Benito Boutique](https://benitoboutique.com.ar/) para protagonismo de producto y [USA Import](https://www.usaimport.com.ar/) para estructura comercial y orientación de consulta. No se copian branding, promociones, condiciones ni textos de esas tiendas. Evidencia responsive y límites: docs/f11-validation.md.

@@ -1,3 +1,7 @@
+import { HomeHero } from './components/HomeHero'
+import { HomeBanner } from './components/HomeBanner'
+import { HomeBuyingGuide } from './components/HomeBuyingGuide'
+import { storefrontContent } from '@/content/storefront-content'
 import { Link } from 'react-router-dom'
 import { ProductCommerceActions } from '@/app/compositions/ProductCommerceActions'
 import {
@@ -8,24 +12,20 @@ import {
 export function HomePage() {
   const state = useCatalogHome()
   return (
-    <div className="space-y-12">
-      <section className="max-w-2xl space-y-5 py-4 sm:py-8">
-        {state.status === 'success' && <p className="break-words text-muted-foreground">{state.data.business.name}</p>}
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-5xl">Explorá nuestro catálogo</h1>
-        <p className="text-muted-foreground">Encontrá productos y consultá su disponibilidad.</p>
-        <Link to="/productos" className="inline-block bg-primary px-5 py-3 text-primary-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">Ver productos</Link>
-      </section>
+    <div className="space-y-10 sm:space-y-14">
+      <HomeHero business={state.status === 'success' ? state.data.business : undefined} />
+      <section aria-label="Información del catálogo" className="grid gap-4 md:grid-cols-2">{storefrontContent.banners.map(banner => <HomeBanner key={banner.id} content={banner} />)}</section>
       {state.status === 'loading' && <CatalogLoadingState />}
       {state.status === 'error' && <CatalogErrorState message={state.message} />}
       {state.status === 'success' && (
         <>
           {state.data.categories.length > 0 && (
             <section aria-labelledby="home-categories" className="space-y-4">
-              <h2 id="home-categories" className="text-2xl font-semibold">Categorías</h2>
+              <h2 id="home-categories" className="text-3xl font-semibold tracking-tight">Categorías</h2>
               <ul className="flex flex-wrap gap-3">
                 {state.data.categories.map((category) => (
                   <li key={category.idProductCategory} className="min-w-0 max-w-full">
-                    <Link to={getCatalogHref({ page: 1, categorySlug: category.slug })} className="block break-words border px-4 py-3 hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">{category.name}</Link>
+                    <Link to={getCatalogHref({ page: 1, categorySlug: category.slug })} className="block rounded-lg break-words border bg-card px-5 py-4 hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">{category.name}</Link>
                   </li>
                 ))}
               </ul>
@@ -40,6 +40,7 @@ export function HomePage() {
           </section>
         </>
       )}
+      <HomeBuyingGuide />
     </div>
   )
 }

@@ -11,19 +11,19 @@ export function CartPage() {
     <div className="space-y-8">
       <h1 className="text-3xl font-semibold">Carrito</h1>
       {items.length === 0 ? (
-        <div className="space-y-4">
+        <div className="space-y-4 rounded-xl border bg-muted/30 p-6 sm:p-10">
           <p className="text-muted-foreground">Tu carrito está vacío.</p>
           <Link to="/productos" className="inline-block underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring">Ver productos</Link>
         </div>
       ) : (
         <>
           <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-            <ul className="min-w-0">{items.map((item) => <CartItemRow key={item.idProduct} item={item} verificationFailed={verification.failedProductIds.includes(item.idProduct)} />)}</ul>
-            <div className="min-w-0 space-y-6">
+            <ul className="min-w-0 space-y-4">{items.map((item) => <CartItemRow key={item.idProduct} item={item} verificationFailed={verification.failedProductIds.includes(item.idProduct)} />)}</ul>
+            <div className="min-w-0 space-y-6 self-start">
               <CartSummary items={items} />
               {verification.status === 'success' && isCartReadyForInquiry(items) ? <WhatsAppCheckoutLink items={items} /> : (
-                <div className="space-y-3">
-                  <button type="button" disabled className="min-h-11 bg-primary px-5 py-3 text-primary-foreground opacity-50">Consultar por WhatsApp</button>
+                <div className="space-y-3 rounded-xl border bg-muted/30 p-5">
+                  <button type="button" disabled className="min-h-11 rounded-lg bg-primary px-5 py-3 text-primary-foreground opacity-50">Consultar por WhatsApp</button>
                   <p role="status" aria-live="polite" className="text-sm">
                     {verification.status === 'loading' ? 'Verificando precio y disponibilidad…'
                       : verification.status === 'error' ? 'No pudimos verificar la disponibilidad actual de todos los productos. Reintentá antes de continuar.'
