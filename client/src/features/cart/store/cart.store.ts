@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware'
 import { addCartItemInputSchema } from '../schemas/cart.schemas'
 import type { AddCartItemInput, CartItem } from '../types/cart.types'
 import { cartStorage } from './cart.storage'
-import { canIncrementCartItem, isCartItemAvailable } from '../domain/cart'
+import { canIncrementCartItem, isCartItemInStock } from '../domain/cart'
 
 type CartStore = {
   items: CartItem[]
@@ -17,7 +17,7 @@ type CartStore = {
 
 function hasSameSnapshot(item: CartItem, snapshot: AddCartItemInput): boolean {
   return item.name === snapshot.name && item.price === snapshot.price && item.imageUrl === snapshot.imageUrl
-    && item.available === snapshot.available && item.stockAvailable === snapshot.stockAvailable
+    && item.slug === snapshot.slug && item.availabilityStatus === snapshot.availabilityStatus && item.stockAvailable === snapshot.stockAvailable
 }
 
 export const useCartStore = create<CartStore>()(persist((set, get) => ({
@@ -26,7 +26,8 @@ export const useCartStore = create<CartStore>()(persist((set, get) => ({
     const result = addCartItemInputSchema.safeParse(input)
     if (!result.success) return
     const snapshot = result.data
-    if (!isCartItemAvailable(snapshot)) return
+    if (!isCartItemInStock(snapshot)) return
+    if (get().items.some((item) => item.idProduct !== snapshot.idProduct && item.slug === snapshot.slug)) return
     set((state) => ({
       items: state.items.some((item) => item.idProduct === snapshot.idProduct)
         ? state.items.map((item) => item.idProduct === snapshot.idProduct
@@ -39,6 +40,7 @@ export const useCartStore = create<CartStore>()(persist((set, get) => ({
     const result = addCartItemInputSchema.safeParse(input)
     if (!result.success) return
     const snapshot = result.data
+    if (get().items.some((item) => item.idProduct !== snapshot.idProduct && item.slug === snapshot.slug)) return
     const existing = get().items.find((item) => item.idProduct === snapshot.idProduct)
     if (!existing || hasSameSnapshot(existing, snapshot)) return
     // Preserve quantity so a stock decrease stays visible instead of silently changing the cart.
@@ -52,6 +54,8 @@ export const useCartStore = create<CartStore>()(persist((set, get) => ({
       ? { ...item, quantity: item.quantity + 1 } : item) }))
   },
   decrementItem(idProduct) {
+    const existing = get().items.find((item) => item.idProduct === idProduct)
+    if (!existing || existing.availabilityStatus !== 'in_stock' || existing.quantity <= 1) return
     set((state) => ({ items: state.items.map((item) => item.idProduct === idProduct
       ? { ...item, quantity: Math.max(item.quantity - 1, 1) } : item) }))
   },
@@ -61,7 +65,7 @@ export const useCartStore = create<CartStore>()(persist((set, get) => ({
   clearCart() { set({ items: [] }) },
 }), {
   name: 'catalogo-web-cart',
-  version: 2,
+  version: 3,
   storage: cartStorage,
   partialize: (state) => ({ items: state.items }),
 }))

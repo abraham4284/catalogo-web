@@ -1,8 +1,9 @@
 import { z } from 'zod'
+import { publicSlugSchema } from '@/shared/schemas/public-slug'
 import { productRichContentSchema } from './catalog-rich-content.schemas'
 
 export const catalogProductIdSchema = z.number().int().positive()
-export const catalogSlugSchema = z.string().max(180).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+export const catalogSlugSchema = publicSlugSchema
 export const productSaleModeSchema = z.enum(['stock', 'on_order'])
 export const productAvailabilityStatusSchema = z.enum(['in_stock', 'out_of_stock', 'on_order'])
 
