@@ -25,7 +25,7 @@ export function HomePage() {
               <ul className="flex flex-wrap gap-3">
                 {state.data.categories.map((category) => (
                   <li key={category.idProductCategory} className="min-w-0 max-w-full">
-                    <Link to={getCatalogHref({ page: 1, category: category.idProductCategory })} className="block break-words border px-4 py-3 hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">{category.name}</Link>
+                    <Link to={getCatalogHref({ page: 1, categorySlug: category.slug })} className="block break-words border px-4 py-3 hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">{category.name}</Link>
                   </li>
                 ))}
               </ul>

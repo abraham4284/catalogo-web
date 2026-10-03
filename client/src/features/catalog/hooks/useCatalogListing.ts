@@ -10,9 +10,9 @@ type CatalogListingState = {
   products: CatalogRequestState<CatalogProductsResponse>
 }
 
-export function useCatalogListing({ page, search, category }: CatalogFilters): CatalogListingState {
+export function useCatalogListing({ page, search, categorySlug }: CatalogFilters): CatalogListingState {
   const [categories, setCategories] = useState<CatalogRequestState<CatalogCategory[]>>({ status: 'loading' })
-  const key = JSON.stringify([page, search, category])
+  const key = JSON.stringify([page, search, categorySlug])
   const [result, setResult] = useState<{ key: string; state: CatalogRequestState<CatalogProductsResponse> }>({
     key: '', state: { status: 'loading' },
   })
@@ -32,14 +32,14 @@ export function useCatalogListing({ page, search, category }: CatalogFilters): C
   useEffect(() => {
     const controller = new AbortController()
     const { signal } = controller
-    getCatalogProducts({ page, limit: 24, search, idProductCategory: category }, signal).then((data) => {
+    getCatalogProducts({ page, limit: 24, search, categorySlug }, signal).then((data) => {
       if (!signal.aborted) setResult({ key, state: { status: 'success', data } })
     }).catch((error: unknown) => {
       const message = getCatalogPresentationError(error)
       if (!signal.aborted && message) setResult({ key, state: { status: 'error', message } })
     })
     return () => controller.abort()
-  }, [page, search, category, key])
+  }, [page, search, categorySlug, key])
 
   // Changed URL parameters immediately hide data belonging to an older request.
   return { categories, products: result.key === key ? result.state : { status: 'loading' } }

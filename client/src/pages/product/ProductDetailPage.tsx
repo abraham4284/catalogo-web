@@ -1,12 +1,12 @@
 import { Link, useParams } from 'react-router-dom'
 import { ProductCommerceActions } from '@/app/compositions/ProductCommerceActions'
 import {
-  parseCatalogProductIdParam, useCatalogProduct, ProductDetail,
+  parseCatalogProductSlugParam, useCatalogProduct, ProductDetail,
   ProductUnavailableState, CatalogLoadingState, CatalogErrorState,
 } from '@/features/catalog'
 
-function ProductContent({ idProduct }: { idProduct: number }) {
-  const state = useCatalogProduct(idProduct)
+function ProductContent({ slug }: { slug: string }) {
+  const state = useCatalogProduct(slug)
   if (state.status === 'success') {
     return <ProductDetail product={state.data} actions={<ProductCommerceActions product={state.data} />} />
   }
@@ -20,13 +20,13 @@ function ProductContent({ idProduct }: { idProduct: number }) {
 }
 
 export function ProductDetailPage() {
-  const { idProduct: param } = useParams()
-  const idProduct = parseCatalogProductIdParam(param)
-  if (idProduct === undefined) return <ProductUnavailableState />
+  const { slug: param } = useParams()
+  const slug = parseCatalogProductSlugParam(param)
+  if (slug === undefined) return <ProductUnavailableState />
   return (
     <div className="space-y-8">
       <Link to="/productos" className="inline-block underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">← Volver a productos</Link>
-      <ProductContent key={idProduct} idProduct={idProduct} />
+      <ProductContent key={slug} slug={slug} />
     </div>
   )
 }

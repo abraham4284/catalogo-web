@@ -4,7 +4,7 @@ import {
   catalogBusinessSchema,
   catalogCategorySchema,
   catalogProductDetailSchema,
-  catalogProductIdSchema,
+  catalogSlugSchema,
   catalogProductsQuerySchema,
   catalogProductsResponseSchema,
   catalogSuccessEnvelopeSchema,
@@ -71,10 +71,10 @@ export async function getCatalogProducts(
   }
 }
 
-export async function getCatalogProductById(idProduct: number, signal?: AbortSignal): Promise<CatalogProductDetail> {
+export async function getCatalogProductBySlug(slug: string, signal?: AbortSignal): Promise<CatalogProductDetail> {
   try {
-    const validId = catalogProductIdSchema.parse(idProduct)
-    return await requestCatalog(`/catalog/products/${validId}`, catalogProductDetailSchema, undefined, signal)
+    const validSlug = catalogSlugSchema.parse(slug)
+    return await requestCatalog(`/catalog/products/${validSlug}`, catalogProductDetailSchema, undefined, signal)
   } catch (error: unknown) {
     throw normalizeCatalogError(error)
   }

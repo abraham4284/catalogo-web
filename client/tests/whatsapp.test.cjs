@@ -99,15 +99,21 @@ test('product inquiry normalizes names and includes published price without stoc
   const { load } = loadWhatsApp()
   const { buildWhatsAppProductInquiryMessage: build } = load('features/whatsapp/domain/whatsapp-product-inquiry')
   const { formatCurrency } = load('shared/utils/format-currency')
-  const product = Object.freeze({ name: '  Producto\n& café 😀 ', price: 35000, available: true, stockAvailable: 9876, idProduct: 6543 })
+  const product = Object.freeze({ name: '  Producto\n& café 😀 ', price: 35000, availabilityStatus: 'in_stock', stockAvailable: 9876, idProduct: 6543 })
   const message = build(product)
   assert.ok(message.includes('Producto & café 😀'))
   assert.ok(message.includes(`Precio publicado: ${formatCurrency(35000)}`))
   assert.ok(message.includes('confirmar precio y disponibilidad'))
   for (const forbidden of ['stockAvailable', '9876', '6543', 'depósito', 'idProduct']) assert.equal(message.includes(forbidden), false)
-  const unavailable = build({ ...product, available: false })
+  const unavailable = build({ ...product, availabilityStatus: 'out_of_stock' })
   assert.ok(unavailable.includes('consultar por la disponibilidad de Producto & café 😀'))
   assert.ok(unavailable.includes('Precio publicado:'))
+  const onOrder = build({ ...product, availabilityStatus: 'on_order' })
+  assert.ok(onOrder.startsWith('Hola, quiero consultar por encargo:'))
+  assert.ok(onOrder.includes('Quisiera conocer disponibilidad y condiciones del encargo. Gracias.'))
+  for (const forbidden of ['9876', '6543', 'stockAvailable', 'idProduct']) assert.equal(onOrder.includes(forbidden), false)
+  const { getWhatsAppProductInquiryLabel: label } = load('features/whatsapp/domain/whatsapp-product-inquiry')
+  assert.deepEqual(['in_stock', 'out_of_stock', 'on_order'].map(label), ['Consultar ahora', 'Consultar disponibilidad', 'Consultar por encargo'])
   assert.equal(product.name, '  Producto\n& café 😀 ')
   assert.throws(() => build({ ...product, name: '  ' }))
   assert.throws(() => build({ ...product, price: Infinity }))
@@ -117,13 +123,13 @@ test('individual inquiry URL encodes one text parameter and tolerates missing co
   const { load, runtimeEnv } = loadWhatsApp()
   const { getWhatsAppProductInquiryHref: href } = load('features/whatsapp/utils/whatsapp-product-inquiry')
   const { buildWhatsAppProductInquiryMessage: message } = load('features/whatsapp/domain/whatsapp-product-inquiry')
-  const product = { name: 'Café & té? #1 + 😀', price: 50, available: true }
+  const product = { name: 'Café & té? #1 + 😀', price: 50, availabilityStatus: 'in_stock' }
   assert.equal(href(product), undefined)
   runtimeEnv.VITE_WHATSAPP_NUMBER = 'invalid'
   assert.equal(href(product), undefined)
   runtimeEnv.VITE_WHATSAPP_NUMBER = '5493811234567'
-  for (const available of [true, false]) {
-    const input = { ...product, available }
+  for (const availabilityStatus of ['in_stock', 'out_of_stock', 'on_order']) {
+    const input = { ...product, availabilityStatus }
     const url = new URL(href(input))
     assert.equal(url.origin, 'https://wa.me')
     assert.equal(url.searchParams.get('text'), message(input))
