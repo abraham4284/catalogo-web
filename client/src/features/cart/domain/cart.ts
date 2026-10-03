@@ -1,7 +1,7 @@
-import type { CartItem, AddCartItemInput } from '../types/cart.types'
+import type { CartItem, AddCartItemInput, CartAvailabilityStatus } from '../types/cart.types'
 
-export function isCartItemAvailable(item: Pick<AddCartItemInput, 'available' | 'stockAvailable'>): boolean {
-  return item.available && item.stockAvailable > 0
+export function isCartItemInStock(item: Pick<AddCartItemInput, 'availabilityStatus' | 'stockAvailable'>): boolean {
+  return item.availabilityStatus === 'in_stock' && item.stockAvailable > 0
 }
 
 export function isCartItemQuantityValid(item: CartItem): boolean {
@@ -9,11 +9,11 @@ export function isCartItemQuantityValid(item: CartItem): boolean {
 }
 
 export function canIncrementCartItem(item: CartItem): boolean {
-  return isCartItemAvailable(item) && item.quantity < item.stockAvailable
+  return isCartItemInStock(item) && item.quantity < item.stockAvailable
 }
 
 export function isCartReadyForInquiry(items: readonly CartItem[]): boolean {
-  return items.length > 0 && items.every((item) => isCartItemAvailable(item) && isCartItemQuantityValid(item))
+  return items.length > 0 && items.every((item) => isCartItemInStock(item) && isCartItemQuantityValid(item))
 }
 
 export function calculateCartLineTotal(item: CartItem): number {
@@ -26,4 +26,11 @@ export function calculateCartTotal(items: CartItem[]): number {
 
 export function calculateCartItemCount(items: CartItem[]): number {
   return items.reduce((total, item) => total + item.quantity, 0)
+}
+
+export function getCartAvailabilityLabel(status: CartAvailabilityStatus): string {
+  const labels: Record<CartAvailabilityStatus, string> = {
+    in_stock: 'Disponible', out_of_stock: 'No disponible', on_order: 'Por encargo',
+  }
+  return labels[status]
 }

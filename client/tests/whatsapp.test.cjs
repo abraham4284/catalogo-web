@@ -45,6 +45,10 @@ test('message has quantities, prices, totals and confirmation without mutating i
   assert.equal(build(items), message)
   assert.equal(items[0].name, ' Producto\nEspecial\t& café ')
   assert.ok(build([items[1]]).includes(`Total estimado: ${formatCurrency(5000)}`))
+  const updated = build([{ name: 'Producto actualizado', price: 12000, quantity: 2, stockAvailable: 9876, availabilityStatus: 'in_stock', slug: 'slug-interno', idProduct: 6543 }])
+  assert.ok(updated.includes(`Total estimado: ${formatCurrency(24000)}`))
+  assert.ok(updated.includes(formatCurrency(12000)))
+  for (const forbidden of ['9876', '6543', 'slug-interno', 'stockAvailable', 'availabilityStatus', 'in_stock']) assert.equal(updated.includes(forbidden), false)
 })
 
 test('empty or invalid message inputs do not produce a checkout', () => {
