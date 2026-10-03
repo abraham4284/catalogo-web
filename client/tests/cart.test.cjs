@@ -25,6 +25,23 @@ function loadCart() {
 const snapshot = { idProduct: 1, name: 'Producto', price: 12.5, imageUrl: '/product.png', available: true, stockAvailable: 5 }
 const item = { ...snapshot, quantity: 2 }
 
+test('F10A adapter keeps cart v2 and prevents on-order additions despite physical stock', () => {
+  const load = loadCart()
+  const { toCartV2Snapshot: adapt } = load('../../app/compositions/product-cart-compatibility')
+  const { useCartStore: store } = load('store/cart.store')
+  store.getState().clearCart()
+  for (const availabilityStatus of ['out_of_stock', 'on_order']) {
+    const mapped = adapt({ ...snapshot, availabilityStatus, stockAvailable: 20, slug: 'producto', saleMode: 'on_order' })
+    assert.equal(mapped.available, false)
+    assert.equal('slug' in mapped || 'availabilityStatus' in mapped || 'saleMode' in mapped, false)
+    store.getState().addItem(mapped)
+    assert.deepEqual(store.getState().items, [])
+  }
+  store.getState().addItem(adapt({ ...snapshot, availabilityStatus: 'in_stock' }))
+  assert.equal(store.getState().items.length, 1)
+  store.getState().clearCart()
+})
+
 test('cart domain, schemas, persistence and real Zustand actions', async (t) => {
   const load = loadCart()
   const { calculateCartLineTotal, calculateCartTotal, calculateCartItemCount, isCartItemAvailable, isCartItemQuantityValid, isCartReadyForInquiry, canIncrementCartItem } = load('domain/cart')

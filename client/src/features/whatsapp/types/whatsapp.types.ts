@@ -7,5 +7,7 @@ export type WhatsAppCheckoutItem = {
 export type WhatsAppProductInquiry = {
   name: string
   price: number
-  available: boolean
+  availabilityStatus: WhatsAppInquiryAvailability
 }
+
+export type WhatsAppInquiryAvailability = 'in_stock' | 'out_of_stock' | 'on_order'

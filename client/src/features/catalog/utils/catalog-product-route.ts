@@ -1,5 +1,6 @@
-export function parseCatalogProductIdParam(value: string | undefined): number | undefined {
-  if (!value || !/^\d+$/.test(value)) return undefined
-  const id = Number(value)
-  return Number.isSafeInteger(id) && id > 0 ? id : undefined
+import { catalogSlugSchema } from '../schemas/catalog.schemas'
+
+export function parseCatalogProductSlugParam(value: string | undefined): string | undefined {
+  const result = catalogSlugSchema.safeParse(value)
+  return result.success ? result.data : undefined
 }

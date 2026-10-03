@@ -1,4 +1,4 @@
-export { getCatalogBusiness, getCatalogCategories, getCatalogProducts, getCatalogProductById } from './api/catalog.api'
+export { getCatalogBusiness, getCatalogCategories, getCatalogProducts, getCatalogProductBySlug } from './api/catalog.api'
 export { CatalogError } from './api/catalog.error'
 export type { CatalogErrorCode } from './api/catalog.error'
 export { CatalogLoadingState } from './components/CatalogLoadingState'
@@ -12,13 +12,15 @@ export { CatalogPagination as CatalogPaginationControls } from './components/Cat
 export { useCatalogHome } from './hooks/useCatalogHome'
 export { useCatalogListing } from './hooks/useCatalogListing'
 export { useCatalogProduct } from './hooks/useCatalogProduct'
-export { parseCatalogProductIdParam } from './utils/catalog-product-route'
+export { parseCatalogProductSlugParam } from './utils/catalog-product-route'
 export { ProductDetail } from './components/ProductDetail'
-export { isCatalogProductAvailable } from './utils/catalog-availability'
+export { getCatalogAvailabilityLabel } from './utils/catalog-availability'
 export { ProductUnavailableState } from './components/ProductUnavailableState'
 export { readCatalogFilters, createCatalogSearchParams, getCatalogHref } from './utils/catalog-url'
 export type { CatalogFilters } from './utils/catalog-url'
 export type {
+  ProductSaleMode,
+  ProductAvailabilityStatus,
   CatalogBusiness,
   CatalogCategory,
   CatalogProductCategory,
