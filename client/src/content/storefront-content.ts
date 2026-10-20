@@ -1,6 +1,13 @@
 export const storefrontContent = {
-  announcement: 'Productos con stock y por encargo · Consultas por WhatsApp',
-  hero: { decoration: 'Explorá. Consultá. Coordiná.', eyebrow: 'Explorá a tu manera', title: 'Encontrá lo que estás buscando.', description: 'Conocé los productos, revisá sus detalles y conversemos por WhatsApp.', ctaLabel: 'Ver productos', href: '/productos' },
+  announcement: 'Buenas elecciones, todos los días.',
+  hero: {
+    decoration: 'Explorá. Consultá. Coordiná.',
+    eyebrow: 'VITRUNO',
+    title: 'Productos para tu día a día.',
+    description: 'Productos útiles, atractivos y seleccionados con criterio. Explorá el catálogo y consultanos por WhatsApp.',
+    ctaLabel: 'Ver productos',
+    href: '/productos',
+  },
   banners: [
     { id: 'catalogo', eyebrow: 'Nuestro catálogo', title: 'Opciones para descubrir', description: 'Explorá productos disponibles y opciones por encargo.', ctaLabel: 'Explorar productos', href: '/productos' },
     { id: 'encargos', eyebrow: 'Por encargo', title: 'Una consulta, más posibilidades', description: 'Revisá la ficha del producto y consultá las condiciones y el plazo del encargo.', ctaLabel: 'Ver catálogo', href: '/productos' },

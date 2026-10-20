@@ -1,7 +1,7 @@
 # Producto
 
 ## Objetivo
-Storefront público rápido, mobile-first y simple para exhibir productos del comercio y convertir consultas en conversaciones de WhatsApp. Marca aún no definida: ningún nombre temporal de pruebas constituye branding final.
+Storefront público rápido, mobile-first y simple para exhibir productos del comercio y convertir consultas en conversaciones de WhatsApp. La identidad pública definitiva es VITRUNO, tienda multirrubro; su integración visual se documenta en DEC-010.
 
 ## MVP
 Identidad básica del negocio, Home, catálogo, categorías, búsqueda, filtro por categoría, listado paginado, detalle de producto, portada y galería, precio, disponibilidad, carrito local, cierre por WhatsApp y responsive.
@@ -74,4 +74,4 @@ Un blog podría tener su propia API/DB. El Storefront podrá consumirlo como otr
 ## Experiencia del Storefront — F11
 Home orienta a explorar el catálogo mediante hero con identidad pública del negocio, banners informativos, categorías reales y listado existente. Cómo comprar explica explorar, agregar productos disponibles o consultar encargos, y confirmar por WhatsApp. La FAQ aclara consultas, encargos, ausencia de reserva y confirmación de precio/disponibilidad.
 
-El shell muestra el total de unidades del carrito; cards reúnen la información en un enlace y conservan acciones independientes. El detalle incorpora breadcrumbs por slug, galería responsive y jerarquía comercial; catálogo y carrito mantienen filtros, estados y reglas vigentes. Copy estático centralizado y estética neutral configurable; sin nuevos datos comerciales ni promesas de envío/pago/promociones. La validación F11 no sustituye el smoke test de producción.
+El shell muestra el total de unidades del carrito; cards reúnen la información en un enlace y conservan acciones independientes. El detalle incorpora breadcrumbs por slug, galería responsive y jerarquía comercial; catálogo y carrito mantienen filtros, estados y reglas vigentes. Copy estático centralizado e identidad VITRUNO mediante tokens y assets locales; sin nuevos datos comerciales ni promesas de envío/pago/promociones. La validación F11 no sustituye el smoke test de producción.

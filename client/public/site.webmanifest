@@ -1,0 +1,22 @@
+{
+  "name": "VITRUNO",
+  "short_name": "VITRUNO",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#F4F0E8",
+  "theme_color": "#192C3D",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
