@@ -18,7 +18,7 @@ export function ProductGallery(props: ProductGalleryProps) {
       {images.length > 1 && (
         <div role="group" aria-label="Imágenes del producto" className="flex gap-3 overflow-x-auto p-1 lg:col-start-1 lg:row-start-1 lg:max-h-144 lg:flex-col lg:overflow-y-auto">
           {images.map((image, index) => (
-            <button key={image.imageUrl} type="button" aria-label={`Ver imagen ${index + 1}: ${image.alt}`} aria-pressed={selectedImage?.imageUrl === image.imageUrl} onClick={() => setSelectedUrl(image.imageUrl)} className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-muted p-1 aria-pressed:border-foreground aria-pressed:ring-1 aria-pressed:ring-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2">
+            <button key={image.imageUrl} type="button" aria-label={`Ver imagen ${index + 1}: ${image.alt}`} aria-pressed={selectedImage?.imageUrl === image.imageUrl} onClick={() => setSelectedUrl(image.imageUrl)} className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-lg border bg-muted p-1 aria-pressed:border-primary aria-pressed:ring-1 aria-pressed:ring-primary focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2">
               <ProductImage src={image.imageUrl} alt="" loading="lazy" />
             </button>
           ))}

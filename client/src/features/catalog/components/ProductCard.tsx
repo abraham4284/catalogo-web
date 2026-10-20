@@ -8,7 +8,7 @@ import { ProductAvailabilityBadge } from './ProductAvailabilityBadge'
 export function ProductCard({ product, actions }: { product: CatalogProductListItem; actions?: ReactNode }) {
   const description = product.description?.trim()
   return (
-    <article className="flex h-full min-w-0 flex-col overflow-hidden rounded-xl border bg-card">
+    <article className="flex h-full min-w-0 flex-col overflow-hidden rounded-xl border bg-card hover:border-brand-teal">
       <Link to={`/productos/${product.slug}`} aria-label={`Ver ${product.name}`} className="block min-w-0 space-y-4 p-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:-outline-offset-2">
         <ProductCardImage imageUrl={product.imageUrl} secondaryImageUrl={product.secondaryImageUrl} name={product.name} />
         <div className="space-y-3 break-words">
