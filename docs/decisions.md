@@ -26,3 +26,11 @@ Decisión: blog posible con API/DB propias. Razón: independencia del contenido 
 
 ## DEC-009 — WhatsApp contact configured by environment for MVP
 Decisión: configurar el contacto mediante VITE_WHATSAPP_NUMBER con validación lazy. Razón: CatalogBusiness todavía no publica contacto y existe un único Storefront comercial; evita acoplar Cajora a una necesidad aún no multi-tenant pública. Consecuencia: el número es público y puede migrarse posteriormente a configuración del negocio/API sin cambiar el dominio del carrito.
+
+
+## DEC-010 — VITRUNO definitive brand identity
+Decisión: VITRUNO es la identidad pública definitiva. Logo horizontal e isotipo V rasterizados suministrados, paleta #192C3D / #F4F0E8 / #2D9B90 / #E6B85C y blanco auxiliar. Manrope en headings e Inter en body/UI. Sustituye el estado pendiente de DEC-003.
+
+Razón: identidad aprobada para una tienda multirrubro moderna, cercana y de calidad accesible, sin posicionamiento luxury ni discount.
+
+Consecuencia: identidad centralizada en assets locales, tokens semánticos y contenido; BrandLogo reutiliza los PNG sin reconstrucción. El maestro disponible es raster, no SVG. business.name/logoUrl permanecen en el contrato Cajora, pero no reemplazan la marca pública. Google Fonts mediante links con swap/fallback, sin dependencia npm. Manifest display browser, sin service worker ni declaración PWA. icon-192.png mide 180×180: se declara su medida real y no se sobrescribe el original.

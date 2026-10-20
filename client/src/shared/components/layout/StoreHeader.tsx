@@ -1,13 +1,14 @@
 import { Link, NavLink } from 'react-router-dom'
+import { BrandLogo } from '@/shared/components/brand/BrandLogo'
 
 const focusClasses = 'focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4'
 
 export function StoreHeader({ cartCount }: { cartCount: number }) {
   return (
     <header className="border-b bg-background">
-      <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-2 px-4 py-4 sm:flex-row sm:items-center sm:gap-4 sm:px-6 lg:px-8">
-        <Link to="/" className={`text-xl font-semibold tracking-tight ${focusClasses}`}>
-          Catálogo.
+      <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-0 px-4 py-1 sm:flex-row sm:items-center sm:gap-4 sm:px-6 lg:px-8">
+        <Link to="/" className={`block max-w-full shrink-0 ${focusClasses}`}>
+          <BrandLogo className="w-72 lg:w-80" />
         </Link>
         <nav aria-label="Navegación principal">
           <ul className="flex flex-wrap items-center gap-3 text-sm sm:gap-6 [&_a]:min-h-11 [&_a]:py-3">

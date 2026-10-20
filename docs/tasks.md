@@ -116,3 +116,15 @@
 - [x] Revalidación y gate WhatsApp F10B conservados y comprobados
 - [x] Suites, lint/build, QA responsive y teclado con fixtures locales
 - [x] Documentación y evidencia en docs/f11-validation.md
+
+
+## F12 — VITRUNO Brand Integration
+- [x] Inspección de los seis assets reales y preservación de originales
+- [x] Tokens y paleta VITRUNO con contraste revisado
+- [x] Manrope headings e Inter body/UI, swap y fallback
+- [x] BrandLogo mínimo; Header/Footer y Home con identidad local canónica
+- [x] Catálogo/cards/detail/gallery/cart mediante tokens de marca
+- [x] Favicon ICO, manifest con medidas reales y metadata básica
+- [x] Responsive 320/375/768/1024/1440, teclado y zoom CSS 200%
+- [x] Suites catálogo/carrito/WhatsApp, lint y build
+- [x] DEC-010, documentación vigente e informe docs/f12-validation.md

@@ -1,6 +1,6 @@
-# Storefront frontend
+# VITRUNO frontend
 
-Frontend público independiente de Cajora: Home, catálogo con búsqueda/categorías/paginación, detalle/galería, carrito local y consulta por WhatsApp. F9 incorpora contrato de stock público, imágenes secundarias, rich content, acciones rápidas y carrito v2 con reconciliación. Integración y hosting reales pendientes de smoke test. Validaciones actuales: [F9](../docs/f9-validation.md); QA histórico/checklist operativo: [F8](../docs/qa-report.md).
+Storefront VITRUNO, frontend público independiente de Cajora: Home, catálogo con búsqueda/categorías/paginación, detalle/galería, carrito local y consulta por WhatsApp. Contrato público con slugs y disponibilidad triestado; carrito v3 con revalidación antes de WhatsApp. Identidad VITRUNO integrada en F12 mediante assets locales, tokens y fuentes Inter/Manrope. Integración y hosting reales pendientes de smoke test. Validación de marca: [F12](../docs/f12-validation.md); QA histórico/checklist operativo: [F8](../docs/qa-report.md).
 
 Stack: React 19, TypeScript, Vite, Tailwind CSS 4, shadcn/ui, React Router, Axios, Zod, Zustand y ESLint; npm como gestor.
 
@@ -15,6 +15,6 @@ Comandos desde `client/`:
 
 Configuración pública de build: copiar `.env.example` a `.env` y definir `VITE_CATALOG_API_URL=<backend>/api/public` y `VITE_WHATSAPP_NUMBER=<número internacional de 8–15 dígitos>`, sin `+`, espacios ni guiones. Las variables `VITE_*` se incorporan al bundle; nunca incluir secretos. La configuración se valida de forma lazy; sin ella la aplicación muestra estados seguros.
 
-Deployment: publicar `dist/` mediante HTTPS y configurar un fallback SPA a `/index.html` para rutas que no correspondan a archivos estáticos. Es obligatorio porque se usa `createBrowserRouter`: abrir o refrescar `/productos/1` debe servir la aplicación. No hay un proveedor de hosting configurado en este repositorio; `npm run preview` no valida la configuración del hosting final. En Cajora, confirmar `PUBLIC_CATALOG_BUSINESS_SLUG` y CORS con `STOREFRONT_URL` del frontend. Consultar el checklist y las limitaciones en [QA report](../docs/qa-report.md).
+Deployment: publicar `dist/` mediante HTTPS y configurar un fallback SPA a `/index.html` para rutas que no correspondan a archivos estáticos. Es obligatorio porque se usa `createBrowserRouter`: abrir o refrescar `/productos/<slug>` debe servir la aplicación. No hay un proveedor de hosting configurado en este repositorio; `npm run preview` no valida la configuración del hosting final. En Cajora, confirmar `PUBLIC_CATALOG_BUSINESS_SLUG` y CORS con `STOREFRONT_URL` del frontend. Consultar el checklist y las limitaciones en [QA report](../docs/qa-report.md).
 
 Contrato operativo: [AGENTS.md](../AGENTS.md). Alcance, arquitectura y estado: [docs](../docs/).

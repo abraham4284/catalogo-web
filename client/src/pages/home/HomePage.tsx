@@ -13,7 +13,7 @@ export function HomePage() {
   const state = useCatalogHome()
   return (
     <div className="space-y-10 sm:space-y-14">
-      <HomeHero business={state.status === 'success' ? state.data.business : undefined} />
+      <HomeHero />
       <section aria-label="Información del catálogo" className="grid gap-4 md:grid-cols-2">{storefrontContent.banners.map(banner => <HomeBanner key={banner.id} content={banner} />)}</section>
       {state.status === 'loading' && <CatalogLoadingState />}
       {state.status === 'error' && <CatalogErrorState message={state.message} />}
