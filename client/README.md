@@ -1,6 +1,6 @@
 # VITRUNO frontend
 
-Storefront VITRUNO, frontend público independiente de Cajora: Home, catálogo con búsqueda/categorías/paginación, detalle/galería, carrito local y consulta por WhatsApp. Contrato público con slugs y disponibilidad triestado; carrito v3 con revalidación antes de WhatsApp. Identidad VITRUNO integrada en F12 mediante assets locales, tokens y fuentes Inter/Manrope. Integración y hosting reales pendientes de smoke test. Validación de marca: [F12](../docs/f12-validation.md); QA histórico/checklist operativo: [F8](../docs/qa-report.md).
+Storefront VITRUNO, frontend público independiente de Cajora: Home, catálogo con búsqueda/categorías/paginación, detalle/galería, carrito local y consulta por WhatsApp. Contrato público con slugs y disponibilidad triestado; carrito v3 con revalidación antes de WhatsApp. Identidad VITRUNO Tech contemporánea y composición editorial F13 mediante assets locales, tokens y fuentes Inter/Manrope. Integración y hosting reales pendientes de smoke test. Validación de marca: [F13](../docs/f13-validation.md); QA histórico/checklist operativo: [F8](../docs/qa-report.md).
 
 Stack: React 19, TypeScript, Vite, Tailwind CSS 4, shadcn/ui, React Router, Axios, Zod, Zustand y ESLint; npm como gestor.
 

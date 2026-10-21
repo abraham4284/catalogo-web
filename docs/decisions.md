@@ -34,3 +34,11 @@ Decisión: VITRUNO es la identidad pública definitiva. Logo horizontal e isotip
 Razón: identidad aprobada para una tienda multirrubro moderna, cercana y de calidad accesible, sin posicionamiento luxury ni discount.
 
 Consecuencia: identidad centralizada en assets locales, tokens semánticos y contenido; BrandLogo reutiliza los PNG sin reconstrucción. El maestro disponible es raster, no SVG. business.name/logoUrl permanecen en el contrato Cajora, pero no reemplazan la marca pública. Google Fonts mediante links con swap/fallback, sin dependencia npm. Manifest display browser, sin service worker ni declaración PWA. icon-192.png mide 180×180: se declara su medida real y no se sobrescribe el original.
+
+
+## DEC-011 — VITRUNO visual redesign / editorial storefront
+Decisión: sustituir la identidad cromática de DEC-010 por Tech contemporánea: fondo #FAFAFC, foreground/superficie oscura #242038, primary #6547BE, accent lavanda #EAE6F7 y cards blancas. Logo propuesta 3 suministrado con V en degradado y wordmark blanco. Manrope/Inter se conservan.
+
+Razón: nueva identidad aprobada y composición ecommerce más editorial, proporcional a un catálogo pequeño y multirrubro. Bellroy es referencia conceptual de ritmo, jerarquía y fotografía, sin copia de assets, branding, textos o componentes.
+
+Consecuencia: Header/Footer oscuros compatibles con el PNG opaco, página clara sin dark mode global. Mobile usa isotipo accesible por legibilidad; desktop y Footer conservan horizontal completo. Hero muestra portada del primer producto ya cargado cuando existe, sin semántica featured ni requests extra; fallback con isotipo. Categorías/productos preceden un único bloque editorial. Se retira la referencia al ICO anterior y se integra OG local con URL conocida https://vitruno.onrender.com/og-image.png. DEC-010 y F12 permanecen como historia; no se alteran contratos ni reglas comerciales.

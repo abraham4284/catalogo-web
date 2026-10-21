@@ -15,7 +15,7 @@ export function ProductDetail({ product, actions }: { product: CatalogProductDet
       <ProductBreadcrumbs product={product} />
       <div className="grid min-w-0 gap-8 lg:grid-cols-2 lg:gap-12">
         <ProductGallery key={product.idProduct} name={product.name} imageUrl={product.imageUrl} gallery={product.gallery} />
-        <div className="min-w-0 self-start space-y-6 rounded-xl border bg-card p-6 break-words sm:p-8">
+        <div className="min-w-0 self-start space-y-6 break-words py-2 lg:pl-4">
           <Link to={getCatalogHref({ page: 1, categorySlug: product.category.slug })} className="inline-block text-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">{product.category.name}</Link>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{product.name}</h1>
           <p className="text-3xl font-semibold tracking-tight">{formatCurrency(product.price)}</p>

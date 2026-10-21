@@ -1,7 +1,7 @@
 # Producto
 
 ## Objetivo
-Storefront público rápido, mobile-first y simple para exhibir productos del comercio y convertir consultas en conversaciones de WhatsApp. La identidad pública definitiva es VITRUNO, tienda multirrubro; su integración visual se documenta en DEC-010.
+Storefront público rápido, mobile-first y simple para exhibir productos del comercio y convertir consultas en conversaciones de WhatsApp. La identidad pública definitiva es VITRUNO, tienda multirrubro; su dirección visual vigente se documenta en DEC-011.
 
 ## MVP
 Identidad básica del negocio, Home, catálogo, categorías, búsqueda, filtro por categoría, listado paginado, detalle de producto, portada y galería, precio, disponibilidad, carrito local, cierre por WhatsApp y responsive.
