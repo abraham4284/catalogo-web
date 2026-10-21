@@ -8,8 +8,8 @@ import { ProductAvailabilityBadge } from './ProductAvailabilityBadge'
 export function ProductCard({ product, actions }: { product: CatalogProductListItem; actions?: ReactNode }) {
   const description = product.description?.trim()
   return (
-    <article className="flex h-full min-w-0 flex-col overflow-hidden rounded-xl border bg-card hover:border-brand-teal">
-      <Link to={`/productos/${product.slug}`} aria-label={`Ver ${product.name}`} className="block min-w-0 space-y-4 p-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:-outline-offset-2">
+    <article className="flex h-full min-w-0 flex-col bg-card">
+      <Link to={`/productos/${product.slug}`} aria-label={`Ver ${product.name}`} className="block min-w-0 space-y-5 p-1 focus-visible:outline-2 focus-visible:outline-ring focus-visible:-outline-offset-2">
         <ProductCardImage imageUrl={product.imageUrl} secondaryImageUrl={product.secondaryImageUrl} name={product.name} />
         <div className="space-y-3 break-words">
           <p className="text-xs text-muted-foreground">{product.category.name}</p>
@@ -19,7 +19,7 @@ export function ProductCard({ product, actions }: { product: CatalogProductListI
           <ProductAvailabilityBadge status={product.availabilityStatus} />
         </div>
       </Link>
-      {actions && <div className="mt-auto border-t p-4">{actions}</div>}
+      {actions && <div className="mt-auto px-1 pb-1 pt-5">{actions}</div>}
     </article>
   )
 }

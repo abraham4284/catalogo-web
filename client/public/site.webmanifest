@@ -3,12 +3,12 @@
   "short_name": "VITRUNO",
   "start_url": "/",
   "display": "browser",
-  "background_color": "#F4F0E8",
-  "theme_color": "#192C3D",
+  "background_color": "#FAFAFC",
+  "theme_color": "#242038",
   "icons": [
     {
       "src": "/icon-192.png",
-      "sizes": "180x180",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
