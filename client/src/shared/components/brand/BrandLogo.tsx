@@ -5,7 +5,7 @@ type BrandLogoProps = {
 }
 
 const assets = {
-  horizontal: { src: '/vitruno-logo-horizontal.png', width: 1600, height: 560 },
+  horizontal: { src: '/vitruno-logo-horizontal.png', width: 1200, height: 630 },
   mark: { src: '/vitruno-isotipo-512.png', width: 512, height: 512 },
 } as const
 
