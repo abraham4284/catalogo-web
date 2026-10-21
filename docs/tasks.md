@@ -141,3 +141,14 @@
 - [x] Responsive 320/375/768/1024/1440, contraste, teclado y touch emulado
 - [x] Pruebas catálogo/carrito/WhatsApp, lint y build
 - [x] DEC-011 y documentación docs/f13-validation.md
+
+
+## F14 — Production UI Polish
+- [x] HomeHero con status explícito y skeleton neutral estable
+- [x] Selección visual prioriza imagen; producto sin imagen conserva enlace/fallback
+- [x] Logo horizontal corregido 1200×630 integrado sin modificar el PNG
+- [x] Header mobile centrado y escala desktop ajustada
+- [x] Footer mobile centrado, desktop izquierda/derecha preservado
+- [x] QA responsive y flujo detalle → Inicio con geometría estable
+- [x] Suites catálogo/carrito/WhatsApp, lint y build
+- [x] Documentación docs/f14-validation.md y estado vigente

@@ -20,14 +20,14 @@ Manrope 600–700 en headings, Inter 400–600 en body/UI/nav/forms/buttons; lin
 Eslogan: “Buenas elecciones, todos los días.” en Hero y metadata. Announcement informa stock/encargo/WhatsApp sin repetirlo. Tono argentino, de vos, directo y profesional. Sin promesas de envío, cuotas, garantías o promociones no verificadas.
 
 ## Assets y shell
-PNG originales locales de propuesta 3, con fondo opaco #242038; no SVG ni variante simulada con filtros CSS. Horizontal 1600×560 completo en desktop/Footer; Header mobile usa isotipo 512×512 en caja 64 px por mejor legibilidad que el wordmark pequeño. Ambos conservan aspect ratio, sin crop. Header/Footer oscuros con navegación clara, active state y foco claro. Link de marca accesible VITRUNO; isotipo decorativo del Hero fallback con alt vacío.
+PNG originales locales de propuesta 3, con fondo opaco #242038; no SVG ni variante simulada con filtros CSS. Horizontal corregido 1200×630 completo en desktop/Footer; Header mobile usa isotipo 512×512 en caja 64 px por mejor legibilidad que el wordmark pequeño. Ambos conservan aspect ratio, sin crop. Header/Footer oscuros con navegación clara, active state y foco claro. Link de marca accesible VITRUNO; isotipo decorativo del Hero fallback con alt vacío.
 
 Iconos 64/180/192/512 reales; manifest browser con colores vigentes y sizes correctos. Se retiró la referencia al ICO previo ya eliminado por el usuario. OG local 1200×630 con URL https://vitruno.onrender.com/og-image.png. Sin service worker ni declaración PWA.
 
 ## Dirección editorial
 Referencia principal: [Bellroy](https://bellroy.com/), consultada en F13 para jerarquía, alternancia de grandes visuales y productos, espacio y ritmo de secciones. Se adopta el principio de composición, sin copiar fotografías, branding, textos, componentes, promociones o navegación compleja.
 
-Home: hero sin caja envolvente → categorías backend por slug → productos existentes → un bloque editorial lavanda → Cómo comprar → FAQ → Footer. El Hero desktop usa la portada del primer producto del listado ya obtenido; no se lo presenta como destacado, nuevo ni más vendido. No se hace fetching adicional. Sin imagen, loading/error o lista vacía, usa isotipo decorativo en superficie compatible. En mobile el hero visual se oculta para priorizar copy/categorías/productos.
+Home: hero sin caja envolvente → categorías backend por slug → productos existentes → un bloque editorial lavanda → Cómo comprar → FAQ → Footer. El Hero desktop prioriza el primer producto con imagen del listado ya obtenido y, si ninguno tiene imagen, conserva el primer producto; no se lo presenta como destacado, nuevo ni más vendido. No se hace fetching adicional. Loading usa skeleton neutral; un producto sin imagen usa ProductImage/Sin imagen y conserva su enlace. Error o lista vacía usan isotipo editorial decorativo. En mobile el hero visual se oculta para priorizar copy/categorías/productos.
 
 No se mantienen los dos banners repetitivos previos: un único bloque editorial después del producto expresa selección con criterio/stock y encargo. Copy estático en storefront-content.ts; sin fotos externas ni claims de curaduría experta o productos testeados.
 
@@ -37,4 +37,11 @@ Cards sin borde exterior de panel ni sombra: imagen protagonista, jerarquía tex
 Catálogo conserva search, categoría activa, count y paginación URL. Detalle elimina caja envolvente del panel comercial para dar aire a imagen/precio; conserva breadcrumbs, nota, acciones y rich content h2/h3/p/list/dl. Galería vertical desktop y horizontal mobile, sin cambios de selección/orden/dedupe. Carrito usa filas abiertas/divisores y resumen lavanda discreto, con errores/loading/stale/retry siempre visibles.
 
 ## Accesibilidad y referencias históricas
-HTML semántico, teclado, foco visible, labels, alt útil y estados con texto. Contrastes, responsive y limitaciones documentados en docs/f13-validation.md. Se preservan referencias conceptuales previas Bellroy/Tiendanube Idea/Apple/Samsung, Frávega/Mercado Libre, Benito Boutique y USA Import; no se copian sus identidades. F11/F12 permanecen como evidencia histórica; presets/primitives shadcn conservados, sin dependencias nuevas.
+HTML semántico, teclado, foco visible, labels, alt útil y estados con texto. Contrastes y dirección F13 en docs/f13-validation.md; polish y estabilidad F14 en docs/f14-validation.md. Se preservan referencias conceptuales previas Bellroy/Tiendanube Idea/Apple/Samsung, Frávega/Mercado Libre, Benito Boutique y USA Import; no se copian sus identidades. F11/F12 permanecen como evidencia histórica; presets/primitives shadcn conservados, sin dependencias nuevas.
+
+
+## F14 — Polish de presentación
+- Desktop: horizontal corregido a izquierda, navegación a derecha; caja 208 px y 224 px desde lg, con dimensiones intrínsecas reales. Sin crop ni edición del PNG.
+- Mobile: isotipo 64 px centrado y navegación centrada debajo, con 8 px de separación.
+- Footer mobile: identidad, copy y navegación centrados; desde sm se conserva identidad/copy izquierda y navegación derecha. Logo 208/224 px y padding vertical contenido.
+- Hero loading: skeleton neutral, aria-hidden y motion-safe; nunca isotipo como indicador de carga. Visual lateral oculto bajo md en todos los estados. Frame compartido aspect 4/5 con max-height 448 px y leyenda de dos líneas reservada en 40 px para evitar saltos entre estados.

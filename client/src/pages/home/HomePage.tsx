@@ -10,9 +10,12 @@ import {
 
 export function HomePage() {
   const state = useCatalogHome()
+  const heroProduct = state.status === 'success'
+    ? state.data.products.items.find((product) => Boolean(product.imageUrl)) ?? state.data.products.items[0]
+    : undefined
   return (
     <div className="space-y-12 sm:space-y-20">
-      <HomeHero product={state.status === 'success' ? state.data.products.items[0] : undefined} />
+      <HomeHero status={state.status} product={heroProduct} />
       {state.status === 'loading' && <CatalogLoadingState />}
       {state.status === 'error' && <CatalogErrorState message={state.message} />}
       {state.status === 'success' && (
