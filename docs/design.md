@@ -1,38 +1,40 @@
-# Diseño
+# Diseño — VITRUNO
 
-## Marca
-VITRUNO es la identidad definitiva (DEC-010). Tienda multirrubro moderna, confiable, profesional, cercana, práctica y accesible; productos útiles, atractivos y seleccionados con criterio. Posicionamiento de calidad accesible y buena selección, sin lujo ni descuentos como identidad.
+## Identidad vigente
+VITRUNO es multirrubro, moderna, práctica, cercana y profesional. Dirección visual Tech contemporánea aprobada en F13 (DEC-011), con logo propuesta 3: V con degradado propio y wordmark blanco. No implica una tienda solo tecnológica, gaming, luxury o discount.
 
-Eslogan: “Buenas elecciones, todos los días.” Se usa en announcement y metadata; no se repite por toda la página. Tono argentino, de vos, directo y profesional. No se agregan promesas de envío, cuotas, garantías ni promociones no confirmadas.
+La identidad petróleo/marfil/teal/dorado de DEC-010 quedó superada. Se conserva como historia en esa decisión y en docs/f12-validation.md; no debe reintroducirse en UI vigente.
 
-Paleta aprobada: petróleo #192C3D para texto fuerte/CTA/nav; marfil #F4F0E8 para fondo; blanco #FFFFFF para cards. Teal #2D9B90 y dorado #E6B85C quedan como detalles. Headings Manrope 600–700 y body/nav/forms/buttons Inter 400–600, con fallback sans-serif y Google Fonts display=swap.
+## Paleta y tokens
+- Fondo principal #FAFAFC: página y secciones amplias.
+- Texto/superficie oscura #242038: titulares, navegación y shell oscuro puntual.
+- Primary #6547BE: CTAs, links destacados y selección/foco en superficies claras.
+- Accent/secondary #EAE6F7: lavanda suave para bloque editorial, chips y estados.
+- Card #FFFFFF: producto, formularios y paneles.
 
-Logo horizontal local PNG 1600×560 en Header/Footer; isotipo PNG 512×512 decorativo solo en Hero desktop. Los originales son rasterizados, opacos y con fondo claro; no existe maestro SVG editable. Se mantienen íntegros, sin crop/deformación/vectorización. Sus márgenes internos amplios justifican cajas de 288 px (320 px desktop) con ratio original; el Header conserva dos filas mobile.
+Los colores viven en index.css mediante tokens semánticos existentes, sin HEX dispersos ni segundo sistema de theme. Border/input/muted son derivados; muted-foreground #625E72. Ring violeta en superficies claras; Header/Footer sobreescriben ring a claro para contraste. No se trasladan a UI los rosados/matices del degradado raster. No hay dark mode global; las variables dark previas quedan inactivas.
 
-## Dirección
-Petróleo y marfil dominan, cards blancas, acentos contenidos. Espacio generoso y fotografía de producto protagonista; UI profesional y mobile-first, sin orientar la marca a un rubro específico.
+## Tipografía y tono
+Manrope 600–700 en headings, Inter 400–600 en body/UI/nav/forms/buttons; links Google Fonts únicos con preconnect, display=swap y fallback sans-serif. La tipografía rasterizada del logo no se reconstruye.
 
-Inspiración conceptual decidida: Bellroy (limpieza/espacio/producto), Tiendanube Idea (estructura ecommerce simple), Apple (jerarquía del detalle/galería), Samsung (navegación/categorización). Frávega y Mercado Libre aportan patrones funcionales, no densidad visual. No copiar literalmente marcas.
+Eslogan: “Buenas elecciones, todos los días.” en Hero y metadata. Announcement informa stock/encargo/WhatsApp sin repetirlo. Tono argentino, de vos, directo y profesional. Sin promesas de envío, cuotas, garantías o promociones no verificadas.
 
-F9 agrega [Benito Boutique](https://benitoboutique.com.ar/) como referencia conceptual: protagonismo visual, imagen al hover, acciones rápidas y producto reconocible en carrito. No copiar diseño, marca, tipografía, colores ni estructura literal; no orientar el Storefront a perfumería. Se mantiene agnóstico al rubro.
+## Assets y shell
+PNG originales locales de propuesta 3, con fondo opaco #242038; no SVG ni variante simulada con filtros CSS. Horizontal 1600×560 completo en desktop/Footer; Header mobile usa isotipo 512×512 en caja 64 px por mejor legibilidad que el wordmark pequeño. Ambos conservan aspect ratio, sin crop. Header/Footer oscuros con navegación clara, active state y foco claro. Link de marca accesible VITRUNO; isotipo decorativo del Hero fallback con alt vacío.
 
-Cards: resumen con clamp CSS de tres líneas, acciones apiladas con targets de 44 px y slots independientes de los enlaces. Una columna en pantallas estrechas y dos desde 540 px para conservar espacio usable; tres en md y cuatro en xl. Secundaria es mejora progresiva solo para hover/puntero fino, con reduced-motion; portada y acciones siguen disponibles en touch. Detalle separa resumen de contenido detallado y mantiene medida de lectura; specs en dl flexible. Carrito usa imagen 1:1 de 80/96 px, controles claros y avisos textuales, sin exponer cantidades exactas de stock.
+Iconos 64/180/192/512 reales; manifest browser con colores vigentes y sizes correctos. Se retiró la referencia al ICO previo ya eliminado por el usuario. OG local 1200×630 con URL https://vitruno.onrender.com/og-image.png. Sin service worker ni declaración PWA.
 
-## Tokens
-Usar tokens semánticos: `background`, `foreground`, `card`, `primary`, `primary-foreground`, `secondary`, `muted`, `accent`, `border`, `ring`. La paleta vive en variables centralizadas de index.css, sin HEX en componentes. accent es una mezcla clara de teal/marfil con foreground petróleo; teal puro se reserva para decoraciones/bordes/indicadores. ring usa petróleo para contraste fuerte. muted-foreground e input son derivados accesibles; brand-gold y brand-teal solo cubren detalles de marca. No se introduce otro sistema de colores.
+## Dirección editorial
+Referencia principal: [Bellroy](https://bellroy.com/), consultada en F13 para jerarquía, alternancia de grandes visuales y productos, espacio y ritmo de secciones. Se adopta el principio de composición, sin copiar fotografías, branding, textos, componentes, promociones o navegación compleja.
 
-## Baseline histórico F0
-Sans-serif neutral del sistema, sin JetBrains Mono global ni nueva dependencia tipográfica. Tokens neutrales existentes y variables CSS de radios conservados. Mantener preset shadcn (incluido `rounded-none`); no rediseñar primitives. Las variables dark existentes pueden permanecer sin selector ni implementación de modo oscuro.
+Home: hero sin caja envolvente → categorías backend por slug → productos existentes → un bloque editorial lavanda → Cómo comprar → FAQ → Footer. El Hero desktop usa la portada del primer producto del listado ya obtenido; no se lo presenta como destacado, nuevo ni más vendido. No se hace fetching adicional. Sin imagen, loading/error o lista vacía, usa isotipo decorativo en superficie compatible. En mobile el hero visual se oculta para priorizar copy/categorías/productos.
 
-## Accesibilidad
-HTML semántico, teclado, focus visible, labels, alt útil y contraste suficiente. F0 solo verifica rutas mínimas; las pantallas comerciales se desarrollan en fases posteriores.
+No se mantienen los dos banners repetitivos previos: un único bloque editorial después del producto expresa selección con criterio/stock y encargo. Copy estático en storefront-content.ts; sin fotos externas ni claims de curaduría experta o productos testeados.
 
+## Superficies comerciales
+Cards sin borde exterior de panel ni sombra: imagen protagonista, jerarquía textual y acciones hermanas del enlace informativo único. Disponibilidad textual en violeta/lavanda/neutral; sin verde/amarillo/rojo nuevos. Secundaria on-demand mouse/pen, touch independiente y reduced-motion conservados. Grid: una columna estrecha, dos desde 540, tres md y cuatro xl.
 
-## Merchandising F11 con identidad F12
-Hero tipográfico con identidad VITRUNO local, CTA al catálogo y ancla a Cómo comprar. El isotipo real sustituye la decoración geométrica anterior. El hook conserva business por contrato, pero no usa su nombre/logo como marca pública. Dos banners informativos, categorías de Cajora, tres pasos y FAQ con details/summary; el copy comercial se concentra en src/content/storefront-content.ts.
+Catálogo conserva search, categoría activa, count y paginación URL. Detalle elimina caja envolvente del panel comercial para dar aire a imagen/precio; conserva breadcrumbs, nota, acciones y rich content h2/h3/p/list/dl. Galería vertical desktop y horizontal mobile, sin cambios de selección/orden/dedupe. Carrito usa filas abiertas/divisores y resumen lavanda discreto, con errores/loading/stale/retry siempre visibles.
 
-Header compacto con announcement bar estática y contador de unidades accesible recibido por props. Se mantiene sin sticky para evitar superponer contenido/foco en mobile. Footer con Inicio, Productos y Carrito, sin links legales ficticios. Se usan radios explícitos en superficies comerciales; las primitives y sus presets se conservan.
-
-Cards con borde y radio, un solo enlace para imagen/información, precio destacado y badge triestado con texto. Las acciones son hermanas del enlace. La secundaria se monta al entrar mouse/pen, es decorativa y se retira si falla; touch usa portada/acciones sin depender de hover. Detalle con breadcrumbs, panel comercial con tokens VITRUNO y nota de disponibilidad separada; miniaturas verticales desde lg y horizontales debajo en mobile, con scroll para múltiples imágenes. Rich content mantiene headings/listas/dl y medida de lectura. Carrito usa filas y resumen con superficies coherentes; ningún ajuste visual modifica sus reglas de stock.
-
-Referencias conceptuales: las bases Bellroy/Tiendanube Idea/Apple/Samsung ya documentadas, [Benito Boutique](https://benitoboutique.com.ar/) para protagonismo de producto y [USA Import](https://www.usaimport.com.ar/) para estructura comercial y orientación de consulta. No se copian branding, promociones, condiciones ni textos de esas tiendas. Evidencia histórica: docs/f11-validation.md. Integración vigente, assets, contraste y QA: docs/f12-validation.md.
+## Accesibilidad y referencias históricas
+HTML semántico, teclado, foco visible, labels, alt útil y estados con texto. Contrastes, responsive y limitaciones documentados en docs/f13-validation.md. Se preservan referencias conceptuales previas Bellroy/Tiendanube Idea/Apple/Samsung, Frávega/Mercado Libre, Benito Boutique y USA Import; no se copian sus identidades. F11/F12 permanecen como evidencia histórica; presets/primitives shadcn conservados, sin dependencias nuevas.

@@ -128,3 +128,16 @@
 - [x] Responsive 320/375/768/1024/1440, teclado y zoom CSS 200%
 - [x] Suites catálogo/carrito/WhatsApp, lint y build
 - [x] DEC-010, documentación vigente e informe docs/f12-validation.md
+
+
+## F13 — VITRUNO visual redesign / editorial storefront
+- [x] Inspección de siete nuevos PNG y preservación de originales
+- [x] Reemplazo de paleta anterior y tokens Tech contemporánea
+- [x] Logo propuesta 3, Header/Footer oscuros y variante mobile
+- [x] Hero editorial con producto existente/fallback, sin requests extra
+- [x] Categorías/productos prioritarios y un único bloque editorial
+- [x] Catálogo/cards/detail/galería y carrito refinados sin cambios de dominio
+- [x] OG 1200×630, manifest 192/512 y retiro de referencia ICO anterior
+- [x] Responsive 320/375/768/1024/1440, contraste, teclado y touch emulado
+- [x] Pruebas catálogo/carrito/WhatsApp, lint y build
+- [x] DEC-011 y documentación docs/f13-validation.md
