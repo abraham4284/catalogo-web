@@ -13,9 +13,10 @@ type StoreHeaderProps = {
   menuOpen: boolean
   onOpenCart: (trigger: HTMLElement) => void
   onOpenMenu: (trigger: HTMLElement) => void
+  onPrefetchRoute: (href: string) => void
 }
 
-export function StoreHeader({ cartCount, cartTotal, cartOpen, menuOpen, onOpenCart, onOpenMenu }: StoreHeaderProps) {
+export function StoreHeader({ cartCount, cartTotal, cartOpen, menuOpen, onOpenCart, onOpenMenu, onPrefetchRoute }: StoreHeaderProps) {
   return (
     <header className="bg-foreground text-background [--ring:var(--background)]">
       <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-2 px-4 py-2 sm:flex-row sm:gap-4 sm:px-6 sm:py-1 lg:px-8">
@@ -27,7 +28,7 @@ export function StoreHeader({ cartCount, cartTotal, cartOpen, menuOpen, onOpenCa
           <button type="button" aria-expanded={menuOpen} aria-controls="store-panel" aria-haspopup="dialog" onClick={(event) => onOpenMenu(event.currentTarget)} className={`min-h-11 px-3 text-sm xl:hidden ${focusClasses}`}>Menú</button>
           <nav aria-label="Navegación principal" className="hidden xl:block">
             <ul className="flex flex-wrap items-center gap-4 text-sm">
-              {storeNavigation.map((link) => <li key={link.href}><NavLink to={link.href} end={link.href === '/'} className={`inline-flex min-h-11 items-center text-background/80 aria-[current=page]:font-semibold aria-[current=page]:text-background aria-[current=page]:underline underline-offset-8 ${focusClasses}`}>{link.label}</NavLink></li>)}
+              {storeNavigation.map((link) => <li key={link.href}><NavLink to={link.href} end={link.href === '/'} onPointerEnter={() => onPrefetchRoute(link.href)} onFocus={() => onPrefetchRoute(link.href)} className={`inline-flex min-h-11 items-center text-background/80 aria-[current=page]:font-semibold aria-[current=page]:text-background aria-[current=page]:underline underline-offset-8 ${focusClasses}`}>{link.label}</NavLink></li>)}
             </ul>
           </nav>
           <button id="cart-access" type="button" aria-label={`Abrir carrito, ${cartCount} ${cartCount === 1 ? 'unidad' : 'unidades'}`} aria-expanded={cartOpen} aria-controls="store-panel" aria-haspopup="dialog" onClick={(event) => onOpenCart(event.currentTarget)} className={`inline-flex min-h-11 min-w-0 max-w-52 items-center gap-3 rounded-full border border-background/35 bg-background/5 px-4 py-2 text-left hover:bg-background/10 aria-expanded:border-background/70 [overflow-wrap:anywhere] ${focusClasses}`}>
