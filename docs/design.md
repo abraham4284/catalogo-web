@@ -63,3 +63,8 @@ Contacto usa labels visibles, nombre/mensaje requeridos, email opcional, errores
 Carrito adopta una cápsula con borde claro, bolsa de Phosphor (dependencia existente) y contador violeta superpuesto. Desde lg muestra “Mi pedido” y el importe; debajo conserva “Carrito” y la cantidad, sin total. Mantiene nombre accesible con unidades, aria-expanded/controls y foco visible. Es un botón que abre un diálogo, no un enlace de navegación directa.
 
 El SidePanel compartido desliza desde la derecha en 250 ms ease-out, con fade del backdrop de 200 ms. Base UI controla montaje/desmontaje mediante data-starting-style/data-ending-style; no se agregan timers ni focus traps propios. prefers-reduced-motion desactiva las transiciones. El estado UI conserva el último contenido para que el menú no cambie a carrito durante la salida.
+
+## F17 — Feedback de agregado
+Las superficies de producto ya no muestran cantidad acumulada “En carrito: N”. El agregado local exitoso confirma “✓ Agregado” durante 1200 ms y deshabilita temporalmente ese botón; luego vuelve a su etiqueta habitual respetando disponibilidad/stock. No hay estado de red “Agregando”. Header, Side Cart y CartPage comunican/administan cantidades.
+
+Toast inferior centrado con react-hot-toast: tarjeta clara con borde y sombra suaves, check oscuro, título “Agregado al carrito” y nombre completo del producto debajo, siguiendo la referencia aprobada. Duración 3000 ms para leer el nombre; fade de entrada/salida 160/120 ms. Sin foco ni captura de puntero, role=status y aria-live=polite. Safe area inferior y ancho máximo 384 px con margen móvil de 16 px. Reduced motion desactiva animación. Agregar mantiene Side Cart cerrado. El diálogo está inicializado cerrado desde el primer render y abre sin lazy/Suspense.

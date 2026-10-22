@@ -5,7 +5,6 @@ type StorePanel = 'cart' | 'menu' | null
 type StorefrontUi = {
   panel: StorePanel
   contentPanel: Exclude<StorePanel, null>
-  hasOpened: boolean
   returnFocus: HTMLElement | null
   openCart: (trigger: HTMLElement) => void
   openMenu: (trigger: HTMLElement) => void
@@ -17,10 +16,9 @@ type StorefrontUi = {
 export const useStorefrontUi = create<StorefrontUi>((set) => ({
   panel: null,
   contentPanel: 'cart',
-  hasOpened: false,
   returnFocus: null,
-  openCart: (trigger) => set({ panel: 'cart', contentPanel: 'cart', returnFocus: trigger, hasOpened: true }),
-  openMenu: (trigger) => set({ panel: 'menu', contentPanel: 'menu', returnFocus: trigger, hasOpened: true }),
+  openCart: (trigger) => set({ panel: 'cart', contentPanel: 'cart', returnFocus: trigger }),
+  openMenu: (trigger) => set({ panel: 'menu', contentPanel: 'menu', returnFocus: trigger }),
   closePanel: () => set({ panel: null }),
   closeForNavigation: () => set({ panel: null, returnFocus: null }),
 }))
