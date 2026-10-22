@@ -49,3 +49,17 @@ HTML semántico, teclado, foco visible, labels, alt útil y estados con texto. C
 
 ## F15 — Terminología comercial
 El carrito usa “Finalizar compra por WhatsApp” en todos sus estados; los productos individuales mantienen su semántica de consulta. El paso final explica coordinación de pago, entrega y datos necesarios en WhatsApp. FAQ nativa ampliada con las condiciones comerciales aprobadas en F15 (envíos nacionales, plazos coordinados y transferencia bancaria/billeteras virtuales/efectivo). Sin formulario personal previo, checkout web ni nuevas promesas de plazo/costo.
+
+## F16 — Navegación, carrito rápido y ayuda
+Header muestra cinco rutas desde xl; debajo ofrece Menú modal, manteniendo el carrito con cantidad en pantallas pequeñas y cantidad/total desde lg. Footer incluye las cinco rutas y /carrito. El isotipo compacto se conserva hasta xl para evitar comprimir enlaces en tablet. Unidades representan cantidad total, no cantidad de filas.
+
+Side Cart derecho de 92vw y máximo 420 px, encabezado fijo y contenido con scroll propio, overlay y cierre accesible. Reutiliza imágenes/fallback, nombres, subtotales, cantidades y avisos existentes. El CTA “Ver carrito completo” lleva a /carrito: allí se verifican precio/disponibilidad y se finaliza por WhatsApp. Apertura exclusivamente por clic en Carrito del Header. Agregar productos, recuperar datos o navegar mantiene el panel cerrado.
+
+El shell ocupa todo el ancho con scroll natural del documento. Se retiran la pill flotante, el carril lateral reservado y la banda inferior: el panel cerrado no ocupa espacio. El Header ofrece el único acceso al preview. Totales/subtotales se mantienen dentro del panel y del carrito completo.
+
+Contacto usa labels visibles, nombre/mensaje requeridos, email opcional, errores vinculados y foco en el primer campo inválido. Explica que abre WhatsApp y no guarda el formulario en el sitio. Cómo comprar y FAQ muestran el contenido centralizado ya aprobado; preguntas nativas details/summary y pasos semánticos. La Home conserva ambas secciones.
+
+### Acceso del Header y movimiento
+Carrito adopta una cápsula con borde claro, bolsa de Phosphor (dependencia existente) y contador violeta superpuesto. Desde lg muestra “Mi pedido” y el importe; debajo conserva “Carrito” y la cantidad, sin total. Mantiene nombre accesible con unidades, aria-expanded/controls y foco visible. Es un botón que abre un diálogo, no un enlace de navegación directa.
+
+El SidePanel compartido desliza desde la derecha en 250 ms ease-out, con fade del backdrop de 200 ms. Base UI controla montaje/desmontaje mediante data-starting-style/data-ending-style; no se agregan timers ni focus traps propios. prefers-reduced-motion desactiva las transiciones. El estado UI conserva el último contenido para que el menú no cambie a carrito durante la salida.
