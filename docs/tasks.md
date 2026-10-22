@@ -185,3 +185,31 @@
 - [x] Cápsula de carrito con bolsa/contador, Mi pedido y total desde lg
 - [x] Deslizamiento del panel 250 ms y fade del overlay 200 ms
 - [x] Reduced motion, contenido estable durante cierre y foco accesible
+
+## F17 — Add-to-Cart Feedback + StorePanels Preload
+- [x] Preload de StorePanels tras montar el Storefront, conservando code splitting
+- [x] Fallback visible “Abriendo panel…” eliminado
+- [x] “En carrito: N” retirado de superficies de producto
+- [x] Estado efímero “✓ Agregado” durante 1200 ms, solo ante incremento real
+- [x] Toast central accesible con Base UI, 1500 ms y un único provider
+- [x] Reduced motion, sin foco/interacción capturados por toast
+- [x] QA de Home/catálogo/detalle en seis anchos; límite y rechazo sin falso feedback
+- [x] 42 pruebas existentes, lint y build correctos
+- [x] QA del preload en build de producción con fixtures
+- [x] Documentación y rendimiento en docs/f17-validation.md
+
+### Corrección de primera apertura del panel
+- [x] Reproducir demora y ausencia de transición en el build local
+- [x] Inicializar Dialog.Root cerrado desde el primer render; retirar lazy/preload/hasOpened del panel
+- [x] Medir primera/segunda apertura antes y después en producción local y desarrollo
+- [x] Validar seis anchos, Escape/foco, carrito y reduced motion
+- [x] 42 pruebas, lint/build; impacto del bundle y limitaciones documentados
+
+### Notificación inferior con react-hot-toast
+- [x] Instalar react-hot-toast 2.6.1 y actualizar lockfile, por solicitud explícita
+- [x] Sustituir toast de Base UI por un único Toaster compartido
+- [x] Tarjeta inferior con check, título y nombre del producto
+- [x] Confirmación exclusiva ante incremento real; sin autoapertura del panel
+- [x] Safe area, ancho responsive y reduced motion
+- [x] 42 pruebas, lint y build; documentación de la migración
+- [x] QA de 18 casos en seis anchos, producto actualizado en una sola tarjeta, rechazo/stock y accesibilidad
