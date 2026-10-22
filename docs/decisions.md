@@ -42,3 +42,10 @@ Decisión: sustituir la identidad cromática de DEC-010 por Tech contemporánea:
 Razón: nueva identidad aprobada y composición ecommerce más editorial, proporcional a un catálogo pequeño y multirrubro. Bellroy es referencia conceptual de ritmo, jerarquía y fotografía, sin copia de assets, branding, textos o componentes.
 
 Consecuencia: Header/Footer oscuros compatibles con el PNG opaco, página clara sin dark mode global. Mobile usa isotipo accesible por legibilidad; desktop y Footer conservan horizontal completo. Hero muestra portada del primer producto ya cargado cuando existe, sin semántica featured ni requests extra; fallback con isotipo. Categorías/productos preceden un único bloque editorial. Se retira la referencia al ICO anterior y se integra OG local con URL conocida https://vitruno.onrender.com/og-image.png. DEC-010 y F12 permanecen como historia; no se alteran contratos ni reglas comerciales.
+
+## DEC-012 — Paneles accesibles con estado UI separado
+Decisión: adaptar Dialog del paquete @base-ui/react existente en shared/ui/SidePanel y componer menú/carrito en app, con store UI no persistido y carga diferida del panel. El carrito v3 y la verificación de /carrito siguen siendo las únicas fuentes comerciales.
+
+Razón: menú y preview necesitan el mismo comportamiento modal accesible; separar visibilidad de los snapshots evita aperturas por hidratación/reconciliación. Reutilizar la dependencia instalada evita un focus trap artesanal y paquetes adicionales.
+
+Consecuencia: Header/shared reciben datos y callbacks; solo el clic en Carrito abre el preview. El panel no verifica ni finaliza compras. Tras la corrección visual solicitada, el shell ocupa todo el ancho con scroll natural; se retira el acceso flotante y su espacio reservado. Contacto tiene entrada pública secundaria en WhatsApp para diferir el formulario sin mezclar su mensaje con checkout o consulta de producto.

@@ -140,3 +140,43 @@ test('individual inquiry URL encodes one text parameter and tolerates missing co
     assert.deepEqual([...url.searchParams.keys()], ['text'])
   }
 })
+
+test('contact validates required fields, optional email and bounded lengths', () => {
+  const { load } = loadWhatsApp()
+  const { whatsAppContactSchema: schema } = load('features/whatsapp/schemas/whatsapp-contact.schema')
+  assert.deepEqual(schema.parse({ name: '  Ana\n Pérez ', message: ' Hola\r\nGracias ' }), { name: 'Ana Pérez', email: '', message: 'Hola\nGracias' })
+  for (const input of [
+    { name: ' ', message: 'Hola' }, { name: 'Ana', message: ' ' },
+    { name: 'a'.repeat(81), message: 'Hola' }, { name: 'Ana', message: 'a'.repeat(2001) },
+    { name: 'Ana', message: 'Hola', email: 'inválido' },
+    { name: 'Ana', message: 'Hola', email: 'a'.repeat(255) },
+  ]) assert.equal(schema.safeParse(input).success, false)
+  assert.equal(schema.safeParse({ name: 'a'.repeat(80), message: 'a'.repeat(2000), email: '' }).success, true)
+})
+
+test('contact message is separate, normalized and does not mutate input', () => {
+  const { load } = loadWhatsApp()
+  const { buildWhatsAppContactMessage: build } = load('features/whatsapp/domain/whatsapp-contact-message')
+  const input = Object.freeze({ name: ' Ana\nPérez ', email: ' ana@example.com ', message: ' Café & té? 😀\r\nGracias ' })
+  assert.equal(build(input), 'Hola, soy Ana Pérez.\n\nEmail: ana@example.com\n\nConsulta:\nCafé & té? 😀\nGracias')
+  assert.equal(build({ name: 'Ana', message: 'Consulta' }), 'Hola, soy Ana.\n\nConsulta:\nConsulta')
+  assert.equal(input.name, ' Ana\nPérez ')
+  assert.throws(() => build({ name: '', message: 'Hola' }))
+})
+
+test('contact URL uses existing lazy configuration and encodes the message once', () => {
+  const { load, runtimeEnv } = loadWhatsApp()
+  const { getWhatsAppContactHref: href } = load('features/whatsapp/utils/whatsapp-contact')
+  const { buildWhatsAppContactMessage: message } = load('features/whatsapp/domain/whatsapp-contact-message')
+  const input = { name: 'Ana', email: '', message: 'Café & té? #1 + 😀\nSegunda línea' }
+  assert.equal(href(input), undefined)
+  runtimeEnv.VITE_WHATSAPP_NUMBER = 'invalid'
+  assert.equal(href(input), undefined)
+  runtimeEnv.VITE_WHATSAPP_NUMBER = '5493811234567'
+  const url = new URL(href(input))
+  assert.equal(url.origin, 'https://wa.me')
+  assert.equal(url.pathname, '/5493811234567')
+  assert.equal(url.searchParams.get('text'), message(input))
+  assert.deepEqual([...url.searchParams.keys()], ['text'])
+  assert.equal(href({ ...input, email: 'invalid' }), undefined)
+})

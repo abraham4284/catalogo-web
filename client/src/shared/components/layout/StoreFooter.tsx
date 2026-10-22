@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { storeNavigation } from './store-navigation'
 import { BrandLogo } from '@/shared/components/brand/BrandLogo'
 
 export function StoreFooter({ note }: { note: string }) {
@@ -11,16 +12,9 @@ export function StoreFooter({ note }: { note: string }) {
         </div>
         <nav aria-label="Navegación del pie" className="min-w-0">
           <ul className="flex flex-wrap justify-center gap-x-4 gap-y-1 sm:justify-start sm:gap-x-6">
-            <li>
-              <Link to="/" className="inline-flex min-h-11 items-center py-2 hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">
-                Inicio
-              </Link>
-            </li>
-            <li>
-              <Link to="/productos" className="inline-flex min-h-11 items-center py-2 hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">
-                Productos
-              </Link>
-            </li>
+            {storeNavigation.map(({ href, label }) => (
+              <li key={href}><Link to={href} className="inline-flex min-h-11 items-center py-2 hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">{label}</Link></li>
+            ))}
             <li><Link to="/carrito" className="inline-flex min-h-11 items-center hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">Carrito</Link></li>
           </ul>
         </nav>

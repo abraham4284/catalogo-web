@@ -87,3 +87,15 @@ StoreRoute, en app, compone StoreLayout y mueve el foco a main-content únicamen
 `main.tsx` monta `app/App.tsx`; App entrega el router con rutas `/` y `*`. Home y Not Found son mínimas. Alias `@/*` apunta a `src/*` en TypeScript y Vite; shadcn genera UI y utilidades dentro de `shared`. Se mantiene el preset existente, incluidos sus radios explícitos, sin refactor visual.
 
 ESLint permite la exportación `buttonVariants` únicamente en el botón shadcn para conservar su contrato generado; la regla de Fast Refresh sigue activa para los demás archivos.
+
+## F16 — Navegación y paneles
+StoreRoute deriva unidades/total desde Cart y entrega datos/callbacks a StoreLayout/Header. Shared no importa features. `app/storefront-ui.store.ts` mantiene exclusivamente panel activo, elemento de retorno y montaje diferido; no usa persistencia ni duplica el carrito comercial. Solo el botón Carrito del Header invoca openCart; AddToCartButton y ProductCommerceActions no dependen del estado del panel. Agregado/reconcile/hidratación/revalidación no abren paneles.
+
+StorePanels se carga al primer uso y compone CartPreview, exportado por el barrel de Cart, o navegación compacta. SidePanel adapta Dialog de Base UI ya instalado: modal, portal, backdrop, scroll/focus management y Escape. El destino de foco se consulta al cerrar; cerrar normalmente devuelve al disparador, usa el botón Carrito del Header si el disparador dejó de estar disponible y navegar entrega foco al contenido. Los IDs de filas de preview tienen prefijo propio. CartPreview reutiliza filas, acciones y reglas del mismo store v3; no hace fetching ni genera checkout. /carrito conserva la única coordinación de revalidación y el gate de WhatsApp.
+
+StoreLayout ocupa todo el ancho y usa el scroll natural del documento. No hay carril derecho, banda inferior ni acceso flotante. El Dialog cerrado no participa del layout. Header oculta el importe bajo lg y conserva la cantidad. Menú completo desde xl; debajo usa el mismo Dialog.
+
+Las tres páginas nuevas son lazy. BuyingSteps/FaqList reciben los arrays existentes de storefrontContent y se reutilizan en Home. WhatsApp expone la entrada pública secundaria `features/whatsapp/contact.ts` para mantener el formulario en su chunk de ruta. Schema Zod valida/normaliza nombre, email opcional y mensaje; dominio compone texto propio y helper une configuración/URL existentes. El formulario conserva valores solo en memoria y abre una ventana con noopener/noreferrer después de validar, con enlace de recuperación por si el navegador bloquea el popup. No accede a Cajora ni al carrito ni guarda datos personales.
+
+### Transición del panel
+El store UI conserva contentPanel separado de panel: cerrar cambia únicamente visibilidad y mantiene título/contenido durante la transición de salida. Los atributos de transición de Dialog Base UI determinan entrada/salida y desmontaje; CSS usa transform/opacity y desactiva movimiento con prefers-reduced-motion. No afecta snapshots, persistencia ni revalidación.

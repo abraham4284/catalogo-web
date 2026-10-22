@@ -164,3 +164,24 @@
 - [x] Suites, lint y build; aviso de bundle documentado
 - [x] QA de FAQ y estados del carrito en 320/375/768/1024/1440
 - [x] Documentación docs/f15-validation.md
+
+## F16 — Navigation + Side Cart + Contact / Guidance Pages
+- [x] Side Cart modal con store v3 existente, edición y apertura exclusiva por clic en Carrito
+- [x] Header con cantidad en mobile y cantidad/total en desktop y menú compacto accesible
+- [x] Contacto con Zod y mensaje WhatsApp independiente, sin persistencia de datos personales
+- [x] Rutas lazy /contacto, /como-comprar y /preguntas-frecuentes
+- [x] Pasos/FAQ reutilizados en Home y páginas; navegación Header/Footer ampliada
+- [x] 42 pruebas, lint/build y regresiones comerciales
+- [x] QA de ocho rutas en 320/375/768/1024/1440; teclado, foco y estados de stock
+- [x] Arquitectura, diseño, DEC-012 y docs/f16-validation.md actualizados
+
+### Corrección visual F16
+- [x] Retirar carril derecho, banda inferior y botón flotante
+- [x] Restaurar ancho completo y scroll natural del documento
+- [x] Ocultar total del Header bajo lg; conservar totales dentro del carrito
+- [x] Eliminar apertura automática tras agregar productos
+
+### Polish del acceso y transición
+- [x] Cápsula de carrito con bolsa/contador, Mi pedido y total desde lg
+- [x] Deslizamiento del panel 250 ms y fade del overlay 200 ms
+- [x] Reduced motion, contenido estable durante cierre y foco accesible
