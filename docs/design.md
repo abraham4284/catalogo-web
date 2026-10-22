@@ -45,3 +45,7 @@ HTML semántico, teclado, foco visible, labels, alt útil y estados con texto. C
 - Mobile: isotipo 64 px centrado y navegación centrada debajo, con 8 px de separación.
 - Footer mobile: identidad, copy y navegación centrados; desde sm se conserva identidad/copy izquierda y navegación derecha. Logo 208/224 px y padding vertical contenido.
 - Hero loading: skeleton neutral, aria-hidden y motion-safe; nunca isotipo como indicador de carga. Visual lateral oculto bajo md en todos los estados. Frame compartido aspect 4/5 con max-height 448 px y leyenda de dos líneas reservada en 40 px para evitar saltos entre estados.
+
+
+## F15 — Terminología comercial
+El carrito usa “Finalizar compra por WhatsApp” en todos sus estados; los productos individuales mantienen su semántica de consulta. El paso final explica coordinación de pago, entrega y datos necesarios en WhatsApp. FAQ nativa ampliada con las condiciones comerciales aprobadas en F15 (envíos nacionales, plazos coordinados y transferencia bancaria/billeteras virtuales/efectivo). Sin formulario personal previo, checkout web ni nuevas promesas de plazo/costo.
