@@ -23,7 +23,7 @@ export function CartPage() {
               <CartSummary items={items} />
               {verification.status === 'success' && isCartReadyForInquiry(items) ? <WhatsAppCheckoutLink items={items} /> : (
                 <div className="space-y-3 rounded-xl border bg-muted/30 p-5">
-                  <button type="button" disabled className="min-h-11 rounded-lg bg-primary px-5 py-3 text-primary-foreground opacity-50">Consultar por WhatsApp</button>
+                  <button type="button" disabled className="min-h-11 rounded-lg bg-primary px-5 py-3 text-primary-foreground opacity-50">Finalizar compra por WhatsApp</button>
                   <p role="status" aria-live="polite" className="text-sm">
                     {verification.status === 'loading' ? 'Verificando precio y disponibilidad…'
                       : verification.status === 'error' ? 'No pudimos verificar la disponibilidad actual de todos los productos. Reintentá antes de continuar.'

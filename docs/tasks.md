@@ -152,3 +152,15 @@
 - [x] QA responsive y flujo detalle → Inicio con geometría estable
 - [x] Suites catálogo/carrito/WhatsApp, lint y build
 - [x] Documentación docs/f14-validation.md y estado vigente
+
+
+## F15 — Commercial Copy / Purchase Handoff
+- [x] FAQ de envíos a todo el país
+- [x] FAQ de tiempos según localidad/medio de envío
+- [x] FAQ de transferencias bancarias/billeteras virtuales/efectivo
+- [x] Cómo comprar con Finalizá por WhatsApp
+- [x] CTA de carrito Finalizar compra por WhatsApp en estados habilitado/deshabilitado
+- [x] Microcopy de entrega, medio de pago y datos necesarios
+- [x] Suites, lint y build; aviso de bundle documentado
+- [x] QA de FAQ y estados del carrito en 320/375/768/1024/1440
+- [x] Documentación docs/f15-validation.md

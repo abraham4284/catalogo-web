@@ -62,16 +62,16 @@ Zustand + localStorage v3, clave catalogo-web-cart. Snapshot idProduct/slug/name
 
 Al entrar a carrito se verifican precio/disponibilidad actuales contra Cajora por slug en paralelo. Cambios del conjunto y retry revalidan; quantity no. Un fallo conserva el item, señala la fila y bloquea WhatsApp hasta reintentar. Solo verificación completa exitosa e items in_stock con cantidades coherentes habilitan el enlace. Precio nuevo se refleja en fila, total y mensaje. ON_ORDER queda fuera de agregados y del checkout grupal incluso con stock físico.
 
-El frontend prepara el mensaje y abre WhatsApp; la venta se confirma allí y se registra manualmente en Cajora. Sin backend de órdenes, reservas ni polling: el stock puede cambiar después de verificar. unitType no es público, cantidades enteras/paso 1. Cards/detalle conservan consulta individual triestado.
+El carrito muestra “Finalizar compra por WhatsApp”: el frontend prepara el mensaje y abre WhatsApp; la compra se coordina/confirma allí y se registra manualmente en Cajora. Pago, entrega y datos necesarios se acuerdan posteriormente, sin formulario personal ni alta pública de customers en la web. Sin backend de órdenes, reservas ni polling: el stock puede cambiar después de verificar. unitType no es público, cantidades enteras/paso 1. Cards/detalle conservan consulta individual triestado.
 
 ## Fuera de alcance actual
-Login/cuentas de clientes, autenticación pública, checkout backend, Mercado Pago, reservas de stock, órdenes web persistidas, shipping, wishlist, cupones, reviews, blog, comentarios y sincronización bidireccional.
+Login/cuentas de clientes, autenticación pública, checkout backend, Mercado Pago, reservas de stock, órdenes web persistidas, cálculo/gestión automatizada de envíos, wishlist, cupones, reviews, blog, comentarios y sincronización bidireccional.
 
 ## Futuro
 Un blog podría tener su propia API/DB. El Storefront podrá consumirlo como otra fuente HTTP sin mezclar sus datos con Cajora.
 
 
 ## Experiencia del Storefront — F11
-Home orienta a explorar el catálogo mediante hero con identidad pública del negocio, banners informativos, categorías reales y listado existente. Cómo comprar explica explorar, agregar productos disponibles o consultar encargos, y confirmar por WhatsApp. La FAQ aclara consultas, encargos, ausencia de reserva y confirmación de precio/disponibilidad.
+Home orienta a explorar el catálogo mediante hero con identidad pública del negocio, banners informativos, categorías reales y listado existente. Cómo comprar explica explorar, agregar productos disponibles o consultar encargos, y finalizar por WhatsApp. La FAQ aclara consultas, encargos, ausencia de reserva y confirmación de precio/disponibilidad; F15 agrega envíos a todo el país, plazos según localidad/medio y transferencia bancaria/billeteras virtuales/efectivo.
 
-El shell muestra el total de unidades del carrito; cards reúnen la información en un enlace y conservan acciones independientes. El detalle incorpora breadcrumbs por slug, galería responsive y jerarquía comercial; catálogo y carrito mantienen filtros, estados y reglas vigentes. Copy estático centralizado e identidad VITRUNO mediante tokens y assets locales; sin nuevos datos comerciales ni promesas de envío/pago/promociones. La validación F11 no sustituye el smoke test de producción.
+El shell muestra el total de unidades del carrito; cards reúnen la información en un enlace y conservan acciones independientes. El detalle incorpora breadcrumbs por slug, galería responsive y jerarquía comercial; catálogo y carrito mantienen filtros, estados y reglas vigentes. Copy estático centralizado e identidad VITRUNO mediante tokens y assets locales; con condiciones comerciales confirmadas por el alcance F15 y sin promociones ni plazos garantizados. La validación F11 no sustituye el smoke test de producción.
