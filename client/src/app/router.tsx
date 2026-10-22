@@ -4,6 +4,7 @@ import { NotFoundPage } from '@/pages/not-found/NotFoundPage'
 import { CatalogLoadingState } from '@/features/catalog'
 import { StoreRoute } from './StoreRoute'
 import { CartPage } from '@/pages/cart/CartPage'
+import { loadCatalogPage, loadProductDetailPage, loadContactPage, loadHowToBuyPage, loadFaqPage } from './route-loaders'
 
 export const router = createBrowserRouter([
   {
@@ -14,16 +15,16 @@ export const router = createBrowserRouter([
       { index: true, Component: HomePage },
       {
         path: 'productos',
-        lazy: async () => ({ Component: (await import('@/pages/catalog/CatalogPage')).CatalogPage }),
+        lazy: async () => ({ Component: (await loadCatalogPage()).CatalogPage }),
       },
       {
         path: 'productos/:slug',
-        lazy: async () => ({ Component: (await import('@/pages/product/ProductDetailPage')).ProductDetailPage }),
+        lazy: async () => ({ Component: (await loadProductDetailPage()).ProductDetailPage }),
       },
       { path: 'carrito', Component: CartPage },
-      { path: 'contacto', lazy: async () => ({ Component: (await import('@/pages/contact/ContactPage')).ContactPage }) },
-      { path: 'como-comprar', lazy: async () => ({ Component: (await import('@/pages/how-to-buy/HowToBuyPage')).HowToBuyPage }) },
-      { path: 'preguntas-frecuentes', lazy: async () => ({ Component: (await import('@/pages/faq/FaqPage')).FaqPage }) },
+      { path: 'contacto', lazy: async () => ({ Component: (await loadContactPage()).ContactPage }) },
+      { path: 'como-comprar', lazy: async () => ({ Component: (await loadHowToBuyPage()).HowToBuyPage }) },
+      { path: 'preguntas-frecuentes', lazy: async () => ({ Component: (await loadFaqPage()).FaqPage }) },
       { path: '*', Component: NotFoundPage },
     ],
   },

@@ -213,3 +213,15 @@
 - [x] Safe area, ancho responsive y reduced motion
 - [x] 42 pruebas, lint y build; documentación de la migración
 - [x] QA de 18 casos en seis anchos, producto actualizado en una sola tarjeta, rechazo/stock y accesibilidad
+
+## F18 — Route Transition + Navigation Prefetch
+- [x] Entrada del contenido de ruta: opacity + translateY 5 px, 180 ms ease-out
+- [x] Reduced motion sin animación; shell/panel/toast fuera del wrapper
+- [x] Loaders lazy reutilizados por router y prefetch
+- [x] Prefetch por pointerenter/focus en Header, menú y Footer
+- [x] Recuperación de import fallido sin rechazo sin manejar ni recarga global
+- [x] QA Back/Forward y queries sin remontar contenido de catálogo
+- [x] Seis anchos, teclado, skip link, foco y aria-current
+- [x] 45 pruebas (tres nuevas), lint y build
+- [x] QA del build local y regresión carrito/toast/revalidación/retry
+- [x] Documentación y rendimiento en docs/f18-validation.md

@@ -6,6 +6,7 @@ import { calculateCartItemCount, calculateCartTotal, useCartStore } from '@/feat
 import { storefrontContent } from '@/content/storefront-content'
 import { useStorefrontUi } from './storefront-ui.store'
 import { StorePanels } from './compositions/StorePanels'
+import { prefetchRoute } from './navigation-prefetch'
 
 export function StoreRoute() {
   const { pathname } = useLocation()
@@ -27,6 +28,7 @@ export function StoreRoute() {
       <StoreLayout
         cartCount={cartCount} cartTotal={cartTotal} cartOpen={panel === 'cart'} menuOpen={panel === 'menu'}
         onOpenCart={openCart} onOpenMenu={openMenu}
+        onPrefetchRoute={prefetchRoute}
         announcement={storefrontContent.announcement} footerNote={storefrontContent.footerNote}
       />
       <StorePanels />

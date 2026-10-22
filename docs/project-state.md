@@ -1,6 +1,6 @@
 # Estado vigente
 
-Current phase: F17 completed.
+Current phase: F18 completed.
 
 - Frontend: React + TypeScript + Vite Storefront; shell público compartido con StoreLayout, Header y Footer VITRUNO y responsive.
 - Routing: `/`, `/productos`, `/productos/:slug`, `/carrito`, `/contacto`, `/como-comprar`, `/preguntas-frecuentes` y `*` dentro del layout; detalle consume API real, Not Found con regreso al inicio. Slugs de producto inválidos no montan fetching ni hacen requests. Header recibe unidades y total desde StoreRoute → StoreLayout; shared no importa Cart.
@@ -21,7 +21,7 @@ Current phase: F17 completed.
 - Architecture: features + Clean Architecture pragmática; shadcn en shared.
 - Accessibility / responsive: revisión estructural aplicada; Header compacto con Menú hasta xl y navegación completa desde xl, controles de cantidad de 44 px y wrapping seguro en main/filas. StoreRoute enfoca main al cambiar pathname, sin robar foco por queries; skip link verificado. Miniaturas conservan nombre accesible en botón e imagen interna decorativa. Categorías se cargan solo al montar listado, independientes de productos por query; se conservan durante loading/error de productos.
 - Git: `dev → qa → master`.
-- Validation: F17 pasa las 42 pruebas existentes (17 catálogo, 16 carrito, 9 WhatsApp), lint y build. Feedback y panel comprobados en desarrollo/build local; métricas del ajuste en docs/panel-first-open-validation.md y migración del toast en docs/toast-validation.md.
+- Validation: F18 pasa 45 pruebas (42 existentes + 3 de loader recuperable), lint y build. Sigue el aviso existente de principal >500 kB. QA de navegación en seis anchos y build local con fixtures; docs/f18-validation.md.
 - Manual verification: fixtures HTTP locales, carrito en 320/375/768/1024/1440 px sin overflow ni controles anidados. Verificados loading/success, stock 4→2 sin recorte, agotado, encargo con stock 20, precio nuevo, error parcial/retry, enlaces slug y cancelación al quitar item durante requests. Sin requests por quantity; WhatsApp inspeccionado sin abrir/enviar. docs/f10b-validation.md.
 - F8: QA completo documentado en `docs/qa-report.md`; corregidos error seguro de URL malformada, detalle 404 con body no estándar y contraste del foco. Ampliada cobertura de almacenamiento lleno. Sin bloqueos de código identificados; configuración, fallback SPA, CORS y smoke test reales siguen pendientes antes de afirmar producción lista.
 - Storefront visual: hero editorial sin caja; visual del primer producto con imagen ya cargado en desktop, o primer producto con fallback ProductImage si ninguno tiene imagen. Status explícito: loading usa skeleton neutral sin enlace; éxito vacío/error usa isotipo editorial. Sin semántica featured ni llamadas extra; geometría compartida y leyenda reservada. Categorías por slug y productos antes de un único bloque editorial lavanda; pasos y FAQ abiertos. Cards sin bordes de panel, detalle/carrito con más aire. Copy centralizado. Header/Footer oscuros puntuales, página clara y CTA violeta; sin dark mode global.
@@ -40,3 +40,5 @@ Current phase: F17 completed.
 
 - F17: StorePanels síncrono, inicializado cerrado desde StoreRoute y sin lazy/Suspense en esta interacción (corrige la primera apertura brusca). Add-to-cart confirma únicamente incremento real con “✓ Agregado” deshabilitado 1200 ms y toast inferior polite de 3000 ms con nombre/check mediante react-hot-toast 2.6.1. Sin “En carrito: N” en producto; cantidades desde Header/Side Cart/CartPage. No autoabre panel ni hace API/revalidación extra. QA en seis anchos, rechazos/stock/retry/reduced motion y preload en build de producción con fixtures; docs/f17-validation.md.
 - Toast inferior vigente: react-hot-toast 2.6.1 instalado por solicitud explícita, tarjeta con check/nombre y duración 3000 ms. Sustituye Toast Base UI; dominio y apertura manual sin cambios. 18 casos de agregado en seis anchos, rechazo/stock/reduced motion y foco comprobados, 42 pruebas/lint/build OK. Métricas actuales y evidencia en docs/toast-validation.md.
+
+- F18: entrada de Outlet en 180 ms (opacity/translateY 5 px), key pathname y reduced motion; queries no remontan catálogo ni reinician animación global. Prefetch de módulos por intención en Header/menú/Footer para productos/contacto/ayuda, sin loaders visuales ni dependencias nuevas. Vía de recuperación tipada para prefetch fallido, verificada abortando chunks en dev/build. Side Cart, toast, API y dominio comercial sin modificaciones.
