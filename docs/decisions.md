@@ -49,3 +49,10 @@ Decisión: adaptar Dialog del paquete @base-ui/react existente en shared/ui/Side
 Razón: menú y preview necesitan el mismo comportamiento modal accesible; separar visibilidad de los snapshots evita aperturas por hidratación/reconciliación. Reutilizar la dependencia instalada evita un focus trap artesanal y paquetes adicionales.
 
 Consecuencia: Header/shared reciben datos y callbacks; solo el clic en Carrito abre el preview. El panel no verifica ni finaliza compras. Tras la corrección visual solicitada, el shell ocupa todo el ancho con scroll natural; se retira el acceso flotante y su espacio reservado. Contacto tiene entrada pública secundaria en WhatsApp para diferir el formulario sin mezclar su mensaje con checkout o consulta de producto.
+
+## DEC-013 — Notificación de agregado con react-hot-toast
+Decisión: utilizar react-hot-toast 2.6.1 en lugar del Toast de Base UI para el feedback de agregado, siguiendo la nueva solicitud explícita del usuario. Reemplaza el criterio inicial F17 de no instalar esta librería y de mostrar notificación central.
+
+Razón: tarjeta inferior con check, título y nombre del producto conforme a la referencia aprobada. Una única instancia FeedbackToaster en app con estilos compartidos; helper específico en Cart y ningún cambio al dominio persistido. Base UI permanece para Dialog/menú.
+
+Consecuencia: nueva dependencia directa y goober transitiva, registradas en package-lock.json. El toast es efímero, polite y sin interacción; duración 3000 ms y un ID estable evita apilado. Se conserva la inicialización síncrona cerrada del Side Cart y el resto de las reglas comerciales.
