@@ -75,3 +75,9 @@ Decisión: Hero visual con slug lattafa-oud-for-glory, nombre Lattafa Oud For Gl
 Relacionados por misma categoría con listado/caché, sin N+1; ProductCard existente, scroll snap sin autoplay. FAQ compacta = tres preguntas contextuales; copy compartido con FAQ global. on_order comunica anticipo estándar 30% del total acordado y saldo 70%, con redondeo a centavos; consultar no confirma compra. Encargo confirmado solo con aceptación expresa, condiciones y anticipo recibido; el proceso es manual por WhatsApp. Sin pagos/pedidos web ni nuevos eventos de venta.
 
 La política comercial aprobada por F21 no es dictamen jurídico ni cambia automáticamente on_order a BackOrder en JSON-LD. Cancelación, garantías y mecanismos legales reales requieren revisión. No se limita universalmente devolución ni se declara anticipo no reembolsable.
+
+
+## DEC-017 — Refinamiento de encargos y contacto global
+F21B reemplaza el desglose numérico de la ficha por el aviso compacto del 30%; se elimina el cálculo sin consumidores. Mantiene la política 30/70 sobre precio final pactado, con cotización antes de pagar. FAQ global agrupada en una entrada con cuatro hijos y ficha on_order con una sola pregunta resumida; disponible/agotado conservan tres. Estas decisiones de presentación sustituyen las variantes de DEC-016, sin alterar contratos ni reglas de carrito.
+
+WhatsApp flotante es consulta general, integrado una vez, con configuración existente y sin efectos al montar. Cede prioridad a paneles, cookies, toast y controles de página. Sin dependencia nueva ni Contact global en esta fase: no corresponde reutilizar product_inquiry para un origen general. Derechos y revisión jurídica/mecanismo real de arrepentimiento siguen pendientes; ningún botón ficticio ni cumplimiento legal declarado.

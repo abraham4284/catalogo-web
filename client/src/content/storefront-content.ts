@@ -1,3 +1,5 @@
+import type { FaqEntry } from '@/shared/components/guidance/FaqList'
+
 const baseStorefrontContent = {
   announcement: 'Explorá productos con stock y opciones por encargo · Consultas por WhatsApp',
   hero: {
@@ -22,7 +24,6 @@ const baseStorefrontContent = {
   ],
   faq: [
     { question: '¿Cómo realizo una consulta?', answer: 'Podés consultar desde la ficha de un producto o reunir productos disponibles en el carrito y finalizar la compra por WhatsApp.' },
-    { question: '¿Qué significa “Por encargo”?', answer: 'El producto se consulta directamente desde su ficha. Contactanos para confirmar las condiciones y el plazo del encargo.' },
     { question: '¿El carrito reserva stock?', answer: 'No. Agregar productos al carrito no reserva stock; la disponibilidad se vuelve a verificar antes de continuar por WhatsApp.' },
     { question: '¿El precio y la disponibilidad quedan confirmados al agregar al carrito?', answer: 'No. El carrito vuelve a verificar precio y disponibilidad antes de continuar. La compra se coordina y confirma por WhatsApp.' },
     { question: '¿Realizan envíos a todo el país?', answer: 'Sí. Realizamos envíos a todo el país. Antes de despachar coordinamos con vos el medio de envío, el costo y los datos necesarios para realizar la entrega.' },
@@ -32,21 +33,26 @@ const baseStorefrontContent = {
   footerNote: 'Precio y disponibilidad se confirman antes de coordinar.',
 } as const
 
-export const orderFaq = [
-  { question: '¿Cómo funciona una compra por encargo?', answer: 'Consultanos desde la ficha. Primero verificamos el modelo o variante, la disponibilidad, el precio final y el plazo. El encargo se confirma cuando aceptás expresamente las condiciones y se acredita el anticipo correspondiente. Consultar no confirma una compra.' },
-  { question: '¿Debo abonar un anticipo?', answer: 'Sí. Para confirmar compras por encargo solicitamos un anticipo estándar del 30% del valor final acordado. Es un pago a cuenta que se descuenta del precio total; el 70% restante se abona posteriormente según las condiciones confirmadas. Antes de abonar confirmamos disponibilidad, precio final y plazo.' },
-  { question: '¿Cuándo pago el saldo restante?', answer: 'Cuando el producto está disponible y verificamos que corresponde a lo solicitado, te contactamos para coordinar el pago del saldo del 70% y la entrega, de acuerdo con la cotización aceptada.' },
-  { question: '¿Cuánto demora un encargo?', answer: 'Depende del artículo y del proveedor. Te informamos una fecha o un plazo de entrega antes de recibir el anticipo. Si surge una demora, te avisamos y coordinamos las alternativas que correspondan según lo acordado.' },
-  { question: '¿Qué significa que un producto esté “Por encargo”?', answer: 'No está disponible para entrega inmediata, pero podemos gestionar su compra a través de nuestros proveedores. Antes de confirmar el pedido, te informamos el precio final, la disponibilidad y el plazo de entrega acordado.' },
-  { question: '¿Qué pasa si VITRUNO no consigue el producto?', answer: 'Si no podemos cumplir con las condiciones acordadas, podés solicitar la devolución íntegra del anticipo o aceptar libremente una alternativa. Mantenemos el precio total acordado luego de confirmar; no cambiaremos el producto ni el precio sin tu consentimiento.' },
-  { question: '¿Puedo cancelar una compra por encargo?', answer: 'Podés solicitar la cancelación contactándonos. Las condiciones de cada operación y los derechos que correspondan se informan antes de confirmar el encargo.' },
-  { question: '¿Los productos por encargo tienen garantía?', answer: 'Los productos por encargo mantienen las garantías y derechos aplicables a la operación. Si necesitás gestionar un inconveniente, contactanos.' },
-  { question: '¿Los productos por encargo tienen precio publicado?', answer: 'Cuando contamos con un precio final confirmado y vigente, lo mostramos en la ficha. Si el valor necesita una nueva confirmación, te informamos las condiciones antes de aceptar el pedido y recibir cualquier anticipo.' },
-] as const
+const orderFaq = {
+  question: 'Compras por encargo',
+  answer: 'Los productos por encargo requieren confirmar precio, disponibilidad y plazo. Para reservar el pedido solicitamos un anticipo del 30% del valor total acordado.',
+  items: [
+    { question: '¿Cómo funciona una compra por encargo?', answer: 'El producto no está disponible para entrega inmediata. Consultanos desde su ficha o por WhatsApp: verificamos modelo o variante, disponibilidad, precio final y plazo, y te enviamos una cotización. La consulta sola no confirma la operación.' },
+    { question: '¿Cómo se realiza el pago?', answer: 'Solicitamos un anticipo del 30% del precio final acordado como pago a cuenta; resta abonar el 70%. El encargo se confirma solo después de tu aceptación expresa y de la acreditación del anticipo. Una vez disponible y verificado el artículo, abonás el saldo según la cotización aceptada y antes de coordinar la entrega.' },
+    { question: '¿Cuánto demora y qué pasa si no se consigue?', answer: 'Te informamos una fecha o un plazo concreto antes de recibir el anticipo y te avisamos si surgen demoras. Si no podemos cumplir en las condiciones acordadas, te devolvemos íntegramente el anticipo o podés aceptar voluntariamente una alternativa. No sustituimos el producto ni modificamos el precio unilateralmente.' },
+    { question: '¿Puedo cancelar el pedido? ¿Tiene garantía?', answer: 'Cancelación y arrepentimiento: contactanos por WhatsApp para solicitar la cancelación o ejercer los derechos legales que correspondan a tu operación, incluido el derecho de arrepentimiento cuando resulte aplicable. No aplicamos retenciones automáticas del anticipo. Garantía: es independiente de la cancelación; los productos por encargo conservan las garantías y los derechos legales aplicables. Si el artículo presenta un inconveniente, contactanos para gestionarlo.' },
+  ],
+} as const satisfies FaqEntry
+
+const orderProductFaq = {
+  question: '¿Cómo confirmo una compra por encargo?',
+  answer: 'Consultanos por WhatsApp para confirmar precio, disponibilidad y plazo. El encargo requiere tu aceptación expresa y la acreditación del anticipo del 30% a cuenta del precio acordado. Consultar no confirma una compra. Revisá las condiciones completas en Preguntas frecuentes.',
+} as const
 
 export const storefrontContent = {
   ...baseStorefrontContent,
-  faq: [...baseStorefrontContent.faq.filter((_, index) => index !== 1), ...orderFaq],
+  faq: [...baseStorefrontContent.faq, orderFaq],
+  orderProductNotice: 'Para confirmar tu encargo se solicita un anticipo del 30% del valor total. Antes de abonar, confirmamos precio, disponibilidad y plazo de entrega.',
   orderNotice: 'Consultar no constituye una compra. El encargo se confirma únicamente después de aceptar expresamente las condiciones y acreditarse el anticipo. Antes de abonar confirmamos disponibilidad, precio final y plazo.',
   orderSteps: [
     { title: 'Consultá', text: 'Elegí el producto marcado Por encargo y escribinos por WhatsApp.' },
@@ -58,6 +64,6 @@ export const storefrontContent = {
 } as const
 
 export function getProductFaq(status: 'in_stock' | 'out_of_stock' | 'on_order') {
-  return status === 'on_order' ? [orderFaq[0], orderFaq[1], orderFaq[5]]
-    : [baseStorefrontContent.faq[4], baseStorefrontContent.faq[6], baseStorefrontContent.faq[2]]
+  return status === 'on_order' ? [orderProductFaq]
+    : [baseStorefrontContent.faq[3], baseStorefrontContent.faq[5], baseStorefrontContent.faq[1]]
 }

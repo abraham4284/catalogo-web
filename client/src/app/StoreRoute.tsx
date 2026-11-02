@@ -9,6 +9,7 @@ import { useStorefrontUi } from './storefront-ui.store'
 import { StorePanels } from './compositions/StorePanels'
 import { prefetchRoute } from './navigation-prefetch'
 import { RouteSeo } from './compositions/RouteSeo'
+import { FloatingWhatsAppContact } from './compositions/FloatingWhatsAppContact'
 
 export function StoreRoute() {
   const { pathname } = useLocation()
@@ -38,6 +39,7 @@ export function StoreRoute() {
       />
       <StorePanels />
       <FeedbackToaster />
+      <FloatingWhatsAppContact />
     </>
   )
 }

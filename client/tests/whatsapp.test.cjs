@@ -180,3 +180,19 @@ test('contact URL uses existing lazy configuration and encodes the message once'
   assert.deepEqual([...url.searchParams.keys()], ['text'])
   assert.equal(href({ ...input, email: 'invalid' }), undefined)
 })
+
+test('general floating inquiry uses the exact message and configured number safely', () => {
+  const { load, runtimeEnv } = loadWhatsApp()
+  const { getWhatsAppGeneralInquiryHref: href, GENERAL_WHATSAPP_MESSAGE } = load('features/whatsapp/utils/whatsapp-general-inquiry')
+  assert.equal(GENERAL_WHATSAPP_MESSAGE, '¡Hola! 👋 Quisiera realizar una consulta sobre los productos de VITRUNO. ¿Me pueden ayudar?')
+  for (const number of [undefined, '', '123', '+5491123456789', 'invalid']) {
+    runtimeEnv.VITE_WHATSAPP_NUMBER = number
+    assert.equal(href(), undefined)
+  }
+  runtimeEnv.VITE_WHATSAPP_NUMBER = '5491123456789'
+  const url = new URL(href())
+  assert.equal(url.origin, 'https://wa.me')
+  assert.equal(url.pathname, '/5491123456789')
+  assert.equal(url.searchParams.get('text'), GENERAL_WHATSAPP_MESSAGE)
+  assert.equal([...url.searchParams].length, 1)
+})
