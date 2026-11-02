@@ -225,3 +225,16 @@
 - [x] 45 pruebas (tres nuevas), lint y build
 - [x] QA del build local y regresión carrito/toast/revalidación/retry
 - [x] Documentación y rendimiento en docs/f18-validation.md
+
+## F19 — SEO Foundation + Google Indexing
+- [x] robots.txt con rastreo general y sitemap canónico
+- [x] sitemap.xml inicial de cinco rutas públicas, válido y sin dependencia remota
+- [x] Canonicals https://vitruno.com.ar; catálogo sin queries
+- [x] Metadata por ruta y dinámica por producto, sin duplicados
+- [x] Open Graph/Twitter con host canónico e imagen real/fallback
+- [x] Product/Offer JSON-LD con serialización segura y datos reales
+- [x] Noindex carrito/404; estados de detalle sin metadata stale
+- [x] QA SEO en 55 combinaciones y build local con fixtures
+- [x] 54 pruebas, lint/build y documentación
+- [ ] Tras deploy: verificar dominio real, Rich Results Test, enviar sitemap e inspeccionar URLs en Search Console (manual)
+- [ ] Sitemap de productos: pendiente de una fuente/generación estable independiente de fallos remotos
