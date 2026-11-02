@@ -1,3 +1,4 @@
+import { AnalyticsConsent, useAnalyticsConsent } from '@/features/analytics'
 import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { StoreLayout } from '@/shared/components/layout/StoreLayout'
@@ -27,10 +28,12 @@ export function StoreRoute() {
   return (
     <>
       <RouteSeo />
+      <AnalyticsConsent />
       <StoreLayout
         cartCount={cartCount} cartTotal={cartTotal} cartOpen={panel === 'cart'} menuOpen={panel === 'menu'}
         onOpenCart={openCart} onOpenMenu={openMenu}
         onPrefetchRoute={prefetchRoute}
+        onCookiePreferences={useAnalyticsConsent.getState().openPreferences}
         announcement={storefrontContent.announcement} footerNote={storefrontContent.footerNote}
       />
       <StorePanels />

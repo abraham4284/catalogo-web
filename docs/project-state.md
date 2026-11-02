@@ -1,6 +1,6 @@
 # Estado vigente
 
-Current phase: F19 completed.
+Current phase: F20 implemented; Meta Test Events en producción pendiente.
 
 - Frontend: React + TypeScript + Vite Storefront; shell público compartido con StoreLayout, Header y Footer VITRUNO y responsive.
 - Routing: `/`, `/productos`, `/productos/:slug`, `/carrito`, `/contacto`, `/como-comprar`, `/preguntas-frecuentes` y `*` dentro del layout; detalle consume API real, Not Found con regreso al inicio. Slugs de producto inválidos no montan fetching ni hacen requests. Header recibe unidades y total desde StoreRoute → StoreLayout; shared no importa Cart.
@@ -44,3 +44,5 @@ Current phase: F19 completed.
 - F18: entrada de Outlet en 180 ms (opacity/translateY 5 px), key pathname y reduced motion; queries no remontan catálogo ni reinician animación global. Prefetch de módulos por intención en Header/menú/Footer para productos/contacto/ayuda, sin loaders visuales ni dependencias nuevas. Vía de recuperación tipada para prefetch fallido, verificada abortando chunks en dev/build. Side Cart, toast, API y dominio comercial sin modificaciones.
 
 - F19 SEO: host canónico https://vitruno.com.ar, Search Console verificado por DNS según el usuario (sin modificar registros). Robots permite rastreo; sitemap inicial con cinco rutas públicas, sin productos todavía. Canonicals del catálogo ignoran queries; carrito/404 noindex,follow. Metadata y Product JSON-LD seguros desde datos reales, sin requests extra; in_stock/agotado se representan y encargos omiten availability por falta de política pública concluyente. Depende de JS; publicación/verificación en dominio real, Rich Results Test y envío manual a Search Console pendientes.
+
+- F20: Meta Pixel browser opt-in desde VITE_META_PIXEL_ID (vacío deshabilitado); preferencia versionada accepted/rejected, banner no modal y preferencias Footer. PageView por pathname, ViewContent por ficha/visita y acciones confirmadas AddToCart/InitiateCheckout/Contact; sin Purchase, CAPI ni payloads de formulario. autoConfig desactivado, init sin Advanced Matching; verificar ajustes remotos OFF en Events Manager. Revocación bloquea eventos y recarga. 59 pruebas, lint/build y QA local con SDK interceptado; docs/f20-validation.md.

@@ -1,3 +1,4 @@
+import { trackInitiateCheckout } from '@/features/analytics'
 import { Link } from 'react-router-dom'
 import { useCartStore, CartItemRow, CartSummary, isCartReadyForInquiry } from '@/features/cart'
 import { WhatsAppCheckoutLink } from '@/features/whatsapp'
@@ -21,7 +22,7 @@ export function CartPage() {
             <ul className="min-w-0 space-y-4">{items.map((item) => <CartItemRow key={item.idProduct} item={item} verificationFailed={verification.failedProductIds.includes(item.idProduct)} />)}</ul>
             <div className="min-w-0 space-y-6 self-start">
               <CartSummary items={items} />
-              {verification.status === 'success' && isCartReadyForInquiry(items) ? <WhatsAppCheckoutLink items={items} /> : (
+              {verification.status === 'success' && isCartReadyForInquiry(items) ? <WhatsAppCheckoutLink onCheckout={() => trackInitiateCheckout(items)} items={items} /> : (
                 <div className="space-y-3 rounded-xl border bg-muted/30 p-5">
                   <button type="button" disabled className="min-h-11 rounded-lg bg-primary px-5 py-3 text-primary-foreground opacity-50">Finalizar compra por WhatsApp</button>
                   <p role="status" aria-live="polite" className="text-sm">

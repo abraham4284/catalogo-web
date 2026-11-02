@@ -1,3 +1,4 @@
+import { trackAddToCart, trackContact } from '@/features/analytics'
 import { useEffect } from 'react'
 import { AddToCartButton, useCartStore } from '@/features/cart'
 import { ProductInquiryLink } from '@/features/whatsapp'
@@ -14,8 +15,8 @@ export function ProductCommerceActions({ product }: { product: CommerceProduct }
   const snapshot = toCartSnapshot(product)
   return (
     <div className="space-y-3">
-      {snapshot.availabilityStatus === 'in_stock' && <AddToCartButton product={snapshot} />}
-      <ProductInquiryLink product={{ name, price, availabilityStatus }} />
+      {snapshot.availabilityStatus === 'in_stock' && <AddToCartButton onAdded={() => trackAddToCart(product)} product={snapshot} />}
+      <ProductInquiryLink onContact={() => trackContact('product_inquiry', product)} product={{ name, price, availabilityStatus }} />
     </div>
   )
 }

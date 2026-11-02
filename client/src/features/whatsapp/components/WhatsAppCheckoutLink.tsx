@@ -1,13 +1,13 @@
 import type { WhatsAppCheckoutItem } from '../types/whatsapp.types'
 import { getWhatsAppCheckoutHref } from '../utils/whatsapp-checkout'
 
-export function WhatsAppCheckoutLink({ items }: { items: readonly WhatsAppCheckoutItem[] }) {
+export function WhatsAppCheckoutLink({ items, onCheckout }: { items: readonly WhatsAppCheckoutItem[]; onCheckout?: () => void }) {
   if (items.length === 0) return null
   const href = getWhatsAppCheckoutHref(items)
   return (
     <div className="space-y-3 rounded-xl border bg-muted/30 p-5">
       {href ? (
-        <a href={href} target="_blank" rel="noopener noreferrer" className="inline-block min-h-11 rounded-lg bg-primary px-5 py-3 text-primary-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">
+        <a onClick={onCheckout} href={href} target="_blank" rel="noopener noreferrer" className="inline-block min-h-11 rounded-lg bg-primary px-5 py-3 text-primary-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">
           Finalizar compra por WhatsApp<span className="sr-only"> (abre en una nueva pestaña)</span>
         </a>
       ) : (

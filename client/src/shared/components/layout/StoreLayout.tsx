@@ -11,11 +11,12 @@ type StoreLayoutProps = {
   onOpenCart: (trigger: HTMLElement) => void
   onOpenMenu: (trigger: HTMLElement) => void
   onPrefetchRoute: (href: string) => void
+  onCookiePreferences: () => void
   announcement: string
   footerNote: string
 }
 
-export function StoreLayout({ announcement, footerNote, ...headerProps }: StoreLayoutProps) {
+export function StoreLayout({ announcement, footerNote, onCookiePreferences, ...headerProps }: StoreLayoutProps) {
   const { pathname } = useLocation()
   return (
     <div className="flex min-h-dvh flex-col">
@@ -27,7 +28,7 @@ export function StoreLayout({ announcement, footerNote, ...headerProps }: StoreL
           <Outlet />
         </div>
       </main>
-      <StoreFooter note={footerNote} onPrefetchRoute={headerProps.onPrefetchRoute} />
+      <StoreFooter onCookiePreferences={onCookiePreferences} note={footerNote} onPrefetchRoute={headerProps.onPrefetchRoute} />
     </div>
   )
 }

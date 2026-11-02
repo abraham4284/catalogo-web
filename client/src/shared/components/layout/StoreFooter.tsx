@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { storeNavigation } from './store-navigation'
 import { BrandLogo } from '@/shared/components/brand/BrandLogo'
 
-export function StoreFooter({ note, onPrefetchRoute }: { note: string; onPrefetchRoute: (href: string) => void }) {
+export function StoreFooter({ note, onPrefetchRoute, onCookiePreferences }: { note: string; onCookiePreferences: () => void; onPrefetchRoute: (href: string) => void }) {
   return (
     <footer className="bg-foreground text-background [--ring:var(--background)]">
       <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-center gap-4 px-4 py-8 text-center text-sm sm:flex-row sm:flex-wrap sm:justify-between sm:px-6 sm:text-left lg:px-8">
@@ -16,6 +16,7 @@ export function StoreFooter({ note, onPrefetchRoute }: { note: string; onPrefetc
               <li key={href}><Link to={href} onPointerEnter={() => onPrefetchRoute(href)} onFocus={() => onPrefetchRoute(href)} className="inline-flex min-h-11 items-center py-2 hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">{label}</Link></li>
             ))}
             <li><Link to="/carrito" className="inline-flex min-h-11 items-center hover:underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">Carrito</Link></li>
+          <li><button type="button" onClick={onCookiePreferences} className="min-h-11 py-2 underline focus-visible:outline-2 focus-visible:outline-ring">Preferencias de cookies</button></li>
           </ul>
         </nav>
       </div>

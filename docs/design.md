@@ -74,3 +74,6 @@ Solo el contenido del Outlet entra con opacity 0→1 y translateY 5→0 en 180 m
 
 ## F19 — Identidad en buscadores y enlaces compartidos
 Título, descripción y Open Graph/Twitter por ruta conservan tono VITRUNO. Home usa copy vigente, sin categorías o promesas nuevas. La ficha usa nombre/descripción e imagen reales, con fallback OG de marca 1200×630. No cambia layout, animaciones ni estados visuales de carga/error; SEO no agrega skeletons ni loaders.
+
+## F20 — Consentimiento de medición
+Banner inferior no modal, con título, explicación y botones Aceptar medición/Rechazar medición de igual jerarquía. Safe area y wrapping; sin animación, foco automático ni focus trap. Preferencias de cookies en Footer reabre esa elección. No se inventa enlace legal. El banner está por debajo de panel/toast en z-index; no condiciona contenido SEO ni navegación. La revocación de SDK ya inicializado recarga una vez por seguridad.
