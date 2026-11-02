@@ -68,3 +68,10 @@ Consecuencia: discovery de fichas reales mediante links del catálogo; sitemap d
 Decisión: Pixel de navegador opcional desde env público, bloqueado en unknown/rejected, consentimiento versionado revocable; PageView solo por pathname. Sin Advanced Matching manual, init sin PII, autoConfig desactivado, sin CAPI ni Purchase. WhatsApp no acredita una venta.
 
 Razón: medición solicitada sin cambiar comercio/DB ni enviar campos personales del formulario. Rechazar debe mantener el sitio operativo. SDK ya cargado no puede descargarse de forma fiable: revocar bloquea wrappers y recarga tras persistir rechazo. Payloads propios no incluyen PII; el SDK externo procesa identificadores técnicos/cookies/URL/referrer según su funcionamiento, por lo que no se hace una afirmación jurídica absoluta. Ajustes remotos de matching/eventos y política pública requieren revisión manual antes de producción.
+
+## DEC-016 — Polish y compra por encargo
+Decisión: Hero visual con slug lattafa-oud-for-glory, nombre Lattafa Oud For Glory confirmado en GET público local de Cajora el 2026-11-02. Reutilizar Home o una ficha cacheada si no aparece en los primeros ocho; fallback seguro. No se deriva slug ni se codifica imagen externa.
+
+Relacionados por misma categoría con listado/caché, sin N+1; ProductCard existente, scroll snap sin autoplay. FAQ compacta = tres preguntas contextuales; copy compartido con FAQ global. on_order comunica anticipo estándar 30% del total acordado y saldo 70%, con redondeo a centavos; consultar no confirma compra. Encargo confirmado solo con aceptación expresa, condiciones y anticipo recibido; el proceso es manual por WhatsApp. Sin pagos/pedidos web ni nuevos eventos de venta.
+
+La política comercial aprobada por F21 no es dictamen jurídico ni cambia automáticamente on_order a BackOrder en JSON-LD. Cancelación, garantías y mecanismos legales reales requieren revisión. No se limita universalmente devolución ni se declara anticipo no reembolsable.

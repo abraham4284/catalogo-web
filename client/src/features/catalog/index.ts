@@ -34,3 +34,7 @@ export type {
   CatalogProductsQuery,
   CatalogFieldError,
 } from './types/catalog.types'
+
+export { ProductCardSkeleton, ProductGridSkeleton, ProductDetailSkeleton } from './components/ProductSkeletons'
+export { useRelatedProducts } from './hooks/useRelatedProducts'
+export { selectHeroProduct } from './utils/merchandising'

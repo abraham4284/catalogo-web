@@ -5,12 +5,13 @@ import type { CatalogProductDetail } from '../types/catalog.types'
 import type { CatalogRequestState } from '../types/catalog-request.types'
 import { getCatalogPresentationError } from '../utils/catalog-presentation-error'
 
-export function useCatalogProduct(slug: string): CatalogRequestState<CatalogProductDetail> {
+export function useCatalogProduct(slug: string): CatalogRequestState<CatalogProductDetail> & { retry: () => void } {
   const [result, setResult] = useState<{
     slug: string | undefined
     state: CatalogRequestState<CatalogProductDetail>
   }>({ slug: undefined, state: { status: 'loading' } })
 
+  const [attempt, setAttempt] = useState(0)
   useEffect(() => {
     const controller = new AbortController()
     const { signal } = controller
@@ -27,7 +28,7 @@ export function useCatalogProduct(slug: string): CatalogRequestState<CatalogProd
       if (message) setResult({ slug: slug, state: { status: 'error', message } })
     })
     return () => controller.abort()
-  }, [slug])
+  }, [slug, attempt])
 
-  return result.slug === slug ? result.state : { status: 'loading' }
+  return { ...(result.slug === slug ? result.state : { status: 'loading' as const }), retry: () => { setResult({ slug, state: { status: 'loading' } }); setAttempt((n) => n + 1) } }
 }

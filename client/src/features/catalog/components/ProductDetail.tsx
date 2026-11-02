@@ -1,3 +1,5 @@
+import { calculateOrderPayment } from '../domain/order-payment'
+import { storefrontContent } from '@/content/storefront-content'
 import { Link } from 'react-router-dom'
 import type { CatalogProductDetail } from '../types/catalog.types'
 import { formatCurrency } from '@/shared/utils/format-currency'
@@ -9,6 +11,7 @@ import { ProductAvailabilityBadge } from './ProductAvailabilityBadge'
 import { ProductBreadcrumbs } from './ProductBreadcrumbs'
 
 export function ProductDetail({ product, actions }: { product: CatalogProductDetail; actions?: ReactNode }) {
+  const payment = product.availabilityStatus === 'on_order' ? calculateOrderPayment(product.price) : undefined
   const description = product.description?.trim()
   return (
     <div className="min-w-0 space-y-12">
@@ -20,6 +23,7 @@ export function ProductDetail({ product, actions }: { product: CatalogProductDet
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{product.name}</h1>
           <p className="text-3xl font-semibold tracking-tight">{formatCurrency(product.price)}</p>
           <ProductAvailabilityBadge status={product.availabilityStatus} />
+          {product.availabilityStatus === 'on_order' && <div className="space-y-2 rounded-xl bg-accent p-5 text-sm leading-relaxed">{payment ? <><p>Precio publicado: {formatCurrency(product.price)}</p><p>Anticipo para confirmar: <strong>{formatCurrency(payment.deposit)} (30%)</strong></p><p>Saldo restante: <strong>{formatCurrency(payment.balance)} (70%)</strong></p></> : <p>Los importes del encargo requieren confirmación antes de abonar.</p>}<p>{storefrontContent.orderNotice}</p></div>}
           {description && <p className="max-w-prose whitespace-pre-line text-muted-foreground">{product.description}</p>}
           {product.availabilityNote?.trim() && <p className="rounded-lg border bg-muted/60 p-4 text-sm leading-relaxed whitespace-pre-line">{product.availabilityNote}</p>}
           {actions}
