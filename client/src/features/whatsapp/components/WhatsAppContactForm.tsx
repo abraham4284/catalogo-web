@@ -9,7 +9,7 @@ type ContactErrors = Partial<Record<keyof WhatsAppContact, string>>;
 const fieldClass =
   "min-h-11 w-full min-w-0 rounded-md border border-input bg-card px-3 py-2 focus-visible:outline-2 focus-visible:outline-ring";
 
-export function WhatsAppContactForm() {
+export function WhatsAppContactForm({ onContact }: { onContact?: () => void }) {
   const [values, setValues] = useState({ name: "", email: "", message: "" });
   const [errors, setErrors] = useState<ContactErrors>({});
   const [href, setHref] = useState<string>();
@@ -42,7 +42,7 @@ export function WhatsAppContactForm() {
     const contactHref = getWhatsAppContactHref(parsed.data);
     setHref(contactHref);
     setUnavailable(!contactHref);
-    if (contactHref) window.open(contactHref, "_blank", "noopener,noreferrer");
+    if (contactHref) { onContact?.(); window.open(contactHref, "_blank", "noopener,noreferrer"); }
   }
 
   return (
@@ -138,6 +138,7 @@ export function WhatsAppContactForm() {
           Mensaje preparado.{" "}
           <a
             href={href}
+            onClick={onContact}
             target="_blank"
             rel="noopener noreferrer"
             className="underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring"

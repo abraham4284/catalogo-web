@@ -238,3 +238,17 @@
 - [x] 54 pruebas, lint/build y documentación
 - [ ] Tras deploy: verificar dominio real, Rich Results Test, enviar sitemap e inspeccionar URLs en Search Console (manual)
 - [ ] Sitemap de productos: pendiente de una fuente/generación estable independiente de fallos remotos
+
+## F20 — Meta Pixel + Consent + Event Tracking
+- [x] Configuración pública opcional y loader idempotente
+- [x] Preferencia versionada accepted/rejected y estado unknown seguro
+- [x] Banner aceptar/rechazar y preferencias desde Footer
+- [x] Revocación con bloqueo, persistencia y recarga; sincronización entre pestañas
+- [x] PageView pathname-only y ViewContent por visita/ficha
+- [x] AddToCart solo incremento real; InitiateCheckout solo clic habilitado
+- [x] Contact de consulta individual/formulario válido sin campos personales
+- [x] Sin Purchase/CAPI/Advanced Matching manual ni dependencia nueva
+- [x] 59 pruebas, lint/build, QA local y cinco anchos
+- [x] Documentación técnica y checklist de producción
+- [ ] Meta Test Events y verificación de Automatic Advanced Matching OFF en producción (manual)
+- [ ] Política pública de privacidad/cookies revisada por el responsable comercial/legal
