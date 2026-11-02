@@ -7,6 +7,7 @@ import { storefrontContent } from '@/content/storefront-content'
 import { useStorefrontUi } from './storefront-ui.store'
 import { StorePanels } from './compositions/StorePanels'
 import { prefetchRoute } from './navigation-prefetch'
+import { RouteSeo } from './compositions/RouteSeo'
 
 export function StoreRoute() {
   const { pathname } = useLocation()
@@ -25,6 +26,7 @@ export function StoreRoute() {
 
   return (
     <>
+      <RouteSeo />
       <StoreLayout
         cartCount={cartCount} cartTotal={cartTotal} cartOpen={panel === 'cart'} menuOpen={panel === 'menu'}
         onOpenCart={openCart} onOpenMenu={openMenu}

@@ -12,20 +12,20 @@ export const router = createBrowserRouter([
     Component: StoreRoute,
     HydrateFallback: CatalogLoadingState,
     children: [
-      { index: true, Component: HomePage },
+      { id: 'home', index: true, Component: HomePage },
       {
-        path: 'productos',
+        id: 'catalog', path: 'productos',
         lazy: async () => ({ Component: (await loadCatalogPage()).CatalogPage }),
       },
       {
-        path: 'productos/:slug',
+        id: 'product', path: 'productos/:slug',
         lazy: async () => ({ Component: (await loadProductDetailPage()).ProductDetailPage }),
       },
-      { path: 'carrito', Component: CartPage },
-      { path: 'contacto', lazy: async () => ({ Component: (await loadContactPage()).ContactPage }) },
-      { path: 'como-comprar', lazy: async () => ({ Component: (await loadHowToBuyPage()).HowToBuyPage }) },
-      { path: 'preguntas-frecuentes', lazy: async () => ({ Component: (await loadFaqPage()).FaqPage }) },
-      { path: '*', Component: NotFoundPage },
+      { id: 'cart', path: 'carrito', Component: CartPage },
+      { id: 'contact', path: 'contacto', lazy: async () => ({ Component: (await loadContactPage()).ContactPage }) },
+      { id: 'howToBuy', path: 'como-comprar', lazy: async () => ({ Component: (await loadHowToBuyPage()).HowToBuyPage }) },
+      { id: 'faq', path: 'preguntas-frecuentes', lazy: async () => ({ Component: (await loadFaqPage()).FaqPage }) },
+      { id: 'notFound', path: '*', Component: NotFoundPage },
     ],
   },
 ])

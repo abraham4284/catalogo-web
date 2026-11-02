@@ -22,7 +22,7 @@ Eslogan: “Buenas elecciones, todos los días.” en Hero y metadata. Announcem
 ## Assets y shell
 PNG originales locales de propuesta 3, con fondo opaco #242038; no SVG ni variante simulada con filtros CSS. Horizontal corregido 1200×630 completo en desktop/Footer; Header mobile usa isotipo 512×512 en caja 64 px por mejor legibilidad que el wordmark pequeño. Ambos conservan aspect ratio, sin crop. Header/Footer oscuros con navegación clara, active state y foco claro. Link de marca accesible VITRUNO; isotipo decorativo del Hero fallback con alt vacío.
 
-Iconos 64/180/192/512 reales; manifest browser con colores vigentes y sizes correctos. Se retiró la referencia al ICO previo ya eliminado por el usuario. OG local 1200×630 con URL https://vitruno.onrender.com/og-image.png. Sin service worker ni declaración PWA.
+Iconos 64/180/192/512 reales; manifest browser con colores vigentes y sizes correctos. Se retiró la referencia al ICO previo ya eliminado por el usuario. OG local 1200×630 con URL https://vitruno.com.ar/og-image.png. Sin service worker ni declaración PWA.
 
 ## Dirección editorial
 Referencia principal: [Bellroy](https://bellroy.com/), consultada en F13 para jerarquía, alternancia de grandes visuales y productos, espacio y ritmo de secciones. Se adopta el principio de composición, sin copiar fotografías, branding, textos, componentes, promociones o navegación compleja.
@@ -71,3 +71,6 @@ Toast inferior centrado con react-hot-toast: tarjeta clara con borde y sombra su
 
 ## F18 — Entrada del contenido de ruta
 Solo el contenido del Outlet entra con opacity 0→1 y translateY 5→0 en 180 ms ease-out. El wrapper usa pathname como key: cambios de search/categoria/page en /productos conservan la instancia y no reinician la transición global. No hay salida animada ni espera artificial. Header/AnnouncementBar/Footer permanecen fuera del wrapper; tampoco se animan Side Cart, menú o toast como parte del cambio de ruta. El foco se conserva en main al cambiar pathname y reduced motion elimina la animación. Sin smooth scroll global ni loaders de navegación nuevos.
+
+## F19 — Identidad en buscadores y enlaces compartidos
+Título, descripción y Open Graph/Twitter por ruta conservan tono VITRUNO. Home usa copy vigente, sin categorías o promesas nuevas. La ficha usa nombre/descripción e imagen reales, con fallback OG de marca 1200×630. No cambia layout, animaciones ni estados visuales de carga/error; SEO no agrega skeletons ni loaders.
