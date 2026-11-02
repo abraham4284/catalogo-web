@@ -267,3 +267,19 @@
 - [x] Smoke SEO/Meta y build local; documentación
 - [ ] Revisión jurídica/comercial de cancelación, garantías y mecanismos legales reales
 - [ ] Verificación en hosting/dispositivos reales y paneles externos de Meta/Search Console
+
+
+## F21B — Encargos, FAQ agrupada y WhatsApp flotante
+Refina la presentación de F21; sustituye el desglose de importes y las tres FAQ de encargo de esa fase.
+- [x] Aviso compacto del 30% exclusivo on_order, conservando precio/badge/nota/CTA
+- [x] Eliminar cálculo de importes sin consumidores y reemplazar prueba obsoleta
+- [x] FAQ global con seis generales y un grupo de cuatro subacordeones tipados/accesibles
+- [x] Una FAQ resumida en ficha por encargo y tres para disponible/agotado
+- [x] WhatsApp global con mensaje exacto, número configurable y ausencia segura
+- [x] Ocultar con paneles/cookies/toast y ceder a controles durante scroll
+- [x] Sin Contact global mal clasificado ni cambios de mensajes/eventos existentes
+- [x] 65 pruebas, lint/build y QA local de 36 combinaciones en seis anchos
+- [x] Teclado/foco, reduced motion, configuración ausente y regresión SEO/Meta/checkout
+- [x] Documentación y evidencia en docs/f21b-validation.md
+- [ ] Revisión comercial/jurídica final y mecanismo real de arrepentimiento en fase específica
+- [ ] Verificación tras deploy y en dispositivos/lectores físicos; paneles externos F19/F20
