@@ -252,3 +252,18 @@
 - [x] Documentación técnica y checklist de producción
 - [ ] Meta Test Events y verificación de Automatic Advanced Matching OFF en producción (manual)
 - [ ] Política pública de privacidad/cookies revisada por el responsable comercial/legal
+
+## F21 — Final Storefront Polish
+- [x] Skeleton compartido, cards/grid y ficha completa responsive
+- [x] Home y catálogo con skeleton visual; búsqueda/categoría/página conservan shell y transición
+- [x] Error/empty/404 diferenciados y retry local de datos
+- [x] Hero Lattafa Oud For Glory, slug real confirmado y caché/fallback
+- [x] Relacionados de misma categoría, sin actual/duplicados, ProductCard y scroll snap
+- [x] FAQ compacta de tres preguntas contextuales y enlace global con prefetch
+- [x] FAQ global y Cómo comprar con flujo por encargo
+- [x] Anticipo 30%/saldo 70% en detalle, cálculo numérico testeado
+- [x] CTA Consultar y encargar y WhatsApp de confirmación con URL pública
+- [x] 64 pruebas, lint/build y QA en seis anchos
+- [x] Smoke SEO/Meta y build local; documentación
+- [ ] Revisión jurídica/comercial de cancelación, garantías y mecanismos legales reales
+- [ ] Verificación en hosting/dispositivos reales y paneles externos de Meta/Search Console

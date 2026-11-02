@@ -5,6 +5,7 @@ export type WhatsAppCheckoutItem = {
 }
 
 export type WhatsAppProductInquiry = {
+  slug?: string
   name: string
   price: number
   availabilityStatus: WhatsAppInquiryAvailability
