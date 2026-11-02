@@ -1,3 +1,4 @@
+import { ProductAnalytics } from '@/app/compositions/ProductAnalytics'
 import { useLocation, useParams } from 'react-router-dom'
 import { Seo } from '@/shared/components/seo/Seo'
 import { getProductSeo, getPendingProductSeo } from './product-seo'
@@ -10,7 +11,7 @@ import {
 function ProductContent({ slug }: { slug: string }) {
   const state = useCatalogProduct(slug)
   if (state.status === 'success') {
-    return <><Seo metadata={getProductSeo(state.data)} /><ProductDetail product={state.data} actions={<ProductCommerceActions product={state.data} />} /></>
+    return <><ProductAnalytics product={state.data} /><Seo metadata={getProductSeo(state.data)} /><ProductDetail product={state.data} actions={<ProductCommerceActions product={state.data} />} /></>
   }
   if (state.status === 'error' && state.reason === 'not-found') return <><Seo metadata={getPendingProductSeo(`/productos/${slug}`, true)} /><ProductUnavailableState /></>
   return (

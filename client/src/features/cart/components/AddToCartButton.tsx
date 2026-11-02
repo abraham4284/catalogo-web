@@ -4,7 +4,7 @@ import { useCartStore } from '../store/cart.store'
 import type { AddCartItemInput } from '../types/cart.types'
 import { canIncrementCartItem, isCartItemInStock } from '../domain/cart'
 
-export function AddToCartButton({ product }: { product: AddCartItemInput }) {
+export function AddToCartButton({ product, onAdded }: { product: AddCartItemInput; onAdded?: () => void }) {
   const addItem = useCartStore((state) => state.addItem)
   const [addedProductId, setAddedProductId] = useState<number | null>(null)
   const resetTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
@@ -26,6 +26,7 @@ export function AddToCartButton({ product }: { product: AddCartItemInput }) {
     clearTimeout(resetTimer.current)
     resetTimer.current = setTimeout(() => setAddedProductId(null), 1200)
     showCartAddedToast(product.name)
+    onAdded?.()
   }
 
   return (
