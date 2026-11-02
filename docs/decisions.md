@@ -56,3 +56,10 @@ Decisión: utilizar react-hot-toast 2.6.1 en lugar del Toast de Base UI para el 
 Razón: tarjeta inferior con check, título y nombre del producto conforme a la referencia aprobada. Una única instancia FeedbackToaster en app con estilos compartidos; helper específico en Cart y ningún cambio al dominio persistido. Base UI permanece para Dialog/menú.
 
 Consecuencia: nueva dependencia directa y goober transitiva, registradas en package-lock.json. El toast es efímero, polite y sin interacción; duración 3000 ms y un ID estable evita apilado. Se conserva la inicialización síncrona cerrada del Side Cart y el resto de las reglas comerciales.
+
+## DEC-014 — Host SEO canónico y SEO de SPA
+Decisión: usar exclusivamente https://vitruno.com.ar como host canónico y para OG de marca. Carrito y rutas inexistentes llevan noindex,follow; queries del catálogo canonicalizan a /productos. Se mantienen SPA/lazy routes; sin SSR/SSG ni dependencia adicional para head. El HTML inicial conserva fallback de Home y un helper reutiliza/actualiza esos tags al renderizar JS.
+
+Razón: dominio aprobado y propiedad Search Console ya verificada por DNS según el usuario. El build debe funcionar sin consultar la API remota; por eso el sitemap inicial incluye las cinco rutas públicas estables y no inventa productos/lastmod.
+
+Consecuencia: discovery de fichas reales mediante links del catálogo; sitemap de productos pendiente de generación confiable. La metadata de producto depende de JS; previews sin render JS pueden mostrar el fallback. En Product JSON-LD, in_stock→InStock y out_of_stock→OutOfStock. on_order es consulta de condiciones, sin garantía de reposición ni preventa: se omite availability en vez de afirmar InStock, BackOrder o PreOrder. Las fichas por encargo/agotadas siguen indexables si existen. Offer usa solo precio ARS real; sin SKU, ratings, marca comercial, envío o devoluciones inventados. Publicación/validación y solicitudes Search Console son manuales posteriores al deploy; no se toca DNS.
