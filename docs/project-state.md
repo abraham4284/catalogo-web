@@ -1,6 +1,6 @@
 # Estado vigente
 
-Current phase: F21 completed; revisión jurídica/comercial y verificaciones externas pendientes.
+Current phase: F21B completed; revisión jurídica/comercial y verificaciones externas pendientes.
 
 - Frontend: React + TypeScript + Vite Storefront; shell público compartido con StoreLayout, Header y Footer VITRUNO y responsive.
 - Routing: `/`, `/productos`, `/productos/:slug`, `/carrito`, `/contacto`, `/como-comprar`, `/preguntas-frecuentes` y `*` dentro del layout; detalle consume API real, Not Found con regreso al inicio. Slugs de producto inválidos no montan fetching ni hacen requests. Header recibe unidades y total desde StoreRoute → StoreLayout; shared no importa Cart.
@@ -48,3 +48,6 @@ Current phase: F21 completed; revisión jurídica/comercial y verificaciones ext
 - F20: Meta Pixel browser opt-in desde VITE_META_PIXEL_ID (vacío deshabilitado); preferencia versionada accepted/rejected, banner no modal y preferencias Footer. PageView por pathname, ViewContent por ficha/visita y acciones confirmadas AddToCart/InitiateCheckout/Contact; sin Purchase, CAPI ni payloads de formulario. autoConfig desactivado, init sin Advanced Matching; verificar ajustes remotos OFF en Events Manager. Revocación bloquea eventos y recarga. 59 pruebas, lint/build y QA local con SDK interceptado; docs/f20-validation.md.
 
 - F21: skeletons uniformes de cards/grid/detalle y resultados durante queries, retry de errores de datos. Hero Lattafa Oud For Glory confirmado por API local, caché 5 min y fallback seguro; relacionados misma categoría con ProductCard, caché efímera 60 s y scroll snap sin autoplay. FAQ compacta de tres preguntas, política de encargos 30%/70%, HowToBuy diferenciado y CTA Consultar y encargar con WhatsApp para consultar y confirmar condiciones. Cart v3, SEO/availability JSON-LD y eventos Meta existentes preservados. 64 pruebas, lint/build, QA en seis anchos y smoke de build local. docs/f21-validation.md. Revisión jurídica, mecanismos legales reales, Meta/Search Console y eventual automatización de pedidos siguen pendientes.
+
+
+- F21B: ficha por encargo simplificada a aviso breve del 30%, sin importes calculados ni helper sin uso. FAQ global: seis generales y un grupo de cuatro subacordeones; ficha on_order: una pregunta resumida, otros estados conservan tres. WhatsApp flotante global con número configurado y mensaje general exacto, oculto con paneles/cookies/toast y coincidencia con controles. No emite Contact global; mensajes/eventos existentes preservados. 65 pruebas, lint/build y 36 combinaciones locales en seis anchos; cero coincidencias visibles en muestreo de scroll y corrección de contención de textos ocultos del carrusel. docs/f21b-validation.md. Revisión comercial/jurídica, mecanismo real de arrepentimiento, dispositivos y validaciones externas pendientes.
