@@ -11,13 +11,13 @@ import {
 export function HomePage() {
   const state = useCatalogHome()
   const heroProduct = state.status === 'success'
-    ? state.data.products.items.find((product) => Boolean(product.imageUrl)) ?? state.data.products.items[0]
+    ? state.data.heroProduct
     : undefined
   return (
     <div className="space-y-12 sm:space-y-20">
-      <HomeHero status={state.status} product={heroProduct} />
-      {state.status === 'loading' && <CatalogLoadingState />}
-      {state.status === 'error' && <CatalogErrorState message={state.message} />}
+      <HomeHero status={state.status === 'success' && state.data.heroLoading ? 'loading' : state.status} product={heroProduct} />
+      {state.status === 'loading' && <section aria-label="Productos" className="space-y-6"><h2 className="text-3xl font-semibold">Productos</h2><CatalogLoadingState /></section>}
+      {state.status === 'error' && <CatalogErrorState onRetry={state.retry} message={state.message} />}
       {state.status === 'success' && (
         <>
           {state.data.categories.length > 0 && (

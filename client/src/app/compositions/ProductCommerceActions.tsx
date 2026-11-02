@@ -16,7 +16,7 @@ export function ProductCommerceActions({ product }: { product: CommerceProduct }
   return (
     <div className="space-y-3">
       {snapshot.availabilityStatus === 'in_stock' && <AddToCartButton onAdded={() => trackAddToCart(product)} product={snapshot} />}
-      <ProductInquiryLink onContact={() => trackContact('product_inquiry', product)} product={{ name, price, availabilityStatus }} />
+      <ProductInquiryLink onContact={() => trackContact('product_inquiry', product)} product={{ name, price, availabilityStatus, slug }} />
     </div>
   )
 }

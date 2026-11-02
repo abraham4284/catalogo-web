@@ -17,7 +17,7 @@ import {
 export function CatalogPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const filters = readCatalogFilters(searchParams);
-  const { categories, products: state } = useCatalogListing(filters);
+  const { categories, products: state, retry } = useCatalogListing(filters);
 
   if (
     state.status === "success" &&
@@ -53,7 +53,7 @@ export function CatalogPage() {
       )}
       {state.status === "loading" && <CatalogLoadingState />}
       {state.status === "error" && (
-        <CatalogErrorState message={state.message} />
+        <CatalogErrorState message={state.message} onRetry={retry} />
       )}
       {state.status === "success" && (
         <>

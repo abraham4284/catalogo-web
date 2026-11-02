@@ -8,6 +8,7 @@ export function HowToBuyPage() {
       <h1 className="text-3xl font-semibold sm:text-4xl">Cómo comprar</h1>
       <p className="max-w-prose leading-relaxed text-muted-foreground">Explorá los productos, armá tu selección y coordinemos los detalles por WhatsApp. Agregar al carrito no reserva stock.</p>
       <BuyingSteps steps={storefrontContent.steps} />
+      <section className="space-y-6 border-t pt-8"><h2 className="text-2xl font-semibold">Productos por encargo</h2><BuyingSteps steps={storefrontContent.orderSteps} headingLevel={3} /><p className="max-w-prose text-sm leading-relaxed">{storefrontContent.orderNotice}</p></section>
       <div className="flex flex-wrap gap-5">
         <Link to="/productos" className="inline-flex min-h-11 items-center rounded-md bg-primary px-5 py-3 text-primary-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">Ver productos</Link>
         <Link to="/contacto" className="inline-flex min-h-11 items-center text-primary underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring">Contactanos</Link>

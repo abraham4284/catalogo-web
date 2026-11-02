@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { HomePage } from '@/pages/home/HomePage'
 import { NotFoundPage } from '@/pages/not-found/NotFoundPage'
-import { CatalogLoadingState } from '@/features/catalog'
+import { RouteLoadingSkeleton } from './compositions/RouteLoadingSkeleton'
 import { StoreRoute } from './StoreRoute'
 import { CartPage } from '@/pages/cart/CartPage'
 import { loadCatalogPage, loadProductDetailPage, loadContactPage, loadHowToBuyPage, loadFaqPage } from './route-loaders'
@@ -10,7 +10,7 @@ export const router = createBrowserRouter([
   {
     path: '/',
     Component: StoreRoute,
-    HydrateFallback: CatalogLoadingState,
+    HydrateFallback: RouteLoadingSkeleton,
     children: [
       { id: 'home', index: true, Component: HomePage },
       {

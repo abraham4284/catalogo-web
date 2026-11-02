@@ -77,3 +77,10 @@ Título, descripción y Open Graph/Twitter por ruta conservan tono VITRUNO. Home
 
 ## F20 — Consentimiento de medición
 Banner inferior no modal, con título, explicación y botones Aceptar medición/Rechazar medición de igual jerarquía. Safe area y wrapping; sin animación, foco automático ni focus trap. Preferencias de cookies en Footer reabre esa elección. No se inventa enlace legal. El banner está por debajo de panel/toast en z-index; no condiciona contenido SEO ni navegación. La revocación de SDK ya inicializado recarga una vez por seguridad.
+
+## F21 — Carga, relacionados y encargos
+Skeletons neutros bg-muted con pulse solo motion-safe, esquinas y geometría de imágenes/cards vigentes. Detalle aproxima breadcrumbs, imagen cuadrada, thumbnails, panel de texto/precio/acciones y contenido inferior; móvil apila, desktop conserva dos columnas. Status ocultos, sin texto de carga como UI principal. No se promete CLS cero con nombres/descripciones variables.
+
+Relacionados después de rich content y antes de FAQ: lista horizontal scroll-snap, sin autoplay ni librería, cuatro visibles en xl, tres desde md y ancho de 75% por card en móvil para mostrar continuidad. Scroll nativo, foco y orden DOM naturales; sin smooth-scroll. FAQ de tres details/summary: general para stock/agotado y encargo para on_order, más link a todas las preguntas.
+
+Hero editorial intencional Lattafa Oud For Glory por slug publicado, sin claims de destacado/más vendido. Fallback disponible con imagen y luego isotipo; marco F14 conservado. Encargos muestran precio publicado, anticipo 30% y saldo 70% sobre importe publicado, con aclaración de cotización/aceptación/acreditación. Botón Consultar y encargar abre consulta, sin pago ni reserva web. FAQ global y cinco pasos del flujo de encargos centralizados; revisión jurídica pendiente.
