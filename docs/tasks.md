@@ -283,3 +283,8 @@ Refina la presentación de F21; sustituye el desglose de importes y las tres FAQ
 - [x] Documentación y evidencia en docs/f21b-validation.md
 - [ ] Revisión comercial/jurídica final y mecanismo real de arrepentimiento en fase específica
 - [ ] Verificación tras deploy y en dispositivos/lectores físicos; paneles externos F19/F20
+
+## Mantenimiento puntual — OG image cache bust
+- [x] og-image.png → og-image-v2.png sin alterar bytes; referencias OG/Twitter/fallback y alt base actualizados
+- [x] 65 pruebas, lint/build y asset 1200×630 íntegro en dist; sin referencias runtime antiguas
+- [ ] Tras deploy: comprobar URL pública og-image-v2.png y re-scrape de Home con Meta Sharing Debugger
