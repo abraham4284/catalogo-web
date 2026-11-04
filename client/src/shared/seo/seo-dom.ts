@@ -13,7 +13,7 @@ function upsertMeta(attribute: 'name' | 'property', key: string, content?: strin
 
 export function applySeo(metadata: SeoMetadata) {
   const image = metadata.ogImage ?? DEFAULT_OG_IMAGE
-  const alt = metadata.imageAlt ?? 'VITRUNO: buenas elecciones, todos los días.'
+  const alt = metadata.imageAlt ?? 'VITRUNO — Buenas elecciones, todos los días.'
   document.title = metadata.title
   for (const [name, content] of Object.entries({
     description: metadata.description, robots: metadata.robots ?? 'index,follow',

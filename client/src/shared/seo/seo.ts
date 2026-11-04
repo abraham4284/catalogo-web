@@ -1,5 +1,5 @@
 export const SEO_ORIGIN = 'https://vitruno.com.ar'
-export const DEFAULT_OG_IMAGE = `${SEO_ORIGIN}/og-image.png`
+export const DEFAULT_OG_IMAGE = `${SEO_ORIGIN}/og-image-v2.png`
 
 export type SeoMetadata = {
   title: string
