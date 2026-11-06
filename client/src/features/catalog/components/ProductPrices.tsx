@@ -16,15 +16,18 @@ export function ProductPrices({ priceSale, priceWholesale, variant = 'card' }: {
       <dt className="text-xs text-muted-foreground">{hasWholesale ? wholesaleLabel : retailLabel}</dt>
       <dd className={primaryClass}>{formatCurrency(hasWholesale ? priceWholesale : priceSale)}</dd>
     </div>
-    {showWholesale && <div className="flex flex-wrap items-baseline gap-x-1 text-sm text-muted-foreground">
-      <dt>{hasWholesale ? retailLabel : wholesaleLabel}</dt>
-      <dd>{hasWholesale ? formatCurrency(priceSale) : 'No disponible'}</dd>
-    </div>}
+    {showWholesale && (hasWholesale ? <div className="flex flex-wrap items-baseline gap-x-1 text-sm text-muted-foreground">
+      <dt>{retailLabel}</dt>
+      <dd>{formatCurrency(priceSale)}</dd>
+    </div> : <div className="text-sm text-muted-foreground"><dt className="sr-only">Modalidad de venta</dt><dd>Solo minorista</dd></div>)}
   </dl>
 }
 
-export function WholesaleNotice() {
+export function WholesaleNotice({ priceWholesale }: { priceWholesale?: number | null } = {}) {
   const policy = useCatalogPricing()
   if (!policy?.wholesaleEnabled) return null
+  if (priceWholesale !== undefined && !(priceWholesale !== null && Number.isFinite(priceWholesale) && priceWholesale > 0)) {
+    return <p className="text-sm leading-relaxed text-muted-foreground">Este producto se vende solo a precio minorista.</p>
+  }
   return <p className="text-sm leading-relaxed text-muted-foreground">Precio mayorista desde {formatCurrency(policy.wholesaleMinimumAmount)}. Podés combinar productos de distintas categorías.</p>
 }

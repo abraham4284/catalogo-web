@@ -306,3 +306,14 @@ Refina la presentación de F21; sustituye el desglose de importes y las tres FAQ
 - [ ] Smoke tras deploy con Cajora productivo, dispositivos reales y panel Meta
 
 - [x] Ajuste visual F10.3: mayorista dominante, minorista secundario, cards con descripción de dos líneas; 18 casos visuales locales/6 anchos y 78 pruebas/lint/build OK
+
+## F10.3 Visual Polish — Presentación
+Implementado en dev por confirmación del usuario; qa es su referencia de revisión y la promoción se realiza manualmente.
+- [x] Copy Solo minorista y contexto de ficha sin promoción contradictoria
+- [x] Cards sin descripción, títulos acotados y precios/badges/acciones alineados
+- [x] Progreso visual único desde wholesaleCandidate, con límites y semántica accesible
+- [x] Resumen completo y Side Cart compacto; missing wholesale sin barra engañosa
+- [x] Checkout minorista y dominio económico intactos
+- [x] 88 pruebas, lint/build y 42 casos locales en seis anchos
+- [x] Documentación/evidencia; recomendación operativa de precios de productos públicos
+- [ ] Revisión/promoción manual dev → qa; producción y dispositivos físicos pendientes
