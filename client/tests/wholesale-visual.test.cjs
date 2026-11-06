@@ -5,11 +5,14 @@ const path = require('node:path')
 const ts = require('typescript')
 const React = require('react')
 const { renderToStaticMarkup } = require('react-dom/server')
+const { MemoryRouter } = require('react-router-dom')
+let previewItems = []
 const root = path.resolve(__dirname, '../src')
 const cache = new Map()
 let policy = { wholesaleEnabled: true, wholesaleMinimumAmount: 50000 }
 function load(name) {
   const base = path.resolve(root, name)
+  if (base.endsWith(path.join('store', 'cart.store'))) return { useCartStore: selector => selector({ items: previewItems }) }
   if (base.endsWith(path.join('store', 'business.store'))) return { useCatalogPricing: () => policy }
   const file = ['.ts', '.tsx'].map(ext => base + ext).find(file => fs.existsSync(file))
   if (cache.has(file)) return cache.get(file).exports
@@ -22,6 +25,8 @@ function load(name) {
 const { getWholesaleProgress: progress } = load('features/cart/utils/wholesale-progress')
 const { ProductPrices, WholesaleNotice } = load('features/catalog/components/ProductPrices')
 const { CartPricingStatus } = load('features/cart/components/CartPricingStatus')
+const { CartSummary } = load('features/cart/components/CartSummary')
+const { CartPreview } = load('features/cart/components/CartPreview')
 const { calculateCartPricing } = load('features/cart/domain/pricing')
 const { formatCurrency } = load('shared/utils/format-currency')
 const render = (component, props) => renderToStaticMarkup(React.createElement(component, props))
@@ -79,19 +84,21 @@ test('detail retail-only context does not suggest that SKU gets a wholesale bene
 test('partial cart progress is accessible and compact variant omits the full explanatory paragraph', () => {
   const pricing=calculateCartPricing([item],policy)
   const full=render(CartPricingStatus,{pricing})
-  assert(full.includes('Compra minorista'))
+  assert(render(CartSummary,{pricing}).includes('Compra minorista'))
   assert(full.includes('role="progressbar"'))
   for (const attribute of ['aria-valuemin="0"','aria-valuemax="100"','aria-valuenow="50"','aria-label="Progreso hacia el precio mayorista"']) assert(full.includes(attribute))
   assert(full.includes('width:50%'))
   assert(full.includes(`Te faltan ${formatCurrency(25000)}`))
   const compact=render(CartPricingStatus,{pricing,variant:'compact'})
   assert(compact.includes('width:50%'))
-  assert(!compact.includes('<p class="text-muted-foreground">'))
+  assert(compact.includes('Calculado con precios mayoristas.'))
+  assert(!compact.includes('El progreso se calcula usando'))
+  assert(full.includes('El progreso se calcula usando los precios mayoristas de los productos de tu carrito.'))
 })
 test('wholesale success caps bar at 100 and retains domain savings', () => {
   const pricing=calculateCartPricing([{...item,quantity:3}],policy)
   const html=render(CartPricingStatus,{pricing})
-  assert(html.includes('✓ Accediste al precio mayorista'))
+  assert(render(CartSummary,{pricing}).includes('✓ Precio mayorista desbloqueado'))
   assert(html.includes('width:100%'))
   assert(html.includes('aria-valuenow="100"'))
   assert(html.includes(`Ahorrás ${formatCurrency(pricing.wholesaleSavings)}`))
@@ -104,4 +111,68 @@ test('missing wholesale explains retail without bar or misleading amount remaini
   assert(!html.includes('Te faltan'))
   assert.equal(render(CartPricingStatus,{pricing:calculateCartPricing([],policy)}),'')
   assert.equal(render(CartPricingStatus,{pricing:calculateCartPricing([item],{...policy,wholesaleEnabled:false})}),'')
+})
+
+const clarityItems = [
+  {...item, priceSale:7000, priceWholesale:4680},
+  {...item, idProduct:2, slug:'dos', name:'Dos', priceSale:1950, priceWholesale:1690},
+]
+test('retail summary presents actual total before separated wholesale progress using the concrete fixture', () => {
+  const pricing = calculateCartPricing(clarityItems, policy)
+  const html = render(CartSummary,{pricing})
+  assert.equal(pricing.effectiveSubtotal,8950)
+  assert.equal(pricing.wholesaleCandidate,6370)
+  assert.equal(pricing.wholesaleAmountRemaining,43630)
+  const total = html.indexOf(formatCurrency(8950))
+  const access = html.indexOf('Acceso mayorista')
+  const candidate = html.indexOf(formatCurrency(6370))
+  assert(total > html.indexOf('Total actual'))
+  assert(total < access && access < candidate)
+  assert(html.includes(`${formatCurrency(6370)} / ${formatCurrency(50000)}`))
+  assert(html.includes(`Te faltan ${formatCurrency(43630)}`))
+  assert(html.includes('El progreso se calcula usando los precios mayoristas de los productos de tu carrito.'))
+  assert(html.includes('en valor mayorista'))
+  assert.equal((html.match(/aria-live="polite"/g)||[]).length,1)
+  assert(!/subtotal potencial|candidato mayorista|wholesaleCandidate|precio teórico/.test(html))
+})
+test('wholesale summary prioritizes unlocked benefit, total and savings before the full bar', () => {
+  const pricing = calculateCartPricing([{...item,quantity:3}],policy)
+  const html = render(CartSummary,{pricing})
+  const unlocked=html.indexOf('✓ Precio mayorista desbloqueado'),total=html.indexOf('Total mayorista'),savings=html.indexOf('Ahorrás'),bar=html.indexOf('role="progressbar"')
+  assert(unlocked>=0 && unlocked<total && total<savings && savings<bar)
+  assert(html.includes(formatCurrency(pricing.effectiveSubtotal)))
+  assert(html.includes(formatCurrency(pricing.wholesaleSavings)))
+  assert(html.includes('aria-valuenow="100"'))
+  assert(!html.includes('Acceso mayorista'))
+  assert(!html.includes('El progreso se calcula usando'))
+  assert(!html.includes(`${formatCurrency(75000)} / ${formatCurrency(50000)}`))
+})
+test('missing wholesale and disabled summaries retain actual retail total without misleading progress', () => {
+  for (const pricing of [calculateCartPricing([{...item,priceWholesale:null}],policy),calculateCartPricing([item],{...policy,wholesaleEnabled:false})]) {
+    const html=render(CartSummary,{pricing})
+    assert(html.includes('Total actual'))
+    assert(html.includes(formatCurrency(pricing.effectiveSubtotal)))
+    assert(!html.includes('progressbar'))
+    assert(!html.includes('Acceso mayorista'))
+    assert(!html.includes('Te faltan'))
+    assert(!html.includes('Calculado con precios mayoristas'))
+  }
+  const html=render(CartSummary,{pricing:calculateCartPricing([{...item,priceWholesale:null}],policy)})
+  assert(html.indexOf('Total actual')<html.indexOf('solo tienen precio minorista'))
+})
+test('Side Cart presents actual total before compact progress and retains wholesale success', () => {
+  previewItems=clarityItems
+  const pricing=calculateCartPricing(previewItems,policy)
+  const html=renderToStaticMarkup(React.createElement(MemoryRouter,null,React.createElement(CartPreview,{pricing,onNavigate:()=>{}})))
+  assert(html.indexOf('Total actual')<html.indexOf('Progreso mayorista'))
+  assert(html.includes(formatCurrency(8950)))
+  assert(html.includes(`${formatCurrency(6370)} / ${formatCurrency(50000)}`))
+  assert(html.includes('Calculado con precios mayoristas.'))
+  assert(!html.includes('El progreso se calcula usando'))
+  assert.equal((html.match(/aria-live="polite"/g)||[]).length,1)
+  previewItems=[{...item,quantity:3}]
+  const wholesale=renderToStaticMarkup(React.createElement(MemoryRouter,null,React.createElement(CartPreview,{pricing:calculateCartPricing(previewItems,policy),onNavigate:()=>{}})))
+  assert(wholesale.indexOf('✓ Precio mayorista desbloqueado')<wholesale.indexOf('Total mayorista'))
+  assert(wholesale.indexOf('Total mayorista')<wholesale.indexOf('Ahorrás'))
+  assert(wholesale.includes('aria-valuenow="100"'))
 })

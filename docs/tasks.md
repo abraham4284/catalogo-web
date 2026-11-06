@@ -317,3 +317,11 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] 88 pruebas, lint/build y 42 casos locales en seis anchos
 - [x] Documentación/evidencia; recomendación operativa de precios de productos públicos
 - [ ] Revisión/promoción manual dev → qa; producción y dispositivos físicos pendientes
+
+### F10.3 Cart UX Clarity
+- [x] Total actual antes del bloque de acceso mayorista en resumen y Side Cart
+- [x] Progreso etiquetado, base de cálculo explicada y variante compacta
+- [x] Mayorista desbloqueado con total/ahorro protagonistas y barra sin cociente
+- [x] Missing/disabled sin progreso engañoso; checkout y cálculos intactos
+- [x] Un aria-live por resumen, barra accesible y fixture 8950 / 6370 / 43630
+- [x] 92 pruebas, lint/build, 48 casos locales en seis anchos y documentación
