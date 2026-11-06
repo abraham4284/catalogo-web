@@ -1,6 +1,7 @@
 export type WhatsAppCheckoutItem = {
   name: string
-  price: number
+  unitPrice: number
+  lineTotal: number
   quantity: number
 }
 

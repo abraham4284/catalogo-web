@@ -1,3 +1,4 @@
+import { WholesaleNotice } from '@/features/catalog'
 import { HomeHero } from './components/HomeHero'
 import { HomeEditorial } from './components/HomeEditorial'
 import { HomeBuyingGuide } from './components/HomeBuyingGuide'
@@ -37,6 +38,7 @@ export function HomePage() {
               <h2 id="home-products" className="text-3xl font-semibold tracking-tight">Productos</h2>
               <Link to="/productos" className="underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">Ver todos los productos</Link>
             </div>
+            <WholesaleNotice />
             {state.data.products.items.length > 0 ? <ProductGrid products={state.data.products.items} renderActions={(product) => <ProductCommerceActions product={product} />} /> : <CatalogEmptyState />}
           </section>
         </>

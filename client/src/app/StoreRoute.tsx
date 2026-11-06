@@ -1,9 +1,11 @@
+import { loadCatalogBusiness } from '@/features/catalog'
+import { useStorefrontPricing } from './compositions/useStorefrontPricing'
 import { AnalyticsConsent, useAnalyticsConsent } from '@/features/analytics'
 import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import { StoreLayout } from '@/shared/components/layout/StoreLayout'
 import { FeedbackToaster } from '@/shared/components/ui/FeedbackToaster'
-import { calculateCartItemCount, calculateCartTotal, useCartStore } from '@/features/cart'
+import { calculateCartItemCount, useCartStore } from '@/features/cart'
 import { storefrontContent } from '@/content/storefront-content'
 import { useStorefrontUi } from './storefront-ui.store'
 import { StorePanels } from './compositions/StorePanels'
@@ -15,7 +17,8 @@ export function StoreRoute() {
   const { pathname } = useLocation()
   const previousPath = useRef(pathname)
   const cartCount = useCartStore((state) => calculateCartItemCount(state.items))
-  const cartTotal = useCartStore((state) => calculateCartTotal(state.items))
+  const { effectiveSubtotal: cartTotal } = useStorefrontPricing()
+  useEffect(() => { void loadCatalogBusiness() }, [pathname])
   const { panel, openCart, openMenu, closeForNavigation } = useStorefrontUi()
 
   useEffect(() => {

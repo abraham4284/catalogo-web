@@ -1,3 +1,5 @@
+import { useStorefrontPricing } from '@/app/compositions/useStorefrontPricing'
+import { useCatalogBusinessStatus, loadCatalogBusiness } from '@/features/catalog'
 import { trackInitiateCheckout } from '@/features/analytics'
 import { Link } from 'react-router-dom'
 import { useCartStore, CartItemRow, CartSummary, isCartReadyForInquiry } from '@/features/cart'
@@ -6,6 +8,10 @@ import { useCartCatalogRevalidation } from '@/app/compositions/useCartCatalogRev
 
 export function CartPage() {
   const items = useCartStore((state) => state.items)
+  const pricing = useStorefrontPricing()
+  const businessStatus = useCatalogBusinessStatus()
+  const checkoutItems = pricing.lines.map(({ item, unitPrice, lineTotal }) => ({ name: item.name, quantity: item.quantity, unitPrice, lineTotal }))
+  const analyticsItems = pricing.lines.map(({ item, unitPrice }) => ({ idProduct: item.idProduct, quantity: item.quantity, price: unitPrice }))
   const clearCart = useCartStore((state) => state.clearCart)
   const verification = useCartCatalogRevalidation(items)
   return (
@@ -19,10 +25,12 @@ export function CartPage() {
       ) : (
         <>
           <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-            <ul className="min-w-0 space-y-4">{items.map((item) => <CartItemRow key={item.idProduct} item={item} verificationFailed={verification.failedProductIds.includes(item.idProduct)} />)}</ul>
+            <ul className="min-w-0 space-y-4">{pricing.lines.map(({ item, unitPrice, lineTotal }) => <CartItemRow unitPrice={unitPrice} lineTotal={lineTotal} pricingType={pricing.effectivePricingType} key={item.idProduct} item={item} verificationFailed={verification.failedProductIds.includes(item.idProduct)} />)}</ul>
             <div className="min-w-0 space-y-6 self-start">
-              <CartSummary items={items} />
-              {verification.status === 'success' && isCartReadyForInquiry(items) ? <WhatsAppCheckoutLink onCheckout={() => trackInitiateCheckout(items)} items={items} /> : (
+              <CartSummary pricing={pricing} />
+              {businessStatus === 'loading' && <p role="status" className="text-sm text-muted-foreground">Consultando condiciones mayoristas. Por ahora mostramos precios minoristas.</p>}
+              {businessStatus === 'error' && <div className="space-y-2 text-sm"><p>No pudimos consultar las condiciones mayoristas. Podés continuar con precios minoristas.</p><button type="button" className="min-h-11 underline focus-visible:outline-2 focus-visible:outline-ring" onClick={() => { void loadCatalogBusiness(true) }}>Reintentar condiciones mayoristas</button></div>}
+              {verification.status === 'success' && isCartReadyForInquiry(items) ? <WhatsAppCheckoutLink onCheckout={() => trackInitiateCheckout(analyticsItems)} items={checkoutItems} pricingType={pricing.effectivePricingType} /> : (
                 <div className="space-y-3 rounded-xl border bg-muted/30 p-5">
                   <button type="button" disabled className="min-h-11 rounded-lg bg-primary px-5 py-3 text-primary-foreground opacity-50">Finalizar compra por WhatsApp</button>
                   <p role="status" aria-live="polite" className="text-sm">

@@ -288,3 +288,21 @@ Refina la presentación de F21; sustituye el desglose de importes y las tres FAQ
 - [x] og-image.png → og-image-v2.png sin alterar bytes; referencias OG/Twitter/fallback y alt base actualizados
 - [x] 65 pruebas, lint/build y asset 1200×630 íntegro en dist; sin referencias runtime antiguas
 - [ ] Tras deploy: comprobar URL pública og-image-v2.png y re-scrape de Home con Meta Sharing Debugger
+
+## F10.3 — VITRUNO Storefront Wholesale Pricing
+- [x] Contrato público de catálogo pricing / priceSale / priceWholesale confirmado en Cajora local
+- [x] Política global compartida, loading/error minorista y retry
+- [x] ProductCard/ProductDetail con precios duales y mínimo desde Cajora
+- [x] Cart v4 con migración explícita desde v3 y persistencia segura
+- [x] Dominio puro, half-up por línea y tier RETAIL/WHOLESALE automático
+- [x] Categorías combinables, faltante, ahorro y explicación de mayorista ausente
+- [x] Header, Side Cart, filas y resumen con precios/totales efectivos
+- [x] Revalidación de ambos precios, cantidades preservadas y gate existente
+- [x] WhatsApp minorista/mayorista con importes efectivos y tipo explícito
+- [x] Meta checkout efectivo; producto/SEO con minorista y sin eventos nuevos
+- [x] 78 pruebas, lint y build; cero dependencias nuevas
+- [x] QA responsive en seis anchos y smoke de build compilado
+- [x] Documentación canónica y docs/f10-3-validation.md
+- [ ] Smoke tras deploy con Cajora productivo, dispositivos reales y panel Meta
+
+- [x] Ajuste visual F10.3: mayorista dominante, minorista secundario, cards con descripción de dos líneas; 18 casos visuales locales/6 anchos y 78 pruebas/lint/build OK

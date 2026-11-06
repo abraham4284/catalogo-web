@@ -31,7 +31,7 @@ function loadCatalog() {
 
 const category = { idProductCategory: 1, name: 'Categoría de prueba', slug: 'categoria-prueba' }
 const product = {
-  idProduct: 2, slug: 'producto-prueba', name: 'Producto de prueba', description: null, price: 10,
+  idProduct: 2, slug: 'producto-prueba', name: 'Producto de prueba', description: null, price: 999, priceSale: 10, priceWholesale: 8,
   imageUrl: null, category, saleMode: 'stock', availabilityStatus: 'out_of_stock', availabilityNote: null, stockAvailable: 0, secondaryImageUrl: null,
 }
 const detailProduct = { ...product }
@@ -219,7 +219,7 @@ test('catalog boundary: contracts, inputs, transport and lazy configuration', as
   const rejectsWith = (code, extra = () => true) => (error) => error instanceof CatalogError && error.code === code && extra(error)
 
   await t.test('all four endpoints return validated data and retain pagination aliases', async () => {
-    const business = { name: 'Negocio', slug: 'negocio', logoUrl: null, businessType: null }
+    const business = { name: 'Negocio', slug: 'negocio', logoUrl: null, businessType: null, pricing: { wholesaleEnabled: true, wholesaleMinimumAmount: 50000 } }
     success({ ...business, idBusiness: 99 })
     assert.deepEqual(await api.getCatalogBusiness(), business)
     assert.equal(lastConfig.url, '/catalog')
@@ -306,4 +306,17 @@ test('catalog boundary: contracts, inputs, transport and lazy configuration', as
     await assert.rejects(api.getCatalogProductBySlug('producto-prueba', controller.signal), rejectsWith('NETWORK', (error) => error.isCancelled))
     assert.equal(calls, before)
   })
+})
+
+test('wholesale policy and dual product prices have explicit public schemas', () => {
+  const { load, src } = loadCatalog()
+  const { catalogBusinessSchema: business, catalogProductListItemSchema: schema } = load(path.join(src, 'features/catalog/schemas/catalog.schemas.ts'))
+  for (const wholesaleEnabled of [false,true]) assert(business.safeParse({name:'Vitruno',slug:'vitruno',logoUrl:null,businessType:null,pricing:{wholesaleEnabled,wholesaleMinimumAmount:12500.5}}).success)
+  assert(!business.safeParse({name:'Vitruno',slug:'vitruno',logoUrl:null,businessType:null,pricing:{wholesaleEnabled:true,wholesaleMinimumAmount:null}}).success)
+  const result=schema.parse(product)
+  assert.equal(result.priceSale,10)
+  assert.equal(result.priceWholesale,8)
+  assert.equal(result.price,999)
+  for(const value of [null,0,-1,NaN,Infinity,'invalid']) assert.equal(schema.parse({...product,priceWholesale:value}).priceWholesale,null)
+  for(const value of [undefined,null,NaN,Infinity,'10']) assert(!schema.safeParse({...product,priceSale:value}).success)
 })

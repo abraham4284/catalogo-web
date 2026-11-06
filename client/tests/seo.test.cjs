@@ -17,7 +17,7 @@ function load(relative) {
 }
 const seo = load('shared/seo/seo')
 const productSeo = load('pages/product/product-seo')
-const input = { slug: 'cafe-123', name: '  Café & té 😀 ', description: ' Descripción\n real. ', imageUrl: 'https://images.example.com/cover.jpg', gallery: [{ imageUrl: 'https://images.example.com/cover.jpg' }, { imageUrl: '/gallery.jpg' }, { imageUrl: 'javascript:alert(1)' }], price: 12500.5, availabilityStatus: 'in_stock' }
+const input = { slug: 'cafe-123', name: '  Café & té 😀 ', description: ' Descripción\n real. ', imageUrl: 'https://images.example.com/cover.jpg', gallery: [{ imageUrl: 'https://images.example.com/cover.jpg' }, { imageUrl: '/gallery.jpg' }, { imageUrl: 'javascript:alert(1)' }], priceSale: 12500.5, availabilityStatus: 'in_stock' }
 
 test('canonicals enforce host and strip query, fragment and trailing slash', () => {
   assert.equal(seo.buildCanonical('/'), 'https://vitruno.com.ar/')
@@ -39,7 +39,7 @@ test('image URLs accept public HTTP(S) paths and reject unsafe values', () => {
   for (const value of [null, '', ' ', 'javascript:alert(1)', 'data:image/png,test', 'https://user:secret@example.com/p.jpg', 'http://[']) assert.equal(seo.getSeoImageUrl(value), undefined)
 })
 
-test('Product data uses real values, deduplicated images and numeric ARS price', () => {
+test('Product data uses real values, deduplicated images and numeric ARS priceSale', () => {
   const before = structuredClone(input)
   const result = productSeo.getProductSeo(input)
   assert.equal(result.title, 'Café & té 😀 | VITRUNO')
@@ -65,9 +65,9 @@ test('availability is commercial and never inferred from physical stock', () => 
 })
 
 test('missing content has neutral fallbacks, invalid prices never create Offers', () => {
-  for (const price of [-1, NaN, Infinity]) assert.equal('offers' in productSeo.getProductSeo({ ...input, price }).structuredData, false)
+  for (const priceSale of [-1, NaN, Infinity]) assert.equal('offers' in productSeo.getProductSeo({ ...input, priceSale }).structuredData, false)
   assert.equal(productSeo.getProductSeo({ ...input, name: ' ' }).title, 'Producto | VITRUNO')
-  const result = productSeo.getProductSeo({ ...input, description: null, imageUrl: null, gallery: [], price: 0 })
+  const result = productSeo.getProductSeo({ ...input, description: null, imageUrl: null, gallery: [], priceSale: 0 })
   assert.equal(result.ogImage, seo.DEFAULT_OG_IMAGE)
   assert.equal('image' in result.structuredData, false)
   assert.equal(result.structuredData.offers.price, 0)
@@ -99,4 +99,10 @@ test('sitemap and robots contain only the approved public canonical routes', () 
   const robots = fs.readFileSync(path.resolve(__dirname, '../public/robots.txt'), 'utf8')
   assert(robots.includes('Allow: /'))
   assert(robots.includes('Sitemap: https://vitruno.com.ar/sitemap.xml'))
+})
+
+test('compatibility and wholesale prices never replace retail Offer', () => {
+  const result = productSeo.getProductSeo({...input,price:999,priceSale:123,priceWholesale:100})
+  assert.equal(result.structuredData.offers.price,123)
+  assert(!Array.isArray(result.structuredData.offers))
 })

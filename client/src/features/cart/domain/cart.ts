@@ -1,3 +1,4 @@
+import { moneyLineCents, sumCents } from '@/shared/utils/money'
 import type { CartItem, AddCartItemInput, CartAvailabilityStatus } from '../types/cart.types'
 
 export function isCartItemInStock(item: Pick<AddCartItemInput, 'availabilityStatus' | 'stockAvailable'>): boolean {
@@ -13,18 +14,18 @@ export function canIncrementCartItem(item: CartItem): boolean {
 }
 
 export function isCartReadyForInquiry(items: readonly CartItem[]): boolean {
-  return items.length > 0 && items.every((item) => isCartItemInStock(item) && isCartItemQuantityValid(item))
+  return items.length > 0 && Number.isFinite(calculateCartTotal(items)) && items.every((item) => isCartItemInStock(item) && isCartItemQuantityValid(item))
 }
 
 export function calculateCartLineTotal(item: CartItem): number {
-  return item.price * item.quantity
+  return moneyLineCents(item.priceSale, item.quantity) / 100
 }
 
-export function calculateCartTotal(items: CartItem[]): number {
-  return items.reduce((total, item) => total + calculateCartLineTotal(item), 0)
+export function calculateCartTotal(items: readonly CartItem[]): number {
+  return sumCents(items.map(item => moneyLineCents(item.priceSale, item.quantity))) / 100
 }
 
-export function calculateCartItemCount(items: CartItem[]): number {
+export function calculateCartItemCount(items: readonly CartItem[]): number {
   return items.reduce((total, item) => total + item.quantity, 0)
 }
 

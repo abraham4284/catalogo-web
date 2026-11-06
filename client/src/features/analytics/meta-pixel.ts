@@ -1,3 +1,4 @@
+import { moneyLineCents, sumCents } from '@/shared/utils/money'
 import { useAnalyticsConsent } from './consent'
 
 type PixelCall = [command: string, ...args: unknown[]]
@@ -80,7 +81,7 @@ export function trackInitiateCheckout(items: readonly { idProduct: number; quant
   track('InitiateCheckout', { content_ids: items.map((item) => String(item.idProduct)),
     contents: items.map((item) => ({ id: String(item.idProduct), quantity: item.quantity })),
     num_items: items.reduce((n, item) => n + item.quantity, 0),
-    value: items.reduce((n, item) => n + item.price * item.quantity, 0), currency: 'ARS' })
+    value: sumCents(items.map(item => moneyLineCents(item.price, item.quantity))) / 100, currency: 'ARS' })
 }
 export function trackContact(source: 'contact_page' | 'product_inquiry', product?: { idProduct: number; name: string; availabilityStatus: string }) {
   track('Contact', { source, ...(source === 'product_inquiry' && product ? {
