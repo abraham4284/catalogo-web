@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom'
 import { formatCurrency } from '@/shared/utils/format-currency'
-import { calculateCartLineTotal } from '../domain/cart'
+import type { PricingType } from '@/shared/types/pricing'
 import { getCartAvailabilityLabel, canIncrementCartItem, isCartItemQuantityValid } from '../domain/cart'
 import { ProductImage } from '@/shared/components/media/ProductImage'
 import { useCartStore } from '../store/cart.store'
 import type { CartItem } from '../types/cart.types'
 
-export function CartItemRow({ item, verificationFailed = false, idPrefix = 'cart-product', onNavigate }: {
-  item: CartItem; verificationFailed?: boolean; idPrefix?: string; onNavigate?: () => void
+export function CartItemRow({ item, unitPrice, lineTotal, pricingType, verificationFailed = false, idPrefix = 'cart-product', onNavigate }: {
+  item: CartItem; unitPrice: number; lineTotal: number; pricingType: PricingType; verificationFailed?: boolean; idPrefix?: string; onNavigate?: () => void
 }) {
   const increment = useCartStore((state) => state.incrementItem)
   const decrement = useCartStore((state) => state.decrementItem)
@@ -22,7 +22,7 @@ export function CartItemRow({ item, verificationFailed = false, idPrefix = 'cart
         <h2 id={`${idPrefix}-${item.idProduct}`} className="min-w-0 break-words text-lg font-medium">{item.name}</h2>
       </Link>
       <div className="space-y-2">
-        <p className="text-sm text-muted-foreground">Precio unitario: {formatCurrency(item.price)}</p>
+        <p className="text-sm text-muted-foreground">{pricingType === 'WHOLESALE' ? 'Precio unitario mayorista' : 'Precio unitario'}: {formatCurrency(unitPrice)}</p>
         <p className="text-sm">{getCartAvailabilityLabel(item.availabilityStatus)}</p>
         {verificationFailed && <p role="status" className="text-sm">No pudimos verificar la disponibilidad actual de este producto.</p>}
         {item.availabilityStatus === 'on_order' && <p className="text-sm">Este producto ahora se vende por encargo.</p>}
@@ -34,7 +34,7 @@ export function CartItemRow({ item, verificationFailed = false, idPrefix = 'cart
         <button type="button" disabled={!canIncrementCartItem(item)} aria-label={`Aumentar cantidad de ${item.name}`} onClick={() => increment(item.idProduct)} className={buttonClass}>+</button>
         <button type="button" onClick={() => remove(item.idProduct)} aria-label={`Eliminar ${item.name} del carrito`} className="px-3 py-2 text-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring">Eliminar</button>
       </div>
-      <p className="min-w-0 font-semibold">Subtotal: {formatCurrency(calculateCartLineTotal(item))}</p>
+      <p className="min-w-0 font-semibold">Subtotal: {formatCurrency(lineTotal)}</p>
     </li>
   )
 }

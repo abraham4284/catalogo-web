@@ -33,8 +33,8 @@ test('message has quantities, prices, totals and confirmation without mutating i
   const { buildWhatsAppCheckoutMessage: build } = load('features/whatsapp/domain/whatsapp-message')
   const { formatCurrency } = load('shared/utils/format-currency')
   const items = Object.freeze([
-    Object.freeze({ name: ' Producto\nEspecial\t& café ', price: 10000, quantity: 2 }),
-    Object.freeze({ name: 'Producto B', price: 5000, quantity: 1 }),
+    Object.freeze({ name: ' Producto\nEspecial\t& café ', unitPrice: 10000, quantity: 2, lineTotal: 20000 }),
+    Object.freeze({ name: 'Producto B', unitPrice: 5000, quantity: 1, lineTotal: 5000 }),
   ])
   const message = build(items)
   assert.ok(message.includes(`- 2 x Producto Especial & café — ${formatCurrency(10000)} c/u — subtotal ${formatCurrency(20000)}`))
@@ -45,7 +45,7 @@ test('message has quantities, prices, totals and confirmation without mutating i
   assert.equal(build(items), message)
   assert.equal(items[0].name, ' Producto\nEspecial\t& café ')
   assert.ok(build([items[1]]).includes(`Total estimado: ${formatCurrency(5000)}`))
-  const updated = build([{ name: 'Producto actualizado', price: 12000, quantity: 2, stockAvailable: 9876, availabilityStatus: 'in_stock', slug: 'slug-interno', idProduct: 6543 }])
+  const updated = build([{ name: 'Producto actualizado', unitPrice: 12000, quantity: 2, lineTotal: 24000, stockAvailable: 9876, availabilityStatus: 'in_stock', slug: 'slug-interno', idProduct: 6543 }])
   assert.ok(updated.includes(`Total estimado: ${formatCurrency(24000)}`))
   assert.ok(updated.includes(formatCurrency(12000)))
   for (const forbidden of ['9876', '6543', 'slug-interno', 'stockAvailable', 'availabilityStatus', 'in_stock']) assert.equal(updated.includes(forbidden), false)
@@ -56,10 +56,10 @@ test('empty or invalid message inputs do not produce a checkout', () => {
   const { buildWhatsAppCheckoutMessage: build } = load('features/whatsapp/domain/whatsapp-message')
   assert.throws(() => build([]))
   for (const item of [
-    { name: '  ', price: 10, quantity: 1 },
-    { name: 'Producto', price: Infinity, quantity: 1 },
-    { name: 'Producto', price: 10, quantity: 0 },
-    { name: 'Producto', price: 10, quantity: 1.5 },
+    { name: '  ', unitPrice: 10, quantity: 1 },
+    { name: 'Producto', unitPrice: Infinity, quantity: 1 },
+    { name: 'Producto', unitPrice: 10, quantity: 0 },
+    { name: 'Producto', unitPrice: 10, quantity: 1.5 },
   ]) assert.throws(() => build([item]))
 })
 
@@ -83,7 +83,7 @@ test('number configuration is lazy, strict and unavailable configuration is safe
   const { load, runtimeEnv } = loadWhatsApp()
   const { getWhatsAppNumber } = load('config/env')
   const { getWhatsAppCheckoutHref } = load('features/whatsapp/utils/whatsapp-checkout')
-  const items = [{ name: 'Producto', price: 10, quantity: 2 }]
+  const items = [{ name: 'Producto', unitPrice: 10, quantity: 2, lineTotal: 20 }]
   assert.throws(() => getWhatsAppNumber())
   assert.equal(getWhatsAppCheckoutHref(items), undefined)
   for (const number of ['', '+5493811234567', '549381-1234567', ' 5493811234567 ', '1234567', '1'.repeat(16)]) {

@@ -16,7 +16,7 @@ type CartStore = {
 }
 
 function hasSameSnapshot(item: CartItem, snapshot: AddCartItemInput): boolean {
-  return item.name === snapshot.name && item.price === snapshot.price && item.imageUrl === snapshot.imageUrl
+  return item.name === snapshot.name && item.priceSale === snapshot.priceSale && item.priceWholesale === snapshot.priceWholesale && item.imageUrl === snapshot.imageUrl
     && item.slug === snapshot.slug && item.availabilityStatus === snapshot.availabilityStatus && item.stockAvailable === snapshot.stockAvailable
 }
 
@@ -65,7 +65,7 @@ export const useCartStore = create<CartStore>()(persist((set, get) => ({
   clearCart() { set({ items: [] }) },
 }), {
   name: 'catalogo-web-cart',
-  version: 3,
+  version: 4,
   storage: cartStorage,
   partialize: (state) => ({ items: state.items }),
 }))

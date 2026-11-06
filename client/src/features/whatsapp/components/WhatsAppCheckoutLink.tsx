@@ -1,9 +1,10 @@
+import type { PricingType } from '@/shared/types/pricing'
 import type { WhatsAppCheckoutItem } from '../types/whatsapp.types'
 import { getWhatsAppCheckoutHref } from '../utils/whatsapp-checkout'
 
-export function WhatsAppCheckoutLink({ items, onCheckout }: { items: readonly WhatsAppCheckoutItem[]; onCheckout?: () => void }) {
+export function WhatsAppCheckoutLink({ items, pricingType = 'RETAIL', onCheckout }: { pricingType?: PricingType; items: readonly WhatsAppCheckoutItem[]; onCheckout?: () => void }) {
   if (items.length === 0) return null
-  const href = getWhatsAppCheckoutHref(items)
+  const href = getWhatsAppCheckoutHref(items, pricingType)
   return (
     <div className="space-y-3 rounded-xl border bg-muted/30 p-5">
       {href ? (

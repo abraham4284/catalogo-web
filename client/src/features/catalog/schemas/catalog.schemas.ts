@@ -12,6 +12,7 @@ export const catalogBusinessSchema = z.object({
   slug: z.string(),
   logoUrl: z.string().nullable(),
   businessType: z.string().nullable(),
+  pricing: z.object({ wholesaleEnabled: z.boolean(), wholesaleMinimumAmount: z.number().finite().nonnegative() }),
 })
 
 export const catalogCategorySchema = z.object({
@@ -34,7 +35,9 @@ const catalogProductBaseSchema = z.object({
   slug: catalogSlugSchema,
   name: z.string(),
   description: z.string().nullable(),
-  price: z.number(),
+  price: z.number(), // Compatibility only; commercial calculations use the explicit prices.
+  priceSale: z.number().finite().nonnegative(),
+  priceWholesale: z.number().finite().positive().nullable().catch(null),
   imageUrl: z.string().nullable(),
   category: catalogProductCategorySchema,
   saleMode: productSaleModeSchema,

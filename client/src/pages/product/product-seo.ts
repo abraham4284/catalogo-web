@@ -1,7 +1,7 @@
 import { buildCanonical, DEFAULT_OG_IMAGE, getSeoImageUrl, normalizeSeoText, type SeoMetadata } from '@/shared/seo/seo'
 
 type SeoProduct = {
-  slug: string; name: string; description: string | null; imageUrl: string | null; price: number
+  slug: string; name: string; description: string | null; imageUrl: string | null; priceSale: number
   availabilityStatus: 'in_stock' | 'out_of_stock' | 'on_order'
   gallery: readonly { imageUrl: string }[]
 }
@@ -22,8 +22,8 @@ export function getProductSeo(product: SeoProduct): SeoMetadata {
   const structuredData = {
     '@context': 'https://schema.org', '@type': 'Product', name, description,
     ...(images.length ? { image: images } : {}),
-    ...(Number.isFinite(product.price) && product.price >= 0 ? { offers: {
-      '@type': 'Offer', priceCurrency: 'ARS', price: product.price, url: canonical,
+    ...(Number.isFinite(product.priceSale) && product.priceSale >= 0 ? { offers: {
+      '@type': 'Offer', priceCurrency: 'ARS', price: product.priceSale, url: canonical,
       ...(availability ? { availability } : {}),
     } } : {}),
   }
