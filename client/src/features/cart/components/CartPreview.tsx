@@ -1,4 +1,4 @@
-import { CartPricingStatus } from './CartPricingStatus'
+import { CartPricingLabel, CartPricingStatus } from './CartPricingStatus'
 import type { CartPricing } from '../domain/pricing'
 import { Link } from 'react-router-dom'
 import { useCartStore } from '../store/cart.store'
@@ -22,8 +22,9 @@ export function CartPreview({ onNavigate, pricing }: { onNavigate: () => void; p
       <ul>{pricing.lines.map(({ item, unitPrice, lineTotal }) => <CartItemRow unitPrice={unitPrice} lineTotal={lineTotal} pricingType={pricing.effectivePricingType} key={item.idProduct} item={item} idPrefix="preview-product" onNavigate={onNavigate} />)}</ul>
       <div aria-live="polite" className="space-y-2 border-t pt-5">
         <p>Unidades: {calculateCartItemCount(items)}</p>
+        <CartPricingLabel pricingType={pricing.effectivePricingType} />
+        <p className="text-xl font-semibold">{pricing.effectivePricingType === 'WHOLESALE' ? 'Total mayorista' : 'Total actual'}: {formatCurrency(pricing.effectiveSubtotal)}</p>
         <CartPricingStatus pricing={pricing} variant="compact" />
-        <p className="text-xl font-semibold">{pricing.effectivePricingType === 'WHOLESALE' ? 'Total mayorista' : 'Total'}: {formatCurrency(pricing.effectiveSubtotal)}</p>
       </div>
       <Link to="/carrito" onClick={onNavigate} className="block min-h-11 rounded-md bg-primary px-4 py-3 text-center font-medium text-primary-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">Ver carrito completo</Link>
     </div>

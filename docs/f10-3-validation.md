@@ -154,3 +154,37 @@ Build baseline ejecutado antes de editar: JS inicial agregado 611.18 kB / gzip19
 Si mayorista está habilitado, se recomienda que cada producto público in_stock agregable al carrito tenga priceSale y priceWholesale válidos. priceWholesale null debería representar una excepción comercial deliberada. Es recomendación operativa; no se endurecen schemas ni se modifica Cajora o su DB.
 
 Revisión/promoción manual a qa y posterior master según el usuario; comprobación en producción y dispositivos reales pendiente. Políticas jurídicas, reconocimiento de Customer existente por operador y mecanismos legales reales conservan sus pendientes anteriores. No hay bloqueos de implementación conocidos.
+
+## F10.3 Cart UX Clarity (2026-11-06)
+
+### Implementación
+Ajuste de presentación realizado en dev según la autorización previa del usuario: qa es la referencia que revisa en ChatGPT web y la promoción sigue siendo manual dev → qa → master. Árbol inicialmente limpio. No se cambió de rama ni se escribieron commits.
+
+CartSummary muestra primero cantidad, estado y el importe efectivo, con label «Total actual» en RETAIL. El bloque de «Acceso mayorista» se separa mediante borde/espacio y etiqueta la cifra como «Progreso mayorista», con candidato / mínimo, barra, faltante y explicación: «El progreso se calcula usando los precios mayoristas de los productos de tu carrito.» No se introducen términos de implementación en el copy visible.
+
+CartPreview presenta el mismo orden, con «Calculado con precios mayoristas.» y faltante compacto. WHOLESALE usa «✓ Precio mayorista desbloqueado», total mayorista, ahorro y barra 100%; no repite el cociente o explicación larga. Missing wholesale conserva el total actual visible y aviso de productos solo minoristas, sin barra/faltante. Disabled conserva retail sin bloque de acceso o explicación mayorista. Aclaración de cliente mayorista existente conservada.
+
+Componentes fuente modificados exclusivamente: CartSummary.tsx, CartPricingStatus.tsx y CartPreview.tsx. CartPricingStatus mantiene el beneficio/progreso/ahorro y comparte un pequeño CartPricingLabel dentro del mismo archivo; el total sigue siendo responsabilidad de Summary/Preview. Sin nueva capa, store o estado.
+
+### Comportamiento preservado
+No se modificaron pricing.ts ni wholesale-progress.ts: misma base mayorista, porcentaje, límite 100%, mínimo, faltante, transición y ahorro. El importe mostrado sigue siendo effectiveSubtotal. Checkout minorista y mayorista conserva sus gates; stock, quantity, v4, migración, revalidación, API, ProductPrices/Card/Detail, mensajes WhatsApp, Meta, SEO, encargos y Hero sin cambios. Comprobado con diff de los archivos protegidos; no se alteran cálculos ni se crean pedidos/pagos.
+
+### Accesibilidad
+Se conserva un único aria-live polite por contenedor de resumen/preview; ningún anuncio adicional en barra/total/faltante. role progressbar y aria-valuemin/max/now intactos; aria-valuetext retail agrega «en valor mayorista», y WHOLESALE conserva «Mínimo mayorista alcanzado». Orden visual/DOM: beneficio y total antes del incentivo según estado. Semántica dl/dt/dd para total del resumen. Reduced motion y foco al cerrar Side Cart comprobados; no se ejecutó lector de pantalla físico.
+
+### Pruebas
+92 pruebas pasan: 88 existentes con ajustes de copy/ubicación de los asserts de estado y cuatro casos nuevos. Se conservan assertions de fórmula, límites, dinero, almacenamiento, WhatsApp, Meta y SEO. Nuevos renders SSR prueban la jerarquía completa del resumen y preview, explicación full/compact, estado mayorista y missing/disabled, y un único contenedor polite.
+
+Fixture concreto con dos unidades: A priceSale 7000 / priceWholesale 4680; B priceSale 1950 / priceWholesale 1690; mínimo 50000. Resultado sin cambios: total actual 8950, progreso mayorista 6370, faltante 43630 y barra 12.74%. Se comprueba que 8950 aparece antes del acceso/progreso y que el cociente usa 6370, no el total actual. npm run lint y npm run build: OK.
+
+### QA responsive y visual
+Edge headless con API local de fixtures y SDK Meta interceptado. 48 casos: CartSummary y Side Cart, en RETAIL/WHOLESALE/missing/disabled, para 320/375/768/1024/1440/1920. Sin overflow horizontal ni errores de página. Caso concreto de 8950/6370/43630 verificado en ambos contenedores; labels, cociente, faltante, explicación y orden geométrico comprobados.
+
+Mayorista de fixture: cantidades 10×A + 2×B, total efectivo 50180 y ahorro 23720, barra 100%. El total precede ahorro/barra y no se muestra el cociente. Checkout habilitado mantiene mensajes por nivel y valores Meta 8950/50180 al hacer clic; no se emitió Purchase. Missing conserva total 12000 sin barra; disabled conserva 8950 sin incentivo. Importes largos adicionales en ambos contenedores en los seis anchos, con wrapping seguro. Reduced motion sin transición y Escape devuelve foco al acceso del carrito.
+
+Capturas de resumen retail mobile, preview retail mobile y resumen wholesale desktop inspeccionadas visualmente. Evidencia local en el directorio ya documentado: cart-clarity-qa.cjs, cart-clarity-results.json, cart-clarity-summary-retail-375/1440.png, cart-clarity-summary-wholesale-375/1440.png, cart-clarity-side-retail-375/1440.png y cart-clarity-side-wholesale-375/1440.png. No se afirma validación de producción ni dispositivos físicos.
+
+### Dependencias y límites
+Sin dependencias nuevas, cambios de lockfile o configuración. Build local final: JS inicial agregado 613.34/gzip195.46 kB (principal299.07/94.27, runtime102.27/34.06, whatsapp-url92.15/27.01, contenido5.79/2.08 y ProductCommerceActions114.06/38.04); CSS45.94/gzip8.77. Comparación con snapshot documentado del Visual Polish: +0.78/+0.16 kB JS y +0.20/+0.03 CSS. No se ejecutó un build nuevo del checkout anterior en esta tarea. Sin mediciones de CWV o dictamen de accesibilidad.
+
+Revisión/promoción manual y pendientes productivos de fases anteriores conservados. Sin bloqueos de implementación conocidos; el único cambio respecto de la rama nombrada por el documento es usar dev conforme al acuerdo vigente del usuario.
