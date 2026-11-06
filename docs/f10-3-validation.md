@@ -114,3 +114,43 @@ Cards limitan descripción a dos líneas con CSS; texto original intacto. Área 
 78 pruebas existentes, lint/build OK. Ningún cambio en dominio mayorista, mínimo, cálculo de candidato, transición, estado/persistencia, API, mensajes o analítica. Única prop nueva: variante visual card/detail en ProductPrices.
 
 Build posterior: principal 299.07/gzip94.26, ProductCommerceActions 111.90/37.45; demás chunks iniciales sin cambios. Total JS inicial 611.18/gzip194.86 kB; CSS45.19/gzip8.68. QA en desarrollo con fixtures; no despliegue nuevo ni verificación productiva. Evidencia en el mismo directorio: f10-3-polish-qa.cjs, f10-3-polish-results.json y capturas f10-3-polish-cards-375/1440.png, f10-3-polish-detail-375/1440.png.
+
+## Visual polish — F10.3 Wholesale UX (2026-11-06)
+
+### Alcance y rama
+El documento de referencia mencionaba qa. El usuario confirmó expresamente implementar en dev, manteniendo dev → qa y promoviendo qa → master cuando termine su revisión. Árbol inicialmente limpio en dev; sin cambio de rama ni operaciones de escritura Git. No se analizó/resolvió divergencia entre ramas.
+
+### Solo minorista y card alignment
+ProductPrices cambia el mensaje de mayorista ausente/inválido por «Solo minorista», neutral. Minorista sigue protagonista en ese caso; mayorista válido mantiene su jerarquía y minorista secundario sin tachado. ProductDetail pasa el contexto del SKU a WholesaleNotice: solo minorista recibe explicación propia, sin sugerir que el mínimo global le aplica. El aviso global del catálogo continúa usando la política de Cajora.
+
+ProductCard elimina la descripción visual, conservando el dato original y la descripción completa en detalle. Categoría en una línea; nombre limitado a dos con altura mínima compartida, enlace con nombre accesible completo. Flex, altura mínima del área de precios y acciones alinean precios, badges y final de acciones por fila. La acción única de encargos comparte la geometría, sin hacks por producto.
+
+### Progress bar / Side Cart / CartPage
+Helper puramente visual features/cart/utils/wholesale-progress.ts: porcentaje desde wholesaleCandidate/wholesaleMinimumAmount, limitado a 100; no usa retailSubtotal ni effectiveSubtotal. No devuelve progreso con disabled, vacío, alguna línea sin mayorista, candidato no finito/negativo o mínimo no finito/no positivo. Con mínimo cero se omite la barra; el nivel económico sigue derivándose sin cambios por el dominio existente.
+
+CartPricingStatus renderiza status, barra y faltante/ahorro. Variante full en CartSummary ya usado por CartPage, compact en CartPreview. Estado de éxito uniforme «✓ Accediste al precio mayorista», barra 100% al alcanzar/superar un mínimo positivo. Missing wholesale explica productos solo minoristas y omite barra/faltante. Compra minorista debajo del mínimo sigue habilitada con verificación exitosa, stock y cantidades válidas. No se modifican CartSummary o CartPage para duplicar presentación ni se toca su gate.
+
+### Accessibility
+role progressbar, aria-label «Progreso hacia el precio mayorista», aria-valuemin/max 0/100, valor actual acotado y texto monetario accesible. Track bg-muted/fill bg-primary; transición de ancho de 200 ms solo motion-safe, sin pulso. aria-live polite de resumen/preview existente. Escape/foco del Side Cart y reduced motion comprobados. Sin lector de pantalla físico.
+
+### Pruebas y responsive QA
+88 pruebas pasan (78 existentes sin debilitar assertions + 10 nuevas). Casos nuevos: límites 0/1/49999/50000/50001/importes grandes y decimales; mínimo inválido/no positivo; candidato NaN/Infinity/negativo; disabled/empty/missing; render real SSR de precios con/sin mayorista, aviso contextual, semántica de barra, estado full/compact y ahorro/success del dominio. Sin nueva dependencia de testing. npm run lint y npm run build: OK.
+
+Edge headless con fixtures HTTP locales y SDK Meta interceptado: 42 casos en 320/375/768/1024/1440/1920. Por ancho: grilla con mayorista/solo minorista/nombre largo/con y sin descripción en datos, ficha con descripción conservada y ficha solo minorista sin contradicción, carrito minorista 40% con checkout habilitado y Side Cart compacto, mínimo exacto 100% con ahorro, superior acotado y regreso a 60%, y missing wholesale sin progreso/checkout retail correcto.
+
+Grilla: precios/badges/final de acciones en la misma fila alineados dentro de 1 px en fixtures, incluidos encargos con una sola acción. Sin overflow horizontal. Accesibilidad conserva el nombre completo del producto aunque el título visible se limite a dos líneas. Datos fuente sin alteraciones. Escenarios extra: empty, disabled, mínimo cero sin división inválida y sin modificar el nivel, importes largos en carrito/preview en seis anchos. Cambios de cantidad no agregan requests. InitiateCheckout retail conserva importe efectivo; no Purchase ni errores de página. No se repitió la recepción real en Meta o la matriz completa histórica del MVP.
+
+Capturas de grilla desktop y Side Cart mobile inspeccionadas. Evidencia en el directorio local ya documentado: wholesale-visual-qa.cjs, wholesale-visual-results.json, wholesale-visual-cards-375/1440.png, wholesale-visual-side-375/1440.png y wholesale-visual-summary-375/1440.png. QA en desarrollo local, no despliegue ni prueba física. No se midió CLS ni se garantiza alineación idéntica ante cualquier longitud arbitraria de moneda; se permite wrapping seguro.
+
+### Comportamiento preservado y componentes
+Modificados: ProductPrices (incluye WholesaleNotice), ProductCard, ProductDetail, CartPricingStatus y CartPreview. Agregados: helper visual y pruebas específicas. CartPage/CartSummary reciben la mejora a través de CartPricingStatus existente.
+
+Sin cambios en Cart/domain/pricing.ts, cálculo económico/candidato/mínimo/transición/ahorro/faltante, API/contratos, Cart v4/migración/store, revalidación, WhatsApp, Meta, SEO, encargos 30/70, consentimiento o transiciones de ruta. Confirmado mediante diff de los archivos protegidos. No se agrega carrito mixto de precios ni bloqueo por mínimo.
+
+### Performance
+Build baseline ejecutado antes de editar: JS inicial agregado 611.18 kB / gzip194.86, CSS45.19 / gzip8.68, 453 módulos. Build final: principal299.07/gzip94.26, runtime102.27/34.06, whatsapp-url92.15/27.01, contenido5.79/2.08 y ProductCommerceActions113.28/37.89: JS inicial agregado612.56/gzip195.30 (+1.38/+0.44 kB), CSS45.74/gzip8.74 (+0.55/+0.06), 454 módulos. Sin dependencias, lockfile, configuración o umbral de chunks nuevos. No se midieron Core Web Vitals.
+
+### Recomendación operativa y pendientes
+Si mayorista está habilitado, se recomienda que cada producto público in_stock agregable al carrito tenga priceSale y priceWholesale válidos. priceWholesale null debería representar una excepción comercial deliberada. Es recomendación operativa; no se endurecen schemas ni se modifica Cajora o su DB.
+
+Revisión/promoción manual a qa y posterior master según el usuario; comprobación en producción y dispositivos reales pendiente. Políticas jurídicas, reconocimiento de Customer existente por operador y mecanismos legales reales conservan sus pendientes anteriores. No hay bloqueos de implementación conocidos.
