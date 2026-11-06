@@ -8,7 +8,8 @@ export const addCartItemInputSchema = z.object({
   idProduct: positiveSafeInteger,
   slug: publicSlugSchema,
   name: z.string().trim().min(1),
-  price: z.number().finite(),
+  priceSale: z.number().finite().nonnegative(),
+  priceWholesale: z.number().finite().positive().nullable(),
   imageUrl: z.string().nullable(),
   availabilityStatus: cartAvailabilityStatusSchema,
   stockAvailable: z.number().int().nonnegative(),
@@ -24,6 +25,14 @@ export const cartStateSchema = z.object({
 })
 
 export const cartStorageEnvelopeSchema = z.object({
-  version: z.literal(3),
+  version: z.literal(4),
   state: cartStateSchema,
+})
+
+export const legacyCartStorageSchema = z.object({
+  version: z.literal(3),
+  state: z.object({ items: z.array(addCartItemInputSchema.omit({ priceSale: true, priceWholesale: true }).extend({
+    price: z.number().finite().nonnegative(), quantity: positiveSafeInteger,
+  })).refine(items => new Set(items.map(item => item.idProduct)).size === items.length
+    && new Set(items.map(item => item.slug)).size === items.length) }),
 })

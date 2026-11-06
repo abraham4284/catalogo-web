@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import type { CatalogProductListItem } from '../types/catalog.types'
-import { formatCurrency } from '@/shared/utils/format-currency'
+import { ProductPrices } from './ProductPrices'
 import { ProductCardImage } from './ProductCardImage'
 import { ProductAvailabilityBadge } from './ProductAvailabilityBadge'
 
@@ -14,8 +14,8 @@ export function ProductCard({ product, actions }: { product: CatalogProductListI
         <div className="space-y-3 break-words">
           <p className="text-xs text-muted-foreground">{product.category.name}</p>
           <h3 className="text-base font-semibold leading-snug">{product.name}</h3>
-          {description && <p className="line-clamp-3 text-sm text-muted-foreground">{product.description}</p>}
-          <p className="text-xl font-semibold tracking-tight">{formatCurrency(product.price)}</p>
+          {description && <p className="line-clamp-2 text-sm text-muted-foreground">{product.description}</p>}
+          <ProductPrices priceSale={product.priceSale} priceWholesale={product.priceWholesale} />
           <ProductAvailabilityBadge status={product.availabilityStatus} />
         </div>
       </Link>

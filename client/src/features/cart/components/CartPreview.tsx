@@ -1,10 +1,12 @@
+import { CartPricingStatus } from './CartPricingStatus'
+import type { CartPricing } from '../domain/pricing'
 import { Link } from 'react-router-dom'
 import { useCartStore } from '../store/cart.store'
-import { calculateCartItemCount, calculateCartTotal } from '../domain/cart'
+import { calculateCartItemCount } from '../domain/cart'
 import { CartItemRow } from './CartItemRow'
 import { formatCurrency } from '@/shared/utils/format-currency'
 
-export function CartPreview({ onNavigate }: { onNavigate: () => void }) {
+export function CartPreview({ onNavigate, pricing }: { onNavigate: () => void; pricing: CartPricing }) {
   const items = useCartStore((state) => state.items)
   if (items.length === 0) {
     return (
@@ -17,10 +19,11 @@ export function CartPreview({ onNavigate }: { onNavigate: () => void }) {
   return (
     <div className="space-y-6">
       <p className="text-sm text-muted-foreground">Podés ajustar tu selección. En el carrito completo verificamos precio y disponibilidad antes de continuar.</p>
-      <ul>{items.map((item) => <CartItemRow key={item.idProduct} item={item} idPrefix="preview-product" onNavigate={onNavigate} />)}</ul>
+      <ul>{pricing.lines.map(({ item, unitPrice, lineTotal }) => <CartItemRow unitPrice={unitPrice} lineTotal={lineTotal} pricingType={pricing.effectivePricingType} key={item.idProduct} item={item} idPrefix="preview-product" onNavigate={onNavigate} />)}</ul>
       <div aria-live="polite" className="space-y-2 border-t pt-5">
         <p>Unidades: {calculateCartItemCount(items)}</p>
-        <p className="text-xl font-semibold">Total: {formatCurrency(calculateCartTotal(items))}</p>
+        <CartPricingStatus pricing={pricing} />
+        <p className="text-xl font-semibold">{pricing.effectivePricingType === 'WHOLESALE' ? 'Total mayorista' : 'Total'}: {formatCurrency(pricing.effectiveSubtotal)}</p>
       </div>
       <Link to="/carrito" onClick={onNavigate} className="block min-h-11 rounded-md bg-primary px-4 py-3 text-center font-medium text-primary-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">Ver carrito completo</Link>
     </div>

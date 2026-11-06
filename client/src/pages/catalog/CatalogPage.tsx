@@ -1,3 +1,4 @@
+import { WholesaleNotice } from '@/features/catalog'
 import { Navigate, useSearchParams } from "react-router-dom";
 import { ProductCommerceActions } from "@/app/compositions/ProductCommerceActions";
 import {
@@ -37,6 +38,7 @@ export function CatalogPage() {
   return (
     <div className="min-w-0 space-y-6">
       <h1 className="text-3xl font-semibold">Productos</h1>
+      <WholesaleNotice />
       <CatalogSearch
         search={filters.search}
         onSearch={(search) =>

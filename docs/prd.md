@@ -21,7 +21,7 @@ El listado acepta `page` (entero >= 1), `limit` (entero entre 1 y 60), `search` 
 DTO público del negocio:
 
 ```ts
-{ name: string, slug: string, logoUrl: string | null, businessType: string | null }
+{ name: string, slug: string, logoUrl: string | null, businessType: string | null, pricing: { wholesaleEnabled: boolean, wholesaleMinimumAmount: number } }
 ```
 
 DTO público del producto en listado:
@@ -32,7 +32,9 @@ DTO público del producto en listado:
   slug: string,
   name: string,
   description: string | null,
-  price: number,
+  price: number, // compatibilidad
+  priceSale: number,
+  priceWholesale: number | null,
   imageUrl: string | null,
   category: { idProductCategory: number, name: string, slug: string },
   saleMode: 'stock' | 'on_order',
@@ -55,10 +57,10 @@ Listado paginado: `{ items: ProductListItem[], pagination: { page, currentPage, 
 
 Envelope exitoso: `{ status: true, message: string, data: ... }`. Envelope de error: `{ status: false, message: string, errors?: { field: string, message: string }[] }`. Un fallo HTTP también puede devolver un body que no respete el contrato.
 
-No asumir campos administrativos ni exponer/depender de `idBusiness`, costo, depósitos, barcode, precio mayorista o timestamps internos. La cantidad pública stockAvailable solo limita/reconcilia el carrito; no representa una reserva.
+No asumir campos administrativos ni exponer/depender de `idBusiness`, costo, depósitos, barcode o timestamps internos. La cantidad pública stockAvailable solo limita/reconcilia el carrito; no representa una reserva.
 
 ## Carrito y conversión
-Zustand + localStorage v3, clave catalogo-web-cart. Snapshot idProduct/slug/name/price/imageUrl/availabilityStatus/stockAvailable y quantity; sin booleano legacy ni campos comerciales ajenos. v1/v2/futuras, JSON corrupto, IDs/slugs duplicados y campos inválidos producen vacío seguro; storage bloqueado/lleno conserva memoria usable. Solo in_stock con stock >= 1 agrega, incrementa hasta el último stock conocido y decrementa con mínimo 1. Re-agregar actualiza snapshot; reconcile preserva quantity y evita writes idénticos. Imagen/nombre forman un único enlace /productos/<slug>. Agotado/encargo permanecen visibles con cantidad deshabilitada; exceso de quantity mantiene aviso, permite disminuir/eliminar y bloquea checkout.
+Zustand + localStorage v4, clave catalogo-web-cart. Snapshot idProduct/slug/name/priceSale/priceWholesale/imageUrl/availabilityStatus/stockAvailable y quantity; los importes y el nivel son derivados, no persistidos. v3 válido migra price a priceSale y priceWholesale a null hasta revalidar; se escribe v4 con la siguiente mutación. v1/v2/futuras, JSON corrupto, IDs/slugs duplicados y campos inválidos producen vacío seguro; storage bloqueado/lleno conserva memoria usable. Solo in_stock con stock >= 1 agrega, incrementa hasta el último stock conocido y decrementa con mínimo 1. Re-agregar actualiza snapshot; reconcile preserva quantity y evita writes idénticos. Imagen/nombre forman un único enlace /productos/<slug>. Agotado/encargo permanecen visibles con cantidad deshabilitada; exceso de quantity mantiene aviso, permite disminuir/eliminar y bloquea checkout.
 
 Al entrar a carrito se verifican precio/disponibilidad actuales contra Cajora por slug en paralelo. Cambios del conjunto y retry revalidan; quantity no. Un fallo conserva el item, señala la fila y bloquea WhatsApp hasta reintentar. Solo verificación completa exitosa e items in_stock con cantidades coherentes habilitan el enlace. Precio nuevo se refleja en fila, total y mensaje. ON_ORDER queda fuera de agregados y del checkout grupal incluso con stock físico.
 
@@ -78,3 +80,8 @@ El shell muestra el total de unidades del carrito; cards reúnen la información
 
 ## F21 — Compra por encargo
 Para on_order se informa anticipo estándar del 30% a cuenta del valor final acordado y saldo del 70%. Antes de cobrar se confirman modelo/variante, disponibilidad, precio final y plazo. Consultar no confirma compra: hace falta aceptación expresa de condiciones y anticipo recibido. Se mantiene el total acordado luego de confirmar; ante imposibilidad de cumplir se ofrece devolución íntegra del anticipo o alternativa libremente aceptada. Cancelación/garantías se comunican prudentemente y requieren revisión jurídica; no se crean pagos web, pedidos automáticos ni registro de anticipos en el storefront.
+
+## F10.3 — Precios mayoristas públicos
+Cajora expone priceSale/priceWholesale y una política global con mínimo; price queda solo como compatibilidad. El visitante anónimo se evalúa como nuevo/no reconocido. Mayorista requiere política habilitada, precio mayorista válido en todas las líneas y suma de líneas redondeadas a precio mayorista que alcance el mínimo. Todas las categorías combinan. Debajo del mínimo o con alguna línea sin mayorista, la compra sigue habilitada a minorista si pasa la verificación de stock.
+
+El nivel se recalcula al editar y determina filas, total, ahorro, faltante y WhatsApp. Sin selector, login, búsqueda de Customer ni órdenes públicas. Clientes mayoristas existentes se reconocen manualmente después por WhatsApp/Cajora. Loading/error de política mantiene minorista seguro; se confirma la operación con el operador.

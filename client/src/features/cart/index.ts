@@ -6,3 +6,6 @@ export { CartPreview } from './components/CartPreview'
 export { calculateCartLineTotal, calculateCartTotal, calculateCartItemCount } from './domain/cart'
 export { getCartAvailabilityLabel, isCartItemInStock, isCartItemQuantityValid, isCartReadyForInquiry, canIncrementCartItem } from './domain/cart'
 export type { CartItem, AddCartItemInput, CartAvailabilityStatus } from './types/cart.types'
+
+export { calculateCartPricing } from './domain/pricing'
+export type { CartPricing } from './domain/pricing'
