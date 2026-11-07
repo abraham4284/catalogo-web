@@ -57,3 +57,25 @@ Snapshots locales no garantizan precios/disponibilidad ni reservan stock. No hay
 
 ## Release blockers
 No se identificaron bloqueos de código para iniciar deployment/pruebas reales. Publicación operativa requiere completar configuración/hosting y smoke test anteriores; no afirmar producción lista hasta verificarlos.
+
+## Catalog pagination scroll restoration — 2026-11-07
+
+Fix puntual implementado en dev según el acuerdo vigente del usuario: qa es referencia de revisión, con promoción manual dev → qa → master. Árbol inicialmente limpio; sin cambio de rama, sincronización o escritura Git. La evidencia anterior de este informe conserva su contexto histórico.
+
+### Implementación
+Único archivo fuente modificado: client/src/pages/catalog/CatalogPage.tsx. Wrapper/ref estable antes de loading/error/success y paginación; estado anterior de page en ref y efecto dependiente solo de filters.page. Al cambiar página, scrollIntoView con behavior auto y block start sobre el inicio de resultados, sin foco explícito.
+
+Se ejecuta en el siguiente frame mediante requestAnimationFrame local. La prueba de historial mostró que el scroll síncrono del efecto podía ser sobrescrito por la restauración nativa del navegador; el frame corrige ese orden. No espera success ni agrega una animación o temporizador de espera. Cleanup cancela un frame pendiente al cambiar de página o desmontar; cambios rápidos solo conservan el último.
+
+No se dispara en montaje inicial, incluida vuelta desde ficha, ni por search/categoría si page no cambia, retry, loading/success o re-render del carrito. Un filtro que realmente resetea page a 1 sí dispara scroll. Se conservan Navigate replace de página fuera de rango, Links navegables e historial. No se usa ScrollToTop global, window.scrollTo, focus() nuevo ni key por search. StoreRoute, StoreLayout/F18, hooks/API, límites/filtros URL y mayorista/carrito permanecen sin modificaciones.
+
+### Pruebas ejecutadas
+Desde client: node --test tests/*.test.cjs, npm run lint y npm run build: OK. 98 pruebas pasan (92 existentes + seis nuevas), sin omitidas. La nueva suite ejecuta el componente real con URL/datos y ciclo de hooks controlados, registrando el DOM side effect sin dependencia DOM adicional. Cubre 1→2→3→2→1, misma página con filtros/retry/data, reset 3→1, montaje en páginas distintas, redirect inválido y cancelación de frames superados. La geometría e historial se verificaron adicionalmente en navegador real.
+
+Edge headless con API de fixtures local: 72 productos, 24 por página y tres páginas; carga lenta de 1200 ms para confirmar scroll durante skeleton. 24 transiciones principales en 320/375/768/1024/1440/1920: 1→2→3→2→1. Se llega al final para pulsar los Links y se comprueba el inicio del área y el primer producto correcto de la página nueva, tanto durante carga como después. Una llamada local por cambio, sin smooth ni llamadas al focus del componente. Sin overflow ni errores de página. Identidad DOM de route-enter y wrapper de resultados conservada entre queries.
+
+Regresiones adicionales en 375 px: query Back/Forward al inicio de resultados; vuelta desde ficha sin llamada adicional de paginación (sin afirmar una nueva política de restauración global); search/categoría en page 1 sin llamada; filtros desde page 3 resetean y desplazan una vez; error/retry/empty sin scroll innecesario; page 99 redirige con replace a page 3 y desplaza; agregar/ajustar cantidad y abrir/cerrar Side Cart no disparan scroll. Reduced motion conserva auto y la ausencia de transición de F18.
+
+Captura mobile del inicio de página 2 inspeccionada; 375 y 1440 capturados. Evidencia local en C:/Users/Abrah/.codex/visualizations/2026/10/01/01a0f4d0-0ee0-7c52-8453-0a514659d862/: catalog-pagination-scroll-qa.cjs, catalog-pagination-scroll-results.json, catalog-scroll-375.png y catalog-scroll-1440.png. Matriz y regresiones completadas en recorridos locales consecutivos. Sin producción, dispositivos físicos ni lector de pantalla probados.
+
+Sin dependencias, API o reglas comerciales nuevas. El único ajuste respecto de la recomendación conceptual del documento es usar el siguiente frame para respetar el orden del historial nativo. Pendientes de promoción/deploy y verificación real anteriores conservados; sin bloqueos de implementación conocidos.
