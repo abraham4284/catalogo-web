@@ -325,3 +325,11 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] Missing/disabled sin progreso engañoso; checkout y cálculos intactos
 - [x] Un aria-live por resumen, barra accesible y fixture 8950 / 6370 / 43630
 - [x] 92 pruebas, lint/build, 48 casos locales en seis anchos y documentación
+
+## Fix puntual — Catalog pagination scroll restoration
+- [x] Inicio estable de resultados y scroll local solo al cambiar filters.page
+- [x] Siguiente/Anterior y Back/Forward sin esperar success ni mover foco
+- [x] Sin scroll adicional por montaje/retorno de ficha, filtros en misma página, retry o cantidades
+- [x] F18, Links, filtros URL, redirect inválido, API y mayorista conservados
+- [x] 98 pruebas, lint/build, 24 transiciones en seis anchos y regresiones locales
+- [x] Evidencia en docs/qa-report.md; implementación en dev según acuerdo vigente
