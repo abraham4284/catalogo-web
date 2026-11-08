@@ -188,3 +188,33 @@ Capturas de resumen retail mobile, preview retail mobile y resumen wholesale des
 Sin dependencias nuevas, cambios de lockfile o configuración. Build local final: JS inicial agregado 613.34/gzip195.46 kB (principal299.07/94.27, runtime102.27/34.06, whatsapp-url92.15/27.01, contenido5.79/2.08 y ProductCommerceActions114.06/38.04); CSS45.94/gzip8.77. Comparación con snapshot documentado del Visual Polish: +0.78/+0.16 kB JS y +0.20/+0.03 CSS. No se ejecutó un build nuevo del checkout anterior en esta tarea. Sin mediciones de CWV o dictamen de accesibilidad.
 
 Revisión/promoción manual y pendientes productivos de fases anteriores conservados. Sin bloqueos de implementación conocidos; el único cambio respecto de la rama nombrada por el documento es usar dev conforme al acuerdo vigente del usuario.
+
+## Wholesale information architecture / FAQ — 2026-11-07
+
+Ajuste de presentación/contenido F10.3 realizado en dev, según autorización vigente del usuario; qa sigue siendo referencia de revisión y promoción manual. No constituye fase de negocio nueva. Árbol inicialmente limpio, sin cambios de rama ni operaciones Git de escritura.
+
+### Información por superficie
+WholesaleNotice conserva el nombre/export existente pero queda como aviso global exclusivo de CatalogPage: «Mayorista desde {minimum} en valor mayorista · Podés combinar categorías.» El importe usa wholesaleMinimumAmount y formatCurrency existentes. Link discreto y navegable «¿Cómo funciona?» a /preguntas-frecuentes, con foco visible y área táctil; sin modal ni dependencia nueva. Disabled/loading conserva ausencia segura del aviso. No fue necesario modificar CatalogPage ni su fix de scroll.
+
+HomePage elimina la llamada/import de WholesaleNotice. ProductDetail elimina aviso/import, tanto del caso con mayorista como del caso solo minorista; no sustituye el aviso por otro párrafo. ProductPrices conserva su presentación de precios y Solo minorista. Disponibilidad, descripción, acciones, nota de Cajora y aviso 30% de encargos intactos. No se modifican cards, Hero ni relacionados.
+
+FAQ centralizada agrega el grupo «Compras minoristas y mayoristas» al mismo nivel que «Compras por encargo», reutilizando FaqEntry/FaqList sin cambiar su renderer. Seis preguntas: diferencia entre precios, acceso al mayorista, cálculo del mínimo, compra debajo del mínimo, Solo minorista y cliente mayorista existente. Copy sin cifras fijas o términos de implementación, con referencia a categorías combinables y reconocimiento por operador vía WhatsApp. Intro de FaqPage ampliada. Grupo de encargos de cuatro preguntas, política 30/70 y selección contextual de ficha conservados.
+
+HomeBuyingGuide mantiene su reutilización previa del listado FAQ centralizado: el nuevo grupo también está disponible allí, cerrado inicialmente, dentro de su sección de ayuda existente; no se crea un aviso comercial adicional ni se copia el contenido. La ficha no incorpora las seis preguntas.
+
+### Pruebas y accesibilidad
+103 pruebas pasan: 98 previas adaptando la expectativa del aviso y el número de grupos, más cinco casos nuevos. Se conservan asserts de encargos, preguntas únicas, precios, Solo minorista, disabled, carrito, cálculo, WhatsApp, Meta y SEO. Renders reales de ProductDetail cubren ausencia de copy global/redundante y preservación de precios, descripción y acciones; composición Home/Catalog confirma ubicación única del aviso. Pruebas de FAQ verifican las seis preguntas exactas, grupo de encargos intacto, ausencia de monto/jerga, jerarquía nativa cerrada e introducción. npm run lint y npm run build: OK.
+
+El aviso reutiliza Link de React Router; FAQ conserva details/summary anidados, sin controles dentro de summary, sin animación ni biblioteca nueva. Teclado, foco visible y apertura de las seis subpreguntas comprobados en navegador. Sin reader/dispositivo físico.
+
+### QA responsive
+Edge headless con API local simulada: 36 casos en 320/375/768/1024/1440/1920. Por ancho: Home sin aviso global; catálogo con aviso único; ficha con mayorista, ficha solo minorista y ficha por encargo sin aviso; FAQ con seis preguntas y grupo de encargos conservado. Sin overflow ni errores de página. Distancia entre bloque de precios y badge revisada sin espacio sobrante de un aviso retirado; descripción/acciones presentes. No se afirma CLS medido.
+
+Nuevo grupo cerrado por defecto, seis hijos cerrados hasta activarlos, apertura de todos mediante Enter y cero controles anidados en summary. Total de 18 details (ocho entradas principales, seis hijas mayoristas y cuatro de encargos). On_order conserva una pregunta contextual y aviso del 30%. Product JSON-LD mantiene precio retail en los tres casos de ficha.
+
+Escenarios adicionales: cambio de mínimo del fixture a 76543 se refleja en catálogo sin cambios de código; link «¿Cómo funciona?» activado por teclado lleva a FAQ; wholesale disabled oculta aviso/link contextual. Capturas mobile de catálogo/ficha solo minorista/grupo FAQ inspeccionadas visualmente. Evidencia en el directorio local previamente documentado: wholesale-info-qa.cjs, wholesale-info-results.json, wholesale-info-catalog-375/1440.png, wholesale-info-detail-375/1440.png, wholesale-info-faq-375/1440.png. QA local, no producción.
+
+### Alcance preservado
+Únicos fuentes modificados: ProductPrices.tsx (solo WholesaleNotice/import Link), ProductDetail.tsx, HomePage.tsx, storefront-content.ts y FaqPage.tsx. ProductPrices como bloque de precios, Cart v4/cálculos/mínimo/política, revalidación/checkout, API/contratos, WhatsApp, Meta, SEO, encargos y paginación/scroll no se modificaron. Confirmado con diff de archivos protegidos. No se añaden lookup de Customer, login, pagos o nuevas llamadas API. Sin dependencias/lockfile nuevos.
+
+Revisión/promoción manual a qa y comprobación productiva pendientes según workflow del usuario. Se mantienen los límites operativos/jurídicos ya documentados. Sin bloqueos de implementación conocidos; se usa dev conforme al acuerdo del usuario aunque el documento de referencia nombre qa.
