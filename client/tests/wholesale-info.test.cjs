@@ -27,6 +27,40 @@ const {storefrontContent,getProductFaq}=load('content/storefront-content')
 const {formatCurrency}=load('shared/utils/format-currency')
 const product={idProduct:1,slug:'producto',name:'Producto',description:'Descripción completa.',price:999,priceSale:22000,priceWholesale:19000,imageUrl:null,gallery:[],richContent:null,category:{slug:'categoria',name:'Categoría',idProductCategory:1},availabilityStatus:'in_stock',saleMode:'stock',availabilityNote:null,stockAvailable:10}
 
+test('catalog search explains product/category search with a visible label and keeps form constraints',()=>{
+ const {CatalogSearch}=load('features/catalog/components/CatalogSearch')
+ const html=render(CatalogSearch,{search:'auriculares',onSearch:()=>{}})
+ assert(html.includes('<label for="catalog-search"'))
+ assert(html.includes('>Buscar productos o categorías</label>'))
+ assert(html.includes('placeholder="Ej. auriculares, perfumes, cargadores..."'))
+ assert(html.includes('role="search"'))
+ assert(html.includes('id="catalog-search"'))
+ assert(html.includes('type="search"'))
+ assert(html.includes('maxLength="150"'))
+ assert(html.includes('value="auriculares"'))
+ assert(html.includes('>Buscar</button>'))
+ assert(html.includes('>Limpiar búsqueda</button>'))
+})
+
+test('catalog search submits explicitly, trims the term and clears through the existing callback',()=>{
+ const {CatalogSearch}=load('features/catalog/components/CatalogSearch')
+ const values=[],tree=CatalogSearch({search:'anterior',onSearch:value=>values.push(value)})
+ const nativeFormData=global.FormData
+ let prevented=0
+ try{
+  // Node has no HTMLFormElement: keep the real submit handler and supply its form boundary.
+  global.FormData=class{constructor(form){return form}}
+  assert.deepEqual(values,[])
+  for(const value of ['auriculares','  bluetooth  ','   ']){
+   tree.props.onSubmit({preventDefault:()=>prevented++,currentTarget:new Map([['search',value]])})
+  }
+ }finally{global.FormData=nativeFormData}
+ assert.equal(prevented,3)
+ assert.deepEqual(values,['auriculares','bluetooth',''])
+ tree.props.children[1].props.children[2].props.onClick()
+ assert.deepEqual(values,['auriculares','bluetooth','',''])
+})
+
 test('cards show out_of_stock once over the image and keep other states below prices',()=>{
  const {ProductCard}=load('features/catalog/components/ProductCard')
  for(const [availabilityStatus,label,stockAvailable] of [['out_of_stock','AGOTADO',20],['in_stock','Disponible',10],['on_order','Por encargo',0]]){
