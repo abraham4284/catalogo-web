@@ -6,8 +6,8 @@ const ts = require('typescript')
 
 // Execute the real page with controlled URL/data and React hook lifetimes.
 // Scroll is a DOM side effect, so record it without adding a DOM test dependency.
-function pageHarness(initial = '') {
-  const refs = [], effects = [], cleanups = [], scrolls = [], frames = new Map()
+function pageHarness(initial = '', items = []) {
+  const refs = [], effects = [], cleanups = [], scrolls = [], searches = [], frames = new Map()
   let frameId = 0
   let refIndex, effectIndex, pending, query = initial, status = 'loading', focusCalls = 0
   const target = { scrollIntoView: options => scrolls.push(options), focus: () => focusCalls++ }
@@ -23,9 +23,9 @@ function pageHarness(initial = '') {
   const catalog = {
     WholesaleNotice: noop,
     readCatalogFilters: params => ({ page: Number(params.get('page') || 1), search: params.get('search'), categorySlug: params.get('categoria') }),
-    useCatalogListing: () => ({ categories: { status:'success', data:[] }, products: status === 'success' ? { status, data:{items:[],pagination:{totalPages:3,currentPage:Number(new URLSearchParams(query).get('page')||1),totalRecords:0}} } : { status, message:'Error' }, retry:noop }),
-    createCatalogSearchParams: () => new URLSearchParams(), getCatalogHref: () => '/productos?page=3',
-    CatalogSearch:noop,CategoryFilter:noop,CatalogErrorState:noop,CatalogLoadingState:noop,CatalogEmptyState:noop,ProductGrid:noop,CatalogPaginationControls:noop,
+    useCatalogListing: () => ({ categories: { status:'success', data:[] }, products: status === 'success' ? { status, data:{items,pagination:{totalPages:3,currentPage:Number(new URLSearchParams(query).get('page')||1),totalRecords:items.length}} } : { status, message:'Error' }, retry:noop }),
+    createCatalogSearchParams: filters => { searches.push(filters); return new URLSearchParams() }, getCatalogHref: () => '/productos?page=3',
+    CatalogSearch:()=>null,CategoryFilter:noop,CatalogErrorState:noop,CatalogLoadingState:noop,CatalogEmptyState:noop,ProductGrid:()=>null,CatalogPaginationControls:noop,
   }
   const filename = path.resolve(__dirname, '../src/pages/catalog/CatalogPage.tsx')
   const output = ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText
@@ -48,8 +48,35 @@ function pageHarness(initial = '') {
     if (flush) flushFrame()
     return tree
   }
-  return {render,scrolls,flushFrame,focusCalls:()=>focusCalls}
+  return {render,scrolls,searches,catalog,flushFrame,focusCalls:()=>focusCalls}
 }
+
+function findComponent(node, component) {
+  if (Array.isArray(node)) return node.map(child=>findComponent(child,component)).find(Boolean)
+  if (!node?.props) return undefined
+  return node.type === component ? node : findComponent(node.props.children,component)
+}
+
+test('submitting a search resets page one and preserves the selected category',()=>{
+  const page=pageHarness('page=3&categoria=auriculares&search=anterior')
+  const tree=page.render()
+  findComponent(tree,page.catalog.CatalogSearch).props.onSearch('bluetooth')
+  assert.deepEqual(page.searches,[{page:1,search:'bluetooth',categorySlug:'auriculares'}])
+})
+
+test('clearing search resets page one without removing the category',()=>{
+  const page=pageHarness('page=2&categoria=auriculares&search=bluetooth')
+  const tree=page.render()
+  findComponent(tree,page.catalog.CatalogSearch).props.onSearch('')
+  assert.deepEqual(page.searches,[{page:1,search:'',categorySlug:'auriculares'}])
+})
+
+test('catalog page forwards category matches in backend order even without matching product names',()=>{
+  const items=[{name:'Bluetooth Gamer G11'},{name:'TWS M10'},{name:'Lenovo LP40'}]
+  const page=pageHarness('search=auriculares',items)
+  const tree=page.render('search=auriculares','success')
+  assert.strictEqual(findComponent(tree,page.catalog.ProductGrid).props.products,items)
+})
 
 test('pagination scrolls on 1→2→3→2→1 immediately while loading',()=>{
   const page=pageHarness();page.render()

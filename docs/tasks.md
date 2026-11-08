@@ -358,3 +358,10 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] 112 pruebas, lint/build y QA local en 320/375/768/1024/1440/1920
 - [x] Hover secundario, touch, foco/teclado y capturas inspeccionadas; evidencia en docs/qa-report.md
 - [x] Implementado en dev según acuerdo vigente para promoción manual a qa
+
+## Ajuste puntual — Buscador de productos y categorías
+- [x] CatalogSearch: label visible Buscar productos o categorías y placeholder orientativo aprobado
+- [x] Submit explícito, trim, máximo 150, limpieza y URL conservados; sin búsqueda/ranking local
+- [x] 117 pruebas, lint y build correctos; cinco regresiones agregadas en suites existentes
+- [x] QA con Cajora local: 11 términos, orden íntegro, search + categorySlug, limpieza, categoría, paginación y vacío
+- [x] Responsive 320/375/768/1024/1440/1920, foco y capturas inspeccionadas; evidencia docs/qa-report.md
