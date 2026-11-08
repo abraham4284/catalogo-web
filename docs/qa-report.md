@@ -79,3 +79,19 @@ Regresiones adicionales en 375 px: query Back/Forward al inicio de resultados; v
 Captura mobile del inicio de página 2 inspeccionada; 375 y 1440 capturados. Evidencia local en C:/Users/Abrah/.codex/visualizations/2026/10/01/01a0f4d0-0ee0-7c52-8453-0a514659d862/: catalog-pagination-scroll-qa.cjs, catalog-pagination-scroll-results.json, catalog-scroll-375.png y catalog-scroll-1440.png. Matriz y regresiones completadas en recorridos locales consecutivos. Sin producción, dispositivos físicos ni lector de pantalla probados.
 
 Sin dependencias, API o reglas comerciales nuevas. El único ajuste respecto de la recomendación conceptual del documento es usar el siguiente frame para respetar el orden del historial nativo. Pendientes de promoción/deploy y verificación real anteriores conservados; sin bloqueos de implementación conocidos.
+
+## Visual polish — out_of_stock image badge — 2026-11-07
+
+### Cambio y alcance
+Dos componentes de producción: ProductCardImage agrega availabilityStatus con el tipo existente y cápsula AGOTADO solo para out_of_stock; ProductCard pasa ese estado y omite el badge inferior únicamente en ese caso. Fondo bg-foreground (#242038), texto blanco, posición top/right 12 px, z-10 sobre ambas imágenes y pointer-events-none. No filtros ni opacidad de foto. Texto visible accesible sin aria-hidden. Un contenedor min-h-7 preserva altura bajo precios sin texto falso. El Link y sus acciones hermanas mantienen estructura/foco.
+
+ProductAvailabilityBadge/helper, ProductDetail, cart/domain, WhatsApp/CTA, pricing, FAQ/deep link, paginación, API/contratos de Cajora, SEO y Meta sin modificaciones. Disponible y Por encargo permanecen debajo de precios; ficha conserva Agotado normal. Sin nuevas dependencias, fetching o estado de negocio. Se implementa sobre dev según el acuerdo vigente del usuario y AGENTS.md; la rama qa del documento adjunto es su referencia de revisión, con promoción manual.
+
+### Verificación ejecutada
+Desde client: node --test --test-reporter=dot tests/*.test.cjs (112 pruebas OK), npm run lint y npm run build: OK. Tres pruebas nuevas en wholesale-info.test.cjs: posición/no duplicación en tres estados (agotado con stock físico 20 y encargo con 0), badge con/sin imagen conservando fallback y estado textual de ficha intacto. Hover se verifica en navegador, no mediante el render estático.
+
+Edge headless + Vite y fixtures locales: 320/375/768/1024/1440/1920 px con los tres estados en la misma grilla. Badge único dentro de imagen, color de marca/blanco, sin truncado, margen y tamaño contenidos; no overflow. Títulos/precios/inicio y final de bloques de acciones alineados en filas compartidas. Consultar disponibilidad permanece visible sin Agregar al carrito en agotado; Por encargo con stock 0 mantiene Consultar y encargar. La imagen conserva opacity 1 y filter none.
+
+Hover real en 768/1024/1440/1920 monta secundaria y lleva su opacity a 1; badge continúa visible sobre ella sin interceptar el enlace. Contextos touch emulados en 320/375 muestran badge sin hover ni cargar secundaria; tap navega a la ficha que conserva Agotado normal, sin badge de imagen. A 1440 se comprueba foco visible del enlace y navegación con Enter. Sin errores de página. Capturas completas 375/1440 inspeccionadas visualmente. Pruebas locales con imágenes SVG de fixture, no fotos productivas/dispositivos físicos/lector de pantalla.
+
+Evidencia local en C:/Users/Abrah/.codex/visualizations/2026/10/01/01a0f4d0-0ee0-7c52-8453-0a514659d862/: agotado-image-qa.cjs, agotado-image-results.json, agotado-image-375.png y agotado-image-1440.png. No se inició una nueva fase; pendientes de producción anteriores conservados.

@@ -32,7 +32,7 @@ Home: hero sin caja envolvente → categorías backend por slug → productos ex
 No se mantienen los dos banners repetitivos previos: un único bloque editorial después del producto expresa selección con criterio/stock y encargo. Copy estático en storefront-content.ts; sin fotos externas ni claims de curaduría experta o productos testeados.
 
 ## Superficies comerciales
-Cards sin borde exterior de panel ni sombra: imagen protagonista, jerarquía textual y acciones hermanas del enlace informativo único. Disponibilidad textual en violeta/lavanda/neutral; sin verde/amarillo/rojo nuevos. Secundaria on-demand mouse/pen, touch independiente y reduced-motion conservados. Grid: una columna estrecha, dos desde 540, tres md y cuatro xl.
+Cards sin borde exterior de panel ni sombra: imagen protagonista, jerarquía textual y acciones hermanas del enlace informativo único. Disponible/Por encargo permanecen bajo precios en violeta/lavanda; AGOTADO se muestra únicamente sobre imagen con fondo oscuro de marca. Sin verde/amarillo/rojo nuevos. Secundaria on-demand mouse/pen, touch independiente y reduced-motion conservados. Grid: una columna estrecha, dos desde 540, tres md y cuatro xl.
 
 Catálogo conserva search, categoría activa, count y paginación URL. Detalle elimina caja envolvente del panel comercial para dar aire a imagen/precio; conserva breadcrumbs, nota, acciones y rich content h2/h3/p/list/dl. Galería vertical desktop y horizontal mobile, sin cambios de selección/orden/dedupe. Carrito usa filas abiertas/divisores y resumen lavanda discreto, con errores/loading/stale/retry siempre visibles.
 
@@ -119,3 +119,8 @@ FAQ centralizada agrega «Compras minoristas y mayoristas», grupo hermano de «
 Disponibilidad comercial visible: Disponible / Agotado / Por encargo. Agotado representa únicamente out_of_stock; estilos y CTA Consultar disponibilidad conservados. No se infiere desde stock físico ni se prometen reposiciones.
 
 Grupo mayorista con ID explícito estable compras-minoristas-y-mayoristas. El enlace del catálogo lleva al hash, abre solo el padre y lo muestra con scroll auto/start y scroll-margin-top CSS de 24 px. Subpreguntas permanecen cerradas inicialmente. FAQ normal/desconocida no autoabre nada; detalles nativos siguen permitiendo cierre manual. Sin foco añadido, smooth scroll, modal o librería. La apertura se coordina localmente con el siguiente frame, después del foco/restauración de ruta existentes.
+
+## Visual polish — out_of_stock image badge
+ProductCardImage recibe availabilityStatus tipado y muestra AGOTADO solo para out_of_stock: cápsula compacta arriba a la derecha, margen 12 px, bg-foreground (#242038), texto blanco text-primary-foreground, text-xs/font-semibold. z-10 lo mantiene sobre la secundaria; pointer-events-none conserva el enlace. Texto visible sin aria-hidden, sin nuevo control interactivo ni filtros/oscurecimiento de la foto; también visible sin imagen.
+
+ProductCard omite el badge inferior únicamente para agotados y reserva min-h-7 en ese espacio para mantener precios/acciones alineados, sin texto invisible. Disponible/Por encargo continúan debajo de precios. Ficha y carrito conservan Agotado textual, helpers y CTA intactos. El estado no se deduce del stock físico. Hover/touch/reduced-motion existentes no cambian.

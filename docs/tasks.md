@@ -350,3 +350,11 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] FAQ normal/hash inválido, hijos cerrados y cierre manual nativo conservados
 - [x] 109 pruebas, lint/build, 36 casos responsive y regresiones de historial/refresh
 - [x] Documentación y evidencia; trabajo en dev para revisión manual en qa
+
+## Visual polish — out_of_stock image badge
+- [x] ProductCardImage muestra AGOTADO oscuro sobre imagen solo según availabilityStatus
+- [x] ProductCard elimina el duplicado inferior y conserva alineación con espacio estructural
+- [x] Disponible/Por encargo, ficha, carrito y CTA comerciales preservados
+- [x] 112 pruebas, lint/build y QA local en 320/375/768/1024/1440/1920
+- [x] Hover secundario, touch, foco/teclado y capturas inspeccionadas; evidencia en docs/qa-report.md
+- [x] Implementado en dev según acuerdo vigente para promoción manual a qa
