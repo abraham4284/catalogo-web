@@ -27,6 +27,42 @@ const {storefrontContent,getProductFaq}=load('content/storefront-content')
 const {formatCurrency}=load('shared/utils/format-currency')
 const product={idProduct:1,slug:'producto',name:'Producto',description:'Descripción completa.',price:999,priceSale:22000,priceWholesale:19000,imageUrl:null,gallery:[],richContent:null,category:{slug:'categoria',name:'Categoría',idProductCategory:1},availabilityStatus:'in_stock',saleMode:'stock',availabilityNote:null,stockAvailable:10}
 
+test('cards show out_of_stock once over the image and keep other states below prices',()=>{
+ const {ProductCard}=load('features/catalog/components/ProductCard')
+ for(const [availabilityStatus,label,stockAvailable] of [['out_of_stock','AGOTADO',20],['in_stock','Disponible',10],['on_order','Por encargo',0]]){
+  const html=render(ProductCard,{product:{...product,availabilityStatus,stockAvailable}})
+  const imageEnd=html.indexOf('</div>'),price=html.indexOf(formatCurrency(19000))
+  assert.equal((html.match(new RegExp(`>${label}<`,'g'))||[]).length,1)
+  if(availabilityStatus==='out_of_stock'){
+   assert(html.indexOf('>AGOTADO<')<imageEnd)
+   assert(!html.includes('>Agotado<'))
+   assert(!html.includes('aria-hidden="true"'))
+  }else{
+   assert(!html.includes('AGOTADO'))
+   assert(html.indexOf(`>${label}<`)>price)
+  }
+  assert(html.includes('href="/productos/producto"'))
+  assert(html.includes('aria-label="Ver Producto"'))
+ }
+})
+
+test('out_of_stock image badge survives missing imagery without hiding the fallback',()=>{
+ const {ProductCardImage}=load('features/catalog/components/ProductCardImage')
+ for(const imageUrl of [null,'https://example.test/product.png']){
+  const html=render(ProductCardImage,{imageUrl,secondaryImageUrl:'https://example.test/secondary.png',name:'Producto',availabilityStatus:'out_of_stock'})
+  assert.equal((html.match(/>AGOTADO</g)||[]).length,1)
+  assert(!html.includes('aria-hidden="true"'))
+  if(imageUrl)assert(html.includes('alt="Producto"'))
+  else assert(html.includes('Sin imagen'))
+ }
+})
+
+test('out_of_stock detail keeps its ordinary textual availability badge',()=>{
+ const html=render(ProductDetail,{product:{...product,availabilityStatus:'out_of_stock'}})
+ assert.equal((html.match(/>Agotado</g)||[]).length,1)
+ assert(!html.includes('AGOTADO'))
+})
+
 test('detail keeps prices, status and actions without a global notice or redundant retail-only paragraph',()=>{
  for(const priceWholesale of[19000,null]){
   const html=render(ProductDetail,{product:{...product,priceWholesale},actions:React.createElement('button',null,'Agregar al carrito')})
