@@ -1,7 +1,7 @@
 import { storefrontContent } from '@/content/storefront-content'
 import { Link } from 'react-router-dom'
 import type { CatalogProductDetail } from '../types/catalog.types'
-import { ProductPrices, WholesaleNotice } from './ProductPrices'
+import { ProductPrices } from './ProductPrices'
 import type { ReactNode } from 'react'
 import { getCatalogHref } from '../utils/catalog-url'
 import { ProductGallery } from './ProductGallery'
@@ -19,7 +19,7 @@ export function ProductDetail({ product, actions }: { product: CatalogProductDet
         <div className="min-w-0 self-start space-y-6 break-words py-2 lg:pl-4">
           <Link to={getCatalogHref({ page: 1, categorySlug: product.category.slug })} className="inline-block text-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">{product.category.name}</Link>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{product.name}</h1>
-          <ProductPrices variant="detail" priceSale={product.priceSale} priceWholesale={product.priceWholesale} /><WholesaleNotice priceWholesale={product.priceWholesale} />
+          <ProductPrices variant="detail" priceSale={product.priceSale} priceWholesale={product.priceWholesale} />
           <ProductAvailabilityBadge status={product.availabilityStatus} />
           {product.availabilityStatus === 'on_order' && (
             <p className="max-w-prose border-l-2 border-border pl-4 text-sm leading-relaxed text-muted-foreground">{storefrontContent.orderProductNotice}</p>

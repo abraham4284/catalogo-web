@@ -333,3 +333,11 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] F18, Links, filtros URL, redirect inválido, API y mayorista conservados
 - [x] 98 pruebas, lint/build, 24 transiciones en seis anchos y regresiones locales
 - [x] Evidencia en docs/qa-report.md; implementación en dev según acuerdo vigente
+
+## Ajuste F10.3 — Wholesale information architecture / FAQ
+- [x] Aviso exclusivo de catálogo, compacto, con mínimo dinámico y link a FAQ
+- [x] Home y ficha sin aviso mayorista repetido ni párrafo redundante de Solo minorista
+- [x] Grupo FAQ de seis preguntas con copy comercial sin monto fijo
+- [x] Intro FAQ ampliada, encargos intactos y ficha contextual compacta
+- [x] 103 pruebas, lint/build y 36 casos locales en seis anchos
+- [x] Documentación; pricing, carrito, WhatsApp, SEO y Meta preservados
