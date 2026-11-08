@@ -79,7 +79,7 @@ test('catalog notice keeps a dynamic minimum and a navigable FAQ link', () => {
   const html=render(WholesaleNotice,{})
   assert(html.includes(`Mayorista desde ${formatCurrency(policy.wholesaleMinimumAmount)} en valor mayorista`))
   assert(html.includes('Podés combinar categorías.'))
-  assert(html.includes('href="/preguntas-frecuentes"'))
+  assert(html.includes('href="/preguntas-frecuentes#compras-minoristas-y-mayoristas"'))
   assert(html.includes('¿Cómo funciona?'))
 })
 test('partial cart progress is accessible and compact variant omits the full explanatory paragraph', () => {

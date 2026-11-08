@@ -218,3 +218,27 @@ Escenarios adicionales: cambio de mínimo del fixture a 76543 se refleja en cat�
 Únicos fuentes modificados: ProductPrices.tsx (solo WholesaleNotice/import Link), ProductDetail.tsx, HomePage.tsx, storefront-content.ts y FaqPage.tsx. ProductPrices como bloque de precios, Cart v4/cálculos/mínimo/política, revalidación/checkout, API/contratos, WhatsApp, Meta, SEO, encargos y paginación/scroll no se modificaron. Confirmado con diff de archivos protegidos. No se añaden lookup de Customer, login, pagos o nuevas llamadas API. Sin dependencias/lockfile nuevos.
 
 Revisión/promoción manual a qa y comprobación productiva pendientes según workflow del usuario. Se mantienen los límites operativos/jurídicos ya documentados. Sin bloqueos de implementación conocidos; se usa dev conforme al acuerdo del usuario aunque el documento de referencia nombre qa.
+
+## Fix Agotado + FAQ wholesale deep link auto-open — 2026-11-07
+
+### Disponibilidad
+Los helpers catalog-availability.ts y Cart/domain/cart.ts cambian exclusivamente la etiqueta out_of_stock de No disponible a Agotado. Disponible y Por encargo permanecen iguales. Sin cambios en stock, saleMode, eligibility, cantidades o gates; availabilityStatus sigue siendo la única fuente del label. Se conserva Consultar disponibilidad para agotado y el texto secundario neutral de ficha, sin promesas de reposición. El único cambio de Cart es ese literal en getCartAvailabilityLabel.
+
+### Deep link
+WHOLESALE_FAQ_ID es una constante explícita de contenido: compras-minoristas-y-mayoristas. No se genera desde el título. Solo el grupo mayorista declara ese ID; FaqEntry admite id opcional y FaqList lo emite en details con scroll-mt-6. WholesaleNotice reutiliza el ID en /preguntas-frecuentes#compras-minoristas-y-mayoristas, conservando importe dinámico, copy y estilos.
+
+FaqPage observa hash/location key, valida contra IDs declarados y busca un HTMLDetailsElement dentro de su propio contenedor. En el siguiente frame abre el padre mediante la propiedad nativa open y hace scrollIntoView auto/start, después del foco/restauración de ruta existentes. Cleanup cancela callbacks pendientes. No controla todos los details, no agrega foco ni abre hijos. Render normal sin hash y hash desconocido no generan apertura/scroll desde el efecto. La URL con hash funciona en montaje directo, recarga, navegación SPA y cambios de hash en la misma página. Cierre manual permanece estable ante rerenders sin navegación; una navegación explícita al destino puede reabrirlo.
+
+### Validación
+109 pruebas pasan (103 anteriores adaptando el href/label + cinco casos de deep link y uno de label de carrito). Tests de ID estable, allowlist, apertura solo padre, hijos/encargos cerrados, entrada directa, hash inválido, navegación con mismo hash, cierre nativo, target ausente/fuera de ámbito y cancelación de frame. Los tests de lifecycle ejecutan FaqPage real con hooks/DOM controlados, y el comportamiento nativo se comprueba adicionalmente en navegador. Asserts de pricing, almacenamiento, API, WhatsApp, Meta y SEO conservados. npm run lint y npm run build: OK.
+
+Edge headless con fixtures locales: 36 casos en 320/375/768/1024/1440/1920. Por ancho: card agotada incluso con stock físico 20, click del catálogo hacia FAQ abierta/visible, entrada directa y refresh con hash, FAQ sin hash/inválido cerrada, ficha agotada con Consultar disponibilidad y sin agregar, ficha por encargo con stock físico 0 que mantiene Por encargo/30%/Consultar y encargar. Sin overflow ni errores de página; header no tapa el summary. Solo padre abierto, seis hijos cerrados y encargos cerrado. SEO mantiene OutOfStock en ficha agotada y availability omitida en encargo.
+
+Regresiones adicionales a 375 px: Back/Forward catálogo → FAQ → catálogo → FAQ; cierre manual no se revierte al abrir/cerrar Side Cart; cambio de hash dentro de FAQ; revalidación de snapshot in_stock a agotado, label Agotado en CartPage/Side Cart y checkout bloqueado; reduced motion conserva llegada auto y transición de ruta desactivada según preferencia. Sin apertura/envío de WhatsApp ni SDK Meta productivo.
+
+Capturas finales tomadas después de F18 e inspeccionadas visualmente. Evidencia local en el directorio ya documentado: agotado-faq-qa.cjs, agotado-faq-results.json, agotado-faq-deep-375.png, agotado-faq-deep-1440.png y agotado-faq-captures.cjs. Pruebas con fixtures, no despliegue productivo ni lectores/dispositivos físicos.
+
+### Alcance preservado
+Pricing/mínimo/candidato/transición/ahorro/faltante, Cart v4/migración/revalidación/checkout, API/backend, WhatsApp, Meta, SEO, FAQ/copy de encargos, política 30/70 y F18 intactos. Sin nuevas dependencias, estado global, librería de acordeón o modificación del hash canónico SEO. El copy mayorista aprobado no cambia; solo se agrega su ID.
+
+Se mantiene dev como rama de implementación conforme al acuerdo vigente del usuario, con revisión/promoción manual a qa. No se cambió de rama ni se escribieron operaciones Git. Pendientes de producción y fases anteriores conservados; sin bloqueos conocidos.
