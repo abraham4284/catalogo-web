@@ -53,7 +53,7 @@ test('global notice is rendered by CatalogPage and removed from HomePage',()=>{
  const catalog=render(load('pages/catalog/CatalogPage').CatalogPage)
  const home=render(load('pages/home/HomePage').HomePage)
  assert(catalog.includes(`Mayorista desde ${formatCurrency(policy.wholesaleMinimumAmount)} en valor mayorista`))
- assert(catalog.includes('href="/preguntas-frecuentes"'))
+ assert(catalog.includes('href="/preguntas-frecuentes#compras-minoristas-y-mayoristas"'))
  assert(catalog.includes('¿Cómo funciona?'))
  assert(!home.includes('Mayorista desde'))
 })

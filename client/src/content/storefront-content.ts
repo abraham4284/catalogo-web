@@ -1,5 +1,7 @@
 import type { FaqEntry } from '@/shared/components/guidance/FaqList'
 
+export const WHOLESALE_FAQ_ID = 'compras-minoristas-y-mayoristas'
+
 const baseStorefrontContent = {
   announcement: 'Explorá productos con stock y opciones por encargo · Consultas por WhatsApp',
   hero: {
@@ -45,6 +47,7 @@ const orderFaq = {
 } as const satisfies FaqEntry
 
 const wholesaleFaq = {
+  id: WHOLESALE_FAQ_ID,
   question: 'Compras minoristas y mayoristas',
   answer: 'Conocé qué precio se aplica a tu compra y cómo acceder al beneficio mayorista.',
   items: [

@@ -341,3 +341,12 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] Intro FAQ ampliada, encargos intactos y ficha contextual compacta
 - [x] 103 pruebas, lint/build y 36 casos locales en seis anchos
 - [x] Documentación; pricing, carrito, WhatsApp, SEO y Meta preservados
+
+## Fix puntual — Agotado + FAQ mayorista por deep link
+- [x] Availability copy: out_of_stock → Agotado en catálogo y carrito
+- [x] CTA/gates de agotado y comportamiento Por encargo preservados
+- [x] ID explícito opcional y Link de catálogo al hash mayorista
+- [x] FAQ autoabre solo el padre válido, con scroll auto y sin foco añadido
+- [x] FAQ normal/hash inválido, hijos cerrados y cierre manual nativo conservados
+- [x] 109 pruebas, lint/build, 36 casos responsive y regresiones de historial/refresh
+- [x] Documentación y evidencia; trabajo en dev para revisión manual en qa
