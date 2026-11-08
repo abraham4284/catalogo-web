@@ -29,7 +29,7 @@ const { CartSummary } = load('features/cart/components/CartSummary')
 const { CartPreview } = load('features/cart/components/CartPreview')
 const { calculateCartPricing } = load('features/cart/domain/pricing')
 const { formatCurrency } = load('shared/utils/format-currency')
-const render = (component, props) => renderToStaticMarkup(React.createElement(component, props))
+const render = (component, props) => renderToStaticMarkup(React.createElement(MemoryRouter,null,React.createElement(component, props)))
 const base = { wholesaleEnabled: true, lines: [{}], allItemsHaveWholesalePrice: true, wholesaleCandidate: 0, wholesaleMinimumAmount: 50000 }
 const item = { idProduct: 1, slug: 'uno', name: 'Uno', priceSale: 90000, priceWholesale: 25000, quantity: 1, stockAvailable: 10, availabilityStatus: 'in_stock', imageUrl: null }
 
@@ -75,11 +75,12 @@ test('disabled policy keeps plain retail presentation', () => {
   assert.equal(render(WholesaleNotice,{}),'')
   policy={wholesaleEnabled:true,wholesaleMinimumAmount:50000}
 })
-test('detail retail-only context does not suggest that SKU gets a wholesale benefit', () => {
-  assert(render(WholesaleNotice,{priceWholesale:null}).includes('Este producto se vende solo a precio minorista.'))
-  assert(!render(WholesaleNotice,{priceWholesale:null}).includes('desde'))
-  assert(render(WholesaleNotice,{}).includes(formatCurrency(policy.wholesaleMinimumAmount)))
-  assert(render(WholesaleNotice,{priceWholesale:20000}).includes(formatCurrency(policy.wholesaleMinimumAmount)))
+test('catalog notice keeps a dynamic minimum and a navigable FAQ link', () => {
+  const html=render(WholesaleNotice,{})
+  assert(html.includes(`Mayorista desde ${formatCurrency(policy.wholesaleMinimumAmount)} en valor mayorista`))
+  assert(html.includes('Podés combinar categorías.'))
+  assert(html.includes('href="/preguntas-frecuentes#compras-minoristas-y-mayoristas"'))
+  assert(html.includes('¿Cómo funciona?'))
 })
 test('partial cart progress is accessible and compact variant omits the full explanatory paragraph', () => {
   const pricing=calculateCartPricing([item],policy)

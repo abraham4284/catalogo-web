@@ -118,7 +118,7 @@ test('commercial availability labels come from status, independent of physical s
   const { load, src } = loadCatalog()
   const { getCatalogAvailabilityLabel: label } = load(path.join(src, 'features/catalog/utils/catalog-availability.ts'))
   assert.equal(label('in_stock'), 'Disponible')
-  assert.equal(label('out_of_stock'), 'No disponible')
+  assert.equal(label('out_of_stock'), 'Agotado')
   assert.equal(label('on_order'), 'Por encargo')
 })
 

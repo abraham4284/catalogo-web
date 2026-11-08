@@ -31,7 +31,7 @@ export function calculateCartItemCount(items: readonly CartItem[]): number {
 
 export function getCartAvailabilityLabel(status: CartAvailabilityStatus): string {
   const labels: Record<CartAvailabilityStatus, string> = {
-    in_stock: 'Disponible', out_of_stock: 'No disponible', on_order: 'Por encargo',
+    in_stock: 'Disponible', out_of_stock: 'Agotado', on_order: 'Por encargo',
   }
   return labels[status]
 }

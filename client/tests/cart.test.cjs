@@ -299,3 +299,12 @@ test('revalidation is concurrent, preserves identity, reports partial failures a
   const retried = await verify(targets, async slug => ({ ...snapshot, ...targets.find(target => target.slug === slug) }), new AbortController().signal)
   assert.deepEqual(retried.failedProductIds, [])
 })
+
+test('cart availability copy follows commercial status, preserving order and stock gates', () => {
+  const { getCartAvailabilityLabel: label, isCartItemInStock } = loadCart()('domain/cart')
+  for (const [status,expected] of [['in_stock','Disponible'],['out_of_stock','Agotado'],['on_order','Por encargo']]) assert.equal(label(status),expected)
+  for (const stockAvailable of [0,20]) {
+    assert.equal(isCartItemInStock({...snapshot,availabilityStatus:'on_order',stockAvailable}),false)
+    assert.equal(isCartItemInStock({...snapshot,availabilityStatus:'out_of_stock',stockAvailable}),false)
+  }
+})

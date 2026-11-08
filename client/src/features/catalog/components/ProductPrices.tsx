@@ -1,3 +1,5 @@
+import { WHOLESALE_FAQ_ID } from '@/content/storefront-content'
+import { Link } from 'react-router-dom'
 import { formatCurrency } from '@/shared/utils/format-currency'
 import { useCatalogPricing } from '../store/business.store'
 
@@ -23,11 +25,12 @@ export function ProductPrices({ priceSale, priceWholesale, variant = 'card' }: {
   </dl>
 }
 
-export function WholesaleNotice({ priceWholesale }: { priceWholesale?: number | null } = {}) {
+// The global wholesale explanation belongs to the catalog, not individual SKUs.
+export function WholesaleNotice() {
   const policy = useCatalogPricing()
   if (!policy?.wholesaleEnabled) return null
-  if (priceWholesale !== undefined && !(priceWholesale !== null && Number.isFinite(priceWholesale) && priceWholesale > 0)) {
-    return <p className="text-sm leading-relaxed text-muted-foreground">Este producto se vende solo a precio minorista.</p>
-  }
-  return <p className="text-sm leading-relaxed text-muted-foreground">Precio mayorista desde {formatCurrency(policy.wholesaleMinimumAmount)}. Podés combinar productos de distintas categorías.</p>
+  return <p className="text-sm leading-relaxed text-muted-foreground">
+    Mayorista desde {formatCurrency(policy.wholesaleMinimumAmount)} en valor mayorista · Podés combinar categorías.{' '}
+    <Link to={`/preguntas-frecuentes#${WHOLESALE_FAQ_ID}`} className="inline-flex min-h-11 items-center text-primary underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2">¿Cómo funciona?</Link>
+  </p>
 }

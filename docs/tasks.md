@@ -333,3 +333,35 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] F18, Links, filtros URL, redirect inválido, API y mayorista conservados
 - [x] 98 pruebas, lint/build, 24 transiciones en seis anchos y regresiones locales
 - [x] Evidencia en docs/qa-report.md; implementación en dev según acuerdo vigente
+
+## Ajuste F10.3 — Wholesale information architecture / FAQ
+- [x] Aviso exclusivo de catálogo, compacto, con mínimo dinámico y link a FAQ
+- [x] Home y ficha sin aviso mayorista repetido ni párrafo redundante de Solo minorista
+- [x] Grupo FAQ de seis preguntas con copy comercial sin monto fijo
+- [x] Intro FAQ ampliada, encargos intactos y ficha contextual compacta
+- [x] 103 pruebas, lint/build y 36 casos locales en seis anchos
+- [x] Documentación; pricing, carrito, WhatsApp, SEO y Meta preservados
+
+## Fix puntual — Agotado + FAQ mayorista por deep link
+- [x] Availability copy: out_of_stock → Agotado en catálogo y carrito
+- [x] CTA/gates de agotado y comportamiento Por encargo preservados
+- [x] ID explícito opcional y Link de catálogo al hash mayorista
+- [x] FAQ autoabre solo el padre válido, con scroll auto y sin foco añadido
+- [x] FAQ normal/hash inválido, hijos cerrados y cierre manual nativo conservados
+- [x] 109 pruebas, lint/build, 36 casos responsive y regresiones de historial/refresh
+- [x] Documentación y evidencia; trabajo en dev para revisión manual en qa
+
+## Visual polish — out_of_stock image badge
+- [x] ProductCardImage muestra AGOTADO oscuro sobre imagen solo según availabilityStatus
+- [x] ProductCard elimina el duplicado inferior y conserva alineación con espacio estructural
+- [x] Disponible/Por encargo, ficha, carrito y CTA comerciales preservados
+- [x] 112 pruebas, lint/build y QA local en 320/375/768/1024/1440/1920
+- [x] Hover secundario, touch, foco/teclado y capturas inspeccionadas; evidencia en docs/qa-report.md
+- [x] Implementado en dev según acuerdo vigente para promoción manual a qa
+
+## Ajuste puntual — Buscador de productos y categorías
+- [x] CatalogSearch: label visible Buscar productos o categorías y placeholder orientativo aprobado
+- [x] Submit explícito, trim, máximo 150, limpieza y URL conservados; sin búsqueda/ranking local
+- [x] 117 pruebas, lint y build correctos; cinco regresiones agregadas en suites existentes
+- [x] QA con Cajora local: 11 términos, orden íntegro, search + categorySlug, limpieza, categoría, paginación y vacío
+- [x] Responsive 320/375/768/1024/1440/1920, foco y capturas inspeccionadas; evidencia docs/qa-report.md
