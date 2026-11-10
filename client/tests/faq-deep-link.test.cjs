@@ -13,7 +13,7 @@ function harness(initialHash='',options={}){
  const module={exports:{}},file=path.resolve(__dirname,'../src/pages/faq/FaqPage.tsx')
  const source=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText
  const noop=()=>null
- const req=name=>name==='react'?hooks:name==='react-router-dom'?{Link:noop,useLocation:()=>location}:name==='@/content/storefront-content'?content:name==='@/shared/components/guidance/FaqList'?{FaqList:noop}:require(name)
+ const req=name=>name==='react'?hooks:name==='react-router-dom'?{Link:noop,useLocation:()=>location}:name==='@/content/storefront-content'?content:name==='@/app/compositions/StorefrontFaq'?{StorefrontFaq:noop}:name==='@/features/whatsapp/utils/whatsapp-general-inquiry'?{getWhatsAppGeneralInquiryHref:noop}:require(name)
  new Function('require','module','exports','document','HTMLDetailsElement','requestAnimationFrame','cancelAnimationFrame',source)(req,module,module.exports,{getElementById:id=>{lookups++;return options.missing?null:id===content.WHOLESALE_FAQ_ID?target:null}},Details,callback=>{frames.set(++frameId,callback);return frameId},id=>frames.delete(id))
  const flush=()=>{const callbacks=[...frames.values()];frames.clear();callbacks.forEach(callback=>callback())}
  function render(nextHash=location.hash,key=location.key,runFrame=true){location={hash:nextHash,key};refIndex=0;effectIndex=0;pending=[];const tree=module.exports.FaqPage();tree.props.ref.current=container;pending.forEach(callback=>callback());if(runFrame)flush()}

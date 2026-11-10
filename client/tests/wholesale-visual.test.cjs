@@ -75,12 +75,16 @@ test('disabled policy keeps plain retail presentation', () => {
   assert.equal(render(WholesaleNotice,{}),'')
   policy={wholesaleEnabled:true,wholesaleMinimumAmount:50000}
 })
-test('catalog notice keeps a dynamic minimum and a navigable FAQ link', () => {
-  const html=render(WholesaleNotice,{})
-  assert(html.includes(`Mayorista desde ${formatCurrency(policy.wholesaleMinimumAmount)} en valor mayorista`))
-  assert(html.includes('Podés combinar categorías.'))
-  assert(html.includes('href="/preguntas-frecuentes#compras-minoristas-y-mayoristas"'))
-  assert(html.includes('¿Cómo funciona?'))
+test('catalog notice omits the minimum and renders a CTA only with a configured inquiry link', () => {
+  const inquiryHref = 'https://wa.me/5491123456789?text=Consulta'
+  const html = render(WholesaleNotice, { inquiryHref })
+  assert(!html.includes(formatCurrency(policy.wholesaleMinimumAmount)))
+  assert(!html.includes('Podés combinar categorías'))
+  assert(html.includes(`href="${inquiryHref}"`))
+  assert(html.includes('Consultar condiciones →'))
+  const withoutLink = render(WholesaleNotice, {})
+  assert(withoutLink.includes('Consultanos las condiciones vigentes según categoría.'))
+  assert(!withoutLink.includes('<a '))
 })
 test('partial cart progress is accessible and compact variant omits the full explanatory paragraph', () => {
   const pricing=calculateCartPricing([item],policy)

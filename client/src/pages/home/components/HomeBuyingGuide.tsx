@@ -1,5 +1,5 @@
 import { BuyingSteps } from '@/shared/components/guidance/BuyingSteps'
-import { FaqList } from '@/shared/components/guidance/FaqList'
+import { StorefrontFaq } from '@/app/compositions/StorefrontFaq'
 import { storefrontContent } from '@/content/storefront-content'
 
 export function HomeBuyingGuide() {
@@ -14,7 +14,7 @@ export function HomeBuyingGuide() {
       </section>
       <section aria-labelledby="faq-heading" className="grid gap-6 border-t pt-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
         <h2 id="faq-heading" className="text-3xl font-semibold tracking-tight">Preguntas frecuentes</h2>
-        <FaqList items={storefrontContent.faq} />
+        <StorefrontFaq />
       </section>
     </>
   )
