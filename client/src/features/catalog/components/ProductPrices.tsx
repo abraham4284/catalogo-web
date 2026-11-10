@@ -1,5 +1,3 @@
-import { WHOLESALE_FAQ_ID } from '@/content/storefront-content'
-import { Link } from 'react-router-dom'
 import { formatCurrency } from '@/shared/utils/format-currency'
 import { useCatalogPricing } from '../store/business.store'
 
@@ -26,11 +24,13 @@ export function ProductPrices({ priceSale, priceWholesale, variant = 'card' }: {
 }
 
 // The global wholesale explanation belongs to the catalog, not individual SKUs.
-export function WholesaleNotice() {
+export function WholesaleNotice({ inquiryHref }: { inquiryHref?: string }) {
   const policy = useCatalogPricing()
   if (!policy?.wholesaleEnabled) return null
   return <p className="text-sm leading-relaxed text-muted-foreground">
-    Mayorista desde {formatCurrency(policy.wholesaleMinimumAmount)} en valor mayorista · Podés combinar categorías.{' '}
-    <Link to={`/preguntas-frecuentes#${WHOLESALE_FAQ_ID}`} className="inline-flex min-h-11 items-center text-primary underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2">¿Cómo funciona?</Link>
+    ¿Querés acceder a precios mayoristas? Consultanos las condiciones vigentes según categoría.
+    {inquiryHref && (
+      <>{' '}<a href={inquiryHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-primary underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2">Consultar condiciones →</a></>
+    )}
   </p>
 }

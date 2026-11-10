@@ -365,3 +365,13 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] 117 pruebas, lint y build correctos; cinco regresiones agregadas en suites existentes
 - [x] QA con Cajora local: 11 términos, orden íntegro, search + categorySlug, limpieza, categoría, paginación y vacío
 - [x] Responsive 320/375/768/1024/1440/1920, foco y capturas inspeccionadas; evidencia docs/qa-report.md
+
+## UX comercial — compartir, última unidad y contacto
+- [x] Compartir la ficha con URL canónica, cancelación silenciosa y copia con feedback.
+- [x] Última unidad en cards y ficha cuando el estado es disponible y el stock es exactamente uno.
+- [x] FAQ mayorista con consulta por WhatsApp y bloque de ayuda con Contacto.
+- [x] Contacto responsive con atención online, redes oficiales y formulario existente.
+- [x] 122 pruebas, lint, build y QA local en seis anchos. Evidencia en docs/qa-report.md.
+- [ ] Comprobar el panel nativo de compartir en un dispositivo compatible.
+
+- [x] Ajuste del aviso mayorista del catálogo con condiciones por categoría y CTA a WhatsApp. 122 pruebas, lint y build correctos.

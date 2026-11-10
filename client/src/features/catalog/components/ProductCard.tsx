@@ -9,7 +9,7 @@ export function ProductCard({ product, actions }: { product: CatalogProductListI
   return (
     <article className="flex h-full min-w-0 flex-col bg-card">
       <Link to={`/productos/${product.slug}`} aria-label={`Ver ${product.name}`} className="flex min-w-0 flex-1 flex-col gap-5 p-1 focus-visible:outline-2 focus-visible:outline-ring focus-visible:-outline-offset-2">
-        <ProductCardImage imageUrl={product.imageUrl} secondaryImageUrl={product.secondaryImageUrl} name={product.name} availabilityStatus={product.availabilityStatus} />
+        <ProductCardImage imageUrl={product.imageUrl} secondaryImageUrl={product.secondaryImageUrl} name={product.name} availabilityStatus={product.availabilityStatus} stockAvailable={product.stockAvailable} />
         <div className="flex flex-1 flex-col gap-3 break-words">
           <p className="line-clamp-1 min-h-4 text-xs text-muted-foreground">{product.category.name}</p>
           <h3 className="line-clamp-2 min-h-11 text-base font-semibold leading-snug">{product.name}</h3>

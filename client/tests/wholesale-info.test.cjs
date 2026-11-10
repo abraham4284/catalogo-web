@@ -2,8 +2,13 @@ const assert=require('node:assert/strict'),test=require('node:test'),fs=require(
 const React=require('react'),{renderToStaticMarkup}=require('react-dom/server'),{MemoryRouter}=require('react-router-dom')
 const root=path.resolve(__dirname,'../src'),cache=new Map(),policy={wholesaleEnabled:true,wholesaleMinimumAmount:12345}
 const noop=()=>null
+let whatsappNumber = '5491123456789'
+const shareBrowser = {}
+const notifications = []
 function load(name){
  const base=path.resolve(root,name)
+ if(name==='config/env')return{getWhatsAppNumber:()=>whatsappNumber}
+ if(name==='features/analytics')return{trackContact:noop}
  if(base.endsWith(path.join('store','business.store')))return{useCatalogPricing:()=>policy}
  if(base===path.join(root,'features','catalog'))return{
   WholesaleNotice:load('features/catalog/components/ProductPrices').WholesaleNotice,
@@ -18,8 +23,20 @@ function load(name){
  if(cache.has(file))return cache.get(file).exports
  const module={exports:{}};cache.set(file,module)
  const output=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText
- const req=name=>name.startsWith('@/')?load(name.slice(2)):name.startsWith('.')?load(path.relative(root,path.resolve(path.dirname(file),name))):require(name)
- new Function('require','module','exports',output)(req,module,module.exports);return module.exports
+ const req = name => {
+  if (name.startsWith('@phosphor-icons/react/dist/csr/')) return { [name.split('/').at(-1) + 'Icon']: noop }
+  if (name === 'react-hot-toast') return {
+   __esModule: true,
+   default: {
+    success: message => notifications.push(['success', message]),
+    error: message => notifications.push(['error', message]),
+   },
+  }
+  if (name.startsWith('@/')) return load(name.slice(2))
+  if (name.startsWith('.')) return load(path.relative(root, path.resolve(path.dirname(file), name)))
+  return require(name)
+ }
+ new Function('require','module','exports','navigator',output)(req,module,module.exports,shareBrowser);return module.exports
 }
 const render=(component,props)=>renderToStaticMarkup(React.createElement(MemoryRouter,null,React.createElement(component,props)))
 const {ProductDetail}=load('features/catalog/components/ProductDetail')
@@ -83,7 +100,7 @@ test('cards show out_of_stock once over the image and keep other states below pr
 test('out_of_stock image badge survives missing imagery without hiding the fallback',()=>{
  const {ProductCardImage}=load('features/catalog/components/ProductCardImage')
  for(const imageUrl of [null,'https://example.test/product.png']){
-  const html=render(ProductCardImage,{imageUrl,secondaryImageUrl:'https://example.test/secondary.png',name:'Producto',availabilityStatus:'out_of_stock'})
+  const html=render(ProductCardImage,{imageUrl,secondaryImageUrl:'https://example.test/secondary.png',name:'Producto',availabilityStatus:'out_of_stock',stockAvailable:0})
   assert.equal((html.match(/>AGOTADO</g)||[]).length,1)
   assert(!html.includes('aria-hidden="true"'))
   if(imageUrl)assert(html.includes('alt="Producto"'))
@@ -122,10 +139,13 @@ test('order policy and short contextual FAQ are preserved without wholesale FAQ 
 test('global notice is rendered by CatalogPage and removed from HomePage',()=>{
  const catalog=render(load('pages/catalog/CatalogPage').CatalogPage)
  const home=render(load('pages/home/HomePage').HomePage)
- assert(catalog.includes(`Mayorista desde ${formatCurrency(policy.wholesaleMinimumAmount)} en valor mayorista`))
- assert(catalog.includes('href="/preguntas-frecuentes#compras-minoristas-y-mayoristas"'))
- assert(catalog.includes('¿Cómo funciona?'))
- assert(!home.includes('Mayorista desde'))
+ const copy = '¿Querés acceder a precios mayoristas? Consultanos las condiciones vigentes según categoría.'
+ const message = '¡Hola! Quisiera consultar las condiciones y los mínimos vigentes para acceder como cliente mayorista de VITRUNO. ¿Me pueden ayudar?'
+ assert(catalog.includes(copy))
+ assert(catalog.includes(`href="https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}" target="_blank" rel="noopener noreferrer"`))
+ assert(catalog.includes('Consultar condiciones →'))
+ assert(!catalog.includes(formatCurrency(policy.wholesaleMinimumAmount)))
+ assert(!home.includes(copy))
 })
 test('FAQ contains the six wholesale questions beside the intact order group using native closed details',()=>{
  const wholesale=storefrontContent.faq.find(item=>item.question==='Compras minoristas y mayoristas')
@@ -133,7 +153,7 @@ test('FAQ contains the six wholesale questions beside the intact order group usi
  assert(wholesale&&order)
  assert.deepEqual(wholesale.items.map(item=>item.question),[
  '¿Cuál es la diferencia entre precio minorista y mayorista?',
- '¿Cómo accedo al precio mayorista?',
+ '¿Hay un monto mínimo de compra para acceder a precios mayoristas?',
  '¿Cómo se calcula el mínimo mayorista?',
  '¿Qué pasa si no llego al mínimo?',
  '¿Qué significa “Solo minorista”?',
@@ -149,6 +169,107 @@ test('FAQ contains the six wholesale questions beside the intact order group usi
 test('wholesale FAQ explains conditions in commercial language without a hardcoded minimum',()=>{
  const group=storefrontContent.faq.find(item=>item.question==='Compras minoristas y mayoristas')
  const copy=group.items.map(item=>item.answer).join(' ')
- for(const text of['todos los productos','precios mayoristas','distintas categorías','Podés comprar igualmente','no se activa automáticamente','WhatsApp'])assert(copy.includes(text))
+ for(const text of['precios mayoristas','pueden variar según la categoría','Podés comprar igualmente','no se activa automáticamente','WhatsApp'])assert(copy.includes(text))
  assert(!/\d|\$|wholesaleCandidate|pricingType|effectiveSubtotal|priceWholesale/.test(JSON.stringify(group)))
+})
+
+test('native share uses the public product URL and preserves silent cancellation', async () => {
+ const { shareProduct } = load('features/catalog/utils/share-product')
+ const payloads = []
+ const clipboard = { writeText: () => assert.fail('Native share must not copy') }
+ assert.equal(await shareProduct(product, { share: async payload => payloads.push(payload), clipboard }), 'shared')
+ assert.deepEqual(payloads, [{
+  title: 'Producto',
+  text: 'Mirá Producto en VITRUNO',
+  url: 'https://vitruno.com.ar/productos/producto',
+ }])
+ const share = async () => { throw new DOMException('Cancelled', 'AbortError') }
+ assert.equal(await shareProduct(product, { share, clipboard }), 'cancelled')
+})
+
+test('share button copies on missing support or failure and reports clipboard failure accessibly', async () => {
+ const { ProductShareButton } = load('features/catalog/components/ProductShareButton')
+ const button = ProductShareButton(product)
+ assert.equal(button.props['aria-label'], 'Compartir producto')
+ const copied = []
+ shareBrowser.clipboard = { writeText: async url => copied.push(url) }
+ try {
+  await button.props.onClick()
+  shareBrowser.share = async () => { throw new Error('Share denied') }
+  await button.props.onClick()
+  shareBrowser.share = async () => { throw new DOMException('Cancelled', 'AbortError') }
+  await button.props.onClick()
+  assert.deepEqual(copied, Array(2).fill('https://vitruno.com.ar/productos/producto'))
+  assert.deepEqual(notifications, Array(2).fill(['success', 'Enlace copiado']))
+  delete shareBrowser.share
+  shareBrowser.clipboard = { writeText: async () => { throw new Error('Clipboard denied') } }
+  await button.props.onClick()
+  assert.equal(notifications.at(-1)[0], 'error')
+ } finally {
+  delete shareBrowser.share
+  delete shareBrowser.clipboard
+  notifications.length = 0
+ }
+})
+
+test('last unit appears over the card image and by detail availability only for in_stock with exactly one', () => {
+ const { ProductCard } = load('features/catalog/components/ProductCard')
+ for (const availabilityStatus of ['in_stock', 'out_of_stock', 'on_order']) {
+  for (const stockAvailable of [0, 1, 2]) {
+   const item = { ...product, availabilityStatus, stockAvailable }
+   const card = render(ProductCard, { product: item })
+   const detail = render(ProductDetail, { product: item })
+   const lastUnit = availabilityStatus === 'in_stock' && stockAvailable === 1
+   assert.equal(card.includes('ÚLTIMA UNIDAD'), lastUnit)
+   assert.equal(detail.includes('ÚLTIMA UNIDAD'), lastUnit)
+   if (lastUnit) assert(card.indexOf('ÚLTIMA UNIDAD') < card.indexOf('</div>'))
+   assert.equal(card.includes('>AGOTADO<'), availabilityStatus === 'out_of_stock')
+   assert.equal(card.includes('>Por encargo<'), availabilityStatus === 'on_order')
+  }
+ }
+})
+
+test('FAQ renders the wholesale message and help links while Contact remains available without WhatsApp config', () => {
+ const { FaqPage } = load('pages/faq/FaqPage')
+ const faq = render(FaqPage)
+ const message = '¡Hola! Quisiera consultar las condiciones y los mínimos vigentes para acceder como cliente mayorista de VITRUNO. ¿Me pueden ayudar?'
+ assert(faq.includes('¿No encontraste lo que buscabas?'))
+ assert(faq.includes('href="/contacto"'))
+ assert(faq.includes('>WhatsApp</a>'))
+ assert(faq.includes('Consultar condiciones mayoristas por WhatsApp →'))
+ assert(faq.includes(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`))
+ const saved = whatsappNumber
+ try {
+  whatsappNumber = undefined
+  const withoutWhatsApp = render(FaqPage)
+  assert(withoutWhatsApp.includes('href="/contacto"'))
+  assert(!withoutWhatsApp.includes('https://wa.me/'))
+ } finally {
+  whatsappNumber = saved
+ }
+})
+
+test('Contact retains the form and exposes official social links and configured WhatsApp', () => {
+ const { ContactPage } = load('pages/contact/ContactPage')
+ const html = render(ContactPage)
+ assert(html.includes('Atención online'))
+ assert(html.includes('id="contact-name"'))
+ assert(html.includes('id="contact-email"'))
+ assert(html.includes('id="contact-message"'))
+ assert(html.includes('Continuar por WhatsApp'))
+ for (const href of [
+  'https://www.instagram.com/vitruno.ar/',
+  'https://www.facebook.com/people/Vitruno/61595884155088/',
+ ]) assert(html.includes(`href="${href}" target="_blank" rel="noopener noreferrer"`))
+ assert(html.includes('Consultar por WhatsApp'))
+ assert(!/TikTok|<address|<iframe/.test(html))
+ const saved = whatsappNumber
+ try {
+  whatsappNumber = undefined
+  const unconfigured = render(ContactPage)
+  assert(!unconfigured.includes('Consultar por WhatsApp'))
+  assert(unconfigured.includes('Continuar por WhatsApp'))
+ } finally {
+  whatsappNumber = saved
+ }
 })
