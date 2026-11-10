@@ -1,6 +1,7 @@
 import type { FaqEntry } from '@/shared/components/guidance/FaqList'
 
 export const WHOLESALE_FAQ_ID = 'compras-minoristas-y-mayoristas'
+export const WHOLESALE_CONDITIONS_ACTION = 'wholesale-conditions'
 
 const baseStorefrontContent = {
   announcement: 'Explorá productos con stock y opciones por encargo · Consultas por WhatsApp',
@@ -52,11 +53,11 @@ const wholesaleFaq = {
   answer: 'Conocé qué precio se aplica a tu compra y cómo acceder al beneficio mayorista.',
   items: [
     { question: '¿Cuál es la diferencia entre precio minorista y mayorista?', answer: 'El precio minorista se aplica a las compras que no alcanzan las condiciones mayoristas. Algunos productos también tienen un precio mayorista, que puede aplicarse automáticamente cuando el carrito alcanza el mínimo vigente.' },
-    { question: '¿Cómo accedo al precio mayorista?', answer: 'Cuando la compra mayorista está habilitada, todos los productos de tu carrito deben contar con precio mayorista y, en conjunto, alcanzar el mínimo mayorista vigente. Podés combinar productos de distintas categorías.' },
+    { question: '¿Hay un monto mínimo de compra para acceder a precios mayoristas?', answer: 'Sí. Las condiciones y mínimos pueden variar según la categoría. Consultanos por WhatsApp para conocer los requisitos mayoristas vigentes.', action: WHOLESALE_CONDITIONS_ACTION },
     { question: '¿Cómo se calcula el mínimo mayorista?', answer: 'El progreso se calcula usando los precios mayoristas de los productos de tu carrito. Por eso el total minorista de tu compra puede ser mayor al importe que aparece en el progreso mayorista.' },
     { question: '¿Qué pasa si no llego al mínimo?', answer: 'Podés comprar igualmente. Si el carrito no alcanza el mínimo mayorista, la compra continúa utilizando los precios minoristas. Alcanzar el mínimo no es obligatorio para realizar una compra.' },
     { question: '¿Qué significa “Solo minorista”?', answer: 'Ese producto puede comprarse normalmente a precio minorista, pero no cuenta con precio mayorista. Si el carrito incluye un producto solo minorista, no se activa automáticamente la modalidad mayorista para ese pedido.' },
-    { question: '¿Ya soy cliente mayorista?', answer: 'Si ya tenés condición mayorista en VITRUNO, escribinos por WhatsApp al finalizar tu pedido para que podamos identificarte y conservar las condiciones correspondientes.' },
+    { question: '¿Ya soy cliente mayorista?', answer: 'Si ya comprás como mayorista, escribinos por WhatsApp para consultar las condiciones aplicables a tu pedido.' },
   ],
 } as const satisfies FaqEntry
 
@@ -67,6 +68,10 @@ const orderProductFaq = {
 
 export const storefrontContent = {
   ...baseStorefrontContent,
+  social: {
+    instagram: 'https://www.instagram.com/vitruno.ar/',
+    facebook: 'https://www.facebook.com/people/Vitruno/61595884155088/',
+  },
   faq: [...baseStorefrontContent.faq, wholesaleFaq, orderFaq],
   orderProductNotice: 'Para confirmar tu encargo se solicita un anticipo del 30% del valor total. Antes de abonar, confirmamos precio, disponibilidad y plazo de entrega.',
   orderNotice: 'Consultar no constituye una compra. El encargo se confirma únicamente después de aceptar expresamente las condiciones y acreditarse el anticipo. Antes de abonar confirmamos disponibilidad, precio final y plazo.',

@@ -30,7 +30,7 @@ function pageHarness(initial = '', items = []) {
   const filename = path.resolve(__dirname, '../src/pages/catalog/CatalogPage.tsx')
   const output = ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText
   const module = { exports:{} }
-  const req = name => name === 'react' ? hooks : name === 'react-router-dom' ? { Navigate:noop,useSearchParams:()=>[new URLSearchParams(query),noop] } : name === '@/features/catalog' ? catalog : name === '@/app/compositions/ProductCommerceActions' ? {ProductCommerceActions:noop} : require(name)
+  const req = name => name === 'react' ? hooks : name === 'react-router-dom' ? { Navigate:noop,useSearchParams:()=>[new URLSearchParams(query),noop] } : name === '@/features/catalog' ? catalog : name === '@/app/compositions/ProductCommerceActions' ? {ProductCommerceActions:noop} : name === '@/features/whatsapp/utils/whatsapp-general-inquiry' ? {getWhatsAppWholesaleInquiryHref:noop} : require(name)
   new Function('require','module','exports','requestAnimationFrame','cancelAnimationFrame',output)(req,module,module.exports,callback=>{frames.set(++frameId,callback);return frameId},id=>frames.delete(id))
   const flushFrame = () => { const callbacks=[...frames.values()]; frames.clear(); callbacks.forEach(callback=>callback()) }
   function render(nextQuery = query, nextStatus = status, flush = true) {

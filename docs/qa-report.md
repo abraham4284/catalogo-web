@@ -109,3 +109,11 @@ Comprobados: búsqueda perfume → página 2 preservando search y orden; trim de
 Responsive en 320/375/768/1024/1440/1920: label visible, placeholder exacto, maxlength 150, Buscar/Limpiar dentro del formulario sin overflow; foco visible. Capturas 375/1440 inspeccionadas. Sin errores de página. El origen auxiliar 5175 no está autorizado por CORS de Cajora local, por lo que se utilizó el servidor ya existente en localhost:5173, sin alterar CORS y sin detener servicios del usuario. Se cerró solamente el Vite auxiliar propio.
 
 Evidencia local en C:/Users/Abrah/.codex/visualizations/2026/10/01/01a0f4d0-0ee0-7c52-8453-0a514659d862/: catalog-search-real-qa.cjs, catalog-search-real-results.json, catalog-search-375.png y catalog-search-1440.png. No se probaron test/qa/producción remotos ni dispositivos físicos. Trabajo en dev, sin operaciones de escritura Git; promoción manual pendiente habitual.
+
+## UX comercial — compartir, última unidad y contacto — 2026-11-09
+
+Validación de frontend con 122 pruebas, lint y build correctos. Las cinco pruebas nuevas cubren payload canónico, cancelación, copia y feedback, las combinaciones de stock y disponibilidad, la consulta mayorista y los enlaces de ayuda con y sin configuración, y redes y formulario en Contacto. La suite existente verifica el hash mayorista y sus acordeones.
+
+Edge headless con fixtures locales en 320, 375, 768, 1024, 1440 y 1920 px. Se verificaron las cards, la ficha, el tamaño del botón de compartir, la apertura del acordeón padre con hijos cerrados, el mensaje mayorista, los enlaces oficiales y la disposición de Contacto. Se comprobó la secundaria al pasar el puntero a 1440 px, el foco del primer error y la URL del formulario con apertura simulada. Capturas de Contacto a 375 y 1440 px inspeccionadas. El navegador simuló share, clipboard y apertura de WhatsApp. El panel del sistema operativo queda pendiente de prueba física.
+
+Evidencia local en commercial-qa.cjs, commercial-qa-results.json, commercial-contact-375.png y commercial-contact-1440.png dentro del directorio de visualizaciones de la sesión.
