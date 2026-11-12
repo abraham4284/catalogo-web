@@ -375,3 +375,9 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [ ] Comprobar el panel nativo de compartir en un dispositivo compatible.
 
 - [x] Ajuste del aviso mayorista del catálogo con condiciones por categoría y CTA a WhatsApp. 122 pruebas, lint y build correctos.
+
+## T4 — Stock público global de Cajora
+- [x] Auditar contrato público, disponibilidad, última unidad, carrito, revalidación y cachés.
+- [x] Actualizar la semántica de stockAvailable y cubrir regresiones con respuestas públicas.
+- [x] Ejecutar 125 pruebas, lint, build y smoke local con fixtures en cinco anchos.
+- [ ] Validar Cajora QA y VITRUNO QA con inventario de prueba autorizado. Comparar listado y detalle, verificar transferencia 5 → 3+2 y comprobar depósitos no predeterminados activos e inactivos.

@@ -244,6 +244,28 @@ test('catalog boundary: contracts, inputs, transport and lazy configuration', as
     assert.equal(lastConfig.url, '/catalog/products/123')
   })
 
+  await t.test('list and detail preserve the public stock total and commercial status', async () => {
+    for (const [stockAvailable, saleMode, availabilityStatus] of [
+      [7, 'stock', 'in_stock'],
+      [4, 'stock', 'in_stock'],
+      [0, 'stock', 'out_of_stock'],
+      [20, 'on_order', 'on_order'],
+    ]) {
+      const commercial = { stockAvailable, saleMode, availabilityStatus }
+      success({ items: [{ ...product, ...commercial }], pagination })
+      const { items } = await api.getCatalogProducts()
+      success({ ...detailFixture, ...commercial })
+      const detail = await api.getCatalogProductBySlug(product.slug)
+      for (const actual of [items[0], detail]) {
+        assert.equal(actual.stockAvailable, stockAvailable)
+        assert.equal(actual.saleMode, saleMode)
+        assert.equal(actual.availabilityStatus, availabilityStatus)
+        assert.equal(actual.priceSale, product.priceSale)
+        assert.equal(actual.priceWholesale, product.priceWholesale)
+      }
+    }
+  })
+
   await t.test('invalid input never makes a request', async () => {
     const before = calls
     for (const query of [{ page: 0 }, { page: 1.5 }, { limit: 61 }, { limit: 0 }, { search: 'x'.repeat(151) }, { categorySlug: 'Invalid' }]) {

@@ -146,6 +146,56 @@ test('cart domain, schemas, persistence and real Zustand actions', async (t) => 
       values.set('catalogo-web-cart', '{broken')
       assert.deepEqual(loadCart()('store/cart.store').useCartStore.getState().items, [])
     })
+    await t.test('add and increment respect each public total returned by Cajora', () => {
+      for (const stockAvailable of [2, 4, 5, 7]) {
+        values.clear()
+        const store = loadCart()('store/cart.store').useCartStore
+        const product = { ...snapshot, stockAvailable }
+        for (let i = 0; i < stockAvailable + 1; i++) store.getState().addItem(product)
+        store.getState().incrementItem(product.idProduct)
+        assert.deepEqual(store.getState().items, [{ ...product, quantity: stockAvailable }])
+      }
+    })
+    await t.test('a persisted cart reconciles unchanged, lower and higher public totals from detail', async () => {
+      values.set('catalogo-web-cart', JSON.stringify({
+        version: 4,
+        state: { items: [{ ...snapshot, quantity: 5 }] },
+      }))
+      const load = loadCart()
+      const store = load('store/cart.store').useCartStore
+      const { revalidateCartProducts } = load('../../app/compositions/cart-catalog-revalidation')
+
+      async function refresh(stockAvailable) {
+        const result = await revalidateCartProducts(store.getState().items, async (slug) => {
+          assert.equal(slug, snapshot.slug)
+          return { ...snapshot, stockAvailable }
+        }, new AbortController().signal)
+        assert.deepEqual(result.failedProductIds, [])
+        assert.equal(result.snapshots.length, 1)
+        store.getState().reconcileItem(result.snapshots[0])
+      }
+
+      const writesBefore = writes
+      await refresh(5)
+      assert.equal(writes, writesBefore)
+      assert.equal(store.getState().items[0].quantity, 5)
+      assert.equal(isCartReadyForInquiry(store.getState().items), true)
+
+      await refresh(3)
+      assert.deepEqual(store.getState().items, [{ ...snapshot, stockAvailable: 3, quantity: 5 }])
+      assert.equal(isCartReadyForInquiry(store.getState().items), false)
+      store.getState().decrementItem(1)
+      store.getState().decrementItem(1)
+      store.getState().decrementItem(1)
+      assert.equal(store.getState().items[0].quantity, 2)
+      assert.equal(isCartReadyForInquiry(store.getState().items), true)
+
+      await refresh(7)
+      assert.deepEqual(store.getState().items, [{ ...snapshot, stockAvailable: 7, quantity: 2 }])
+      for (let i = 0; i < 6; i++) store.getState().incrementItem(1)
+      assert.equal(store.getState().items[0].quantity, 7)
+      assert.equal(isCartReadyForInquiry(store.getState().items), true)
+    })
     await t.test('unavailable products and stock zero cannot be added', () => {
       values.clear()
       const store = loadCart()('store/cart.store').useCartStore
