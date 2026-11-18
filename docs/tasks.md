@@ -396,3 +396,18 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] Skeletons y producto dinámico con presentación deduplicada.
 - [x] 130 pruebas, lint/build, QA en ocho anchos y comparación local de rendimiento fría/caliente.
 - [ ] Revisión visual del propietario y smoke desplegado en QA antes de promover a producción.
+
+## Acceso flotante al catálogo y entrada a fichas
+- [x] Barra contextual Filtrar/Buscar en Inicio y Catálogo con categorías existentes y filtros URL combinables.
+- [x] Diálogo Base UI con foco, Escape, limpieza y prioridad de cookies, toasts, menú y carrito.
+- [x] Coordinación de colisiones en el observador existente de WhatsApp.
+- [x] Entrada y cambio de ficha con scroll inicial y galería primero, con skeleton consistente.
+- [x] 134 pruebas, lint/build y QA local en siete anchos. Comparación de solicitudes, CLS y bundle documentada.
+- [ ] Smoke desplegado en QA y comprobación en Safari/Chrome móvil físico con teclado y safe areas.
+
+## Barra estable y buscador cápsula — 2026-11-18
+- [x] Reproducir ocultaciones por colisión: 15 de 48 posiciones; eliminar esa condición para la barra.
+- [x] Umbral de primera fila real con un IntersectionObserver; continuidad hasta footer y espacio inferior.
+- [x] Cápsula accesible con entrada/salida 200/150 ms, reduced motion y categoría temporal sin consultas.
+- [x] 136 pruebas, lint/build y Edge local en 320/375/390/540/768/1024/1440; evidencia en docs/catalog-capsule-validation.md.
+- [ ] Smoke desplegado en QA y pruebas físicas de teclado Android/iOS, Safari y notch/safe areas antes de promoción manual.

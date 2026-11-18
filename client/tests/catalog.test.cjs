@@ -39,6 +39,13 @@ delete detailProduct.secondaryImageUrl
 const detailFixture = { ...detailProduct, gallery: [], richContent: null }
 const pagination = { page: 1, currentPage: 1, limit: 24, total: 1, totalRecords: 1, totalPages: 1 }
 
+test('quick actions stay visible below the first real product row in either scroll direction', () => {
+  const { load, src } = loadCatalog()
+  const { isCatalogQuickVisible: visible } = load(path.join(src, 'features/catalog/utils/catalog-quick-visibility.ts'))
+  for (const bottom of [800, 20, 0, -23.9]) assert.equal(visible(bottom), false)
+  for (const bottom of [-24, -25, -1000, -10000, -1000, -25]) assert.equal(visible(bottom), true)
+})
+
 test('definitive contract requires commercial fields and rejects legacy substitution', () => {
   const { load, src } = loadCatalog()
   const { catalogProductListItemSchema: schema } = load(path.join(src, 'features/catalog/schemas/catalog.schemas.ts'))

@@ -15,9 +15,11 @@ export function ProductDetail({ product, actions }: { product: CatalogProductDet
   const description = product.description?.trim()
   return (
     <div className="min-w-0 space-y-12">
-      <ProductBreadcrumbs product={product} />
       <div className="grid min-w-0 gap-8 lg:grid-cols-2 lg:gap-12">
-        <ProductGallery key={product.idProduct} name={product.name} imageUrl={product.imageUrl} gallery={product.gallery} />
+        <div className="min-w-0 space-y-4">
+          <ProductGallery key={product.idProduct} name={product.name} imageUrl={product.imageUrl} gallery={product.gallery} />
+          <ProductBreadcrumbs product={product} />
+        </div>
         <div className="min-w-0 self-start space-y-6 break-words py-2 lg:pl-4">
           <div className="flex items-center justify-between gap-4">
             <Link to={getCatalogHref({ page: 1, categorySlug: product.category.slug })} className="min-w-0 text-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">{product.category.name}</Link>
