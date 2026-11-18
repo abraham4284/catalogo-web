@@ -77,3 +77,7 @@ Current phase: F10.3 completed; revisión jurídica/comercial y verificaciones e
 - El aviso mayorista del catálogo presenta las condiciones vigentes por categoría y dirige a WhatsApp con el mensaje de la FAQ cuando el canal está configurado. El mínimo de Cajora sigue aplicándose al cálculo del carrito.
 
 - T4 parcialmente validada. El storefront consume el total comercial de Cajora y su estado de disponibilidad. La auditoría no encontró incompatibilidades. Pasaron 125 pruebas, lint, build y smoke local con fixtures en cinco anchos. La validación conjunta con Cajora QA y VITRUNO QA requiere un entorno de prueba identificado y fixtures de inventario autorizados. Evidencia en docs/qa-report.md.
+
+- La Home presenta un hero multirrubro, tres pasos de compra, servicios, categorías fotográficas y el anuncio de próxima apertura en Tucumán. El producto que antes aparecía en el hero ahora tiene una tarjeta junto a la grilla con precio minorista y disponibilidad. Los destinos de categorías provienen de Cajora. En local, la tarjeta tecnológica enlaza a Accesorios de computación y muestra ese nombre. Evidencia en docs/home-banners-ux-validation.md.
+
+- Footer con crédito Desarrollado por Abraham Apas debajo de la información existente, en tipografía pequeña y enlace externo con apertura segura.
