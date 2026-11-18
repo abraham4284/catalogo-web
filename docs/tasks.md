@@ -389,3 +389,10 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [ ] Revisar la Home desplegada en QA con los cinco WebP y las categorías de ese entorno antes de promover a producción.
 
 - [x] Crédito discreto de desarrollo en el footer con enlace externo seguro. Lint y build correctos.
+
+## Home orientada a productos y rendimiento móvil
+- [x] Header móvil de una fila y hero compacto con los primeros productos antes de categorías.
+- [x] Una consulta de 12 artículos e intercalación de categorías tras 2/4/6/8 según columnas, con orden DOM y tarjetas únicas.
+- [x] Skeletons y producto dinámico con presentación deduplicada.
+- [x] 130 pruebas, lint/build, QA en ocho anchos y comparación local de rendimiento fría/caliente.
+- [ ] Revisión visual del propietario y smoke desplegado en QA antes de promover a producción.
