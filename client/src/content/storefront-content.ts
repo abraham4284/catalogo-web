@@ -11,6 +11,7 @@ const baseStorefrontContent = {
     title: "Tecnología, perfumería, belleza y mucho más.",
     description:
       "Descubrí productos para todos los días, disponibles y por encargo. Explorá el catálogo y coordiná tu compra por WhatsApp.",
+    mobileDescription: "Disponibles y por encargo. Coordiná tu compra por WhatsApp.",
     ctaLabel: "Ver productos",
     href: "/productos",
     image: "/images/home/hero-multirrubro.webp",
