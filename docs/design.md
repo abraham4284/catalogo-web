@@ -132,3 +132,8 @@ CatalogSearch mantiene label visible Buscar productos o categorías, asociado a 
 La ficha ubica el botón Compartir producto junto a la categoría. El área interactiva es de 44 px y tiene foco visible. Web Share usa la URL canónica y la copia de respaldo reutiliza el toaster. ÚLTIMA UNIDAD usa los tokens de acento y aparece sobre la imagen de la card y junto a la disponibilidad en ficha.
 
 La pregunta mayorista sobre mínimos ofrece una consulta por WhatsApp cuando el canal está configurado. La FAQ cierra con enlaces a Contacto y WhatsApp. Contacto organiza canales y formulario en una columna hasta lg y dos columnas desde lg. Los enlaces a Instagram y Facebook tienen texto visible e iconos decorativos.
+
+## Home comercial con imágenes de campaña
+El hero usa el WebP multirrubro con contenido HTML a la izquierda en escritorio y texto antes de la imagen en móvil. El primer bloque reúne los CTAs Ver productos y Cómo comprar. Los pasos de compra y la franja de servicios preceden a las categorías. Las tarjetas fotográficas usan texto HTML sobre una veladura y destinos del catálogo por slug. El banner de Tucumán informa la futura apertura en una sección propia.
+
+El producto del hero editorial pasa a una tarjeta enlazada cerca de la grilla, con imagen, precio minorista y disponibilidad. Los cinco WebP se sirven desde public/images/home. La imagen del hero tiene prioridad alta y las imágenes secundarias se cargan de forma diferida.

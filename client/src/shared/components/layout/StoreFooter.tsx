@@ -19,6 +19,10 @@ export function StoreFooter({ note, onPrefetchRoute, onCookiePreferences }: { no
           <li><button type="button" onClick={onCookiePreferences} className="min-h-11 py-2 underline focus-visible:outline-2 focus-visible:outline-ring">Preferencias de cookies</button></li>
           </ul>
         </nav>
+        <p className="w-full text-xs leading-relaxed text-background/70">
+          Desarrollado por{' '}
+          <a href="https://abrahamapas.onrender.com/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-background focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">Abrahamdev</a>
+        </p>
       </div>
     </footer>
   )
