@@ -23,7 +23,7 @@ export function StoreLayout({ announcement, footerNote, onCookiePreferences, ...
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-10 focus:bg-background focus:p-4 focus:outline-2 focus:outline-foreground">Saltar al contenido</a>
       <AnnouncementBar text={announcement} />
       <StoreHeader {...headerProps} />
-      <main id="main-content" tabIndex={-1} className={`mx-auto min-w-0 w-full max-w-7xl flex-1 px-4 ${pathname === '/' ? 'py-4 sm:py-6' : 'py-12'} [overflow-wrap:anywhere] focus-visible:outline-2 focus-visible:outline-foreground sm:px-6 lg:px-8`}>
+      <main id="main-content" tabIndex={-1} className={`mx-auto min-w-0 w-full max-w-7xl flex-1 px-4 ${pathname === '/' || /^\/productos\/[^/]+\/?$/.test(pathname) ? 'py-4 sm:py-6' : 'py-12'} [overflow-wrap:anywhere] focus-visible:outline-2 focus-visible:outline-foreground sm:px-6 lg:px-8`}>
         <div key={pathname} className="route-enter">
           <Outlet />
         </div>
