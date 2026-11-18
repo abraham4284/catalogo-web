@@ -12,9 +12,11 @@ import { StorePanels } from './compositions/StorePanels'
 import { prefetchRoute } from './navigation-prefetch'
 import { RouteSeo } from './compositions/RouteSeo'
 import { FloatingWhatsAppContact } from './compositions/FloatingWhatsAppContact'
+import { isProductDetailPath, useProductEntryScroll } from './compositions/useProductEntryScroll'
 
 export function StoreRoute() {
-  const { pathname } = useLocation()
+  const { pathname, key } = useLocation()
+  useProductEntryScroll(pathname, key)
   const previousPath = useRef(pathname)
   const cartCount = useCartStore((state) => calculateCartItemCount(state.items))
   const { effectiveSubtotal: cartTotal } = useStorefrontPricing()
@@ -24,7 +26,7 @@ export function StoreRoute() {
   useEffect(() => {
     if (previousPath.current !== pathname) {
       closeForNavigation()
-      document.getElementById('main-content')?.focus()
+      document.getElementById('main-content')?.focus({ preventScroll: isProductDetailPath(pathname) })
       previousPath.current = pathname
     }
   }, [pathname, closeForNavigation])

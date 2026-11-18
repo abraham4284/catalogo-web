@@ -3,6 +3,7 @@ import { WholesaleNotice } from '@/features/catalog'
 import { getWhatsAppWholesaleInquiryHref } from '@/features/whatsapp/utils/whatsapp-general-inquiry'
 import { Navigate, useSearchParams } from "react-router-dom";
 import { ProductCommerceActions } from "@/app/compositions/ProductCommerceActions";
+import { QuickCatalogActions } from '@/app/compositions/QuickCatalogActions'
 import {
   useCatalogListing,
   readCatalogFilters,
@@ -22,6 +23,7 @@ export function CatalogPage() {
   const filters = readCatalogFilters(searchParams);
   const { categories, products: state, retry } = useCatalogListing(filters);
   const resultsTopRef = useRef<HTMLDivElement>(null);
+  const controlsRef = useRef<HTMLDivElement>(null);
   const previousPageRef = useRef(filters.page);
 
   useEffect(() => {
@@ -54,6 +56,7 @@ export function CatalogPage() {
     <div className="min-w-0 space-y-6">
       <h1 className="text-3xl font-semibold">Productos</h1>
       <WholesaleNotice inquiryHref={getWhatsAppWholesaleInquiryHref()} />
+      <div ref={controlsRef} className="space-y-6">
       <CatalogSearch
         search={filters.search}
         onSearch={(search) =>
@@ -68,6 +71,7 @@ export function CatalogPage() {
       {categories.status === "error" && state.status !== "error" && (
         <CatalogErrorState message="No pudimos cargar las categorías. Podés seguir buscando productos." />
       )}
+      </div>
       <div ref={resultsTopRef} data-catalog-results className="space-y-6">
         {state.status === "loading" && <CatalogLoadingState />}
         {state.status === "error" && (
@@ -104,6 +108,9 @@ export function CatalogPage() {
           </>
         )}
       </div>
+      <QuickCatalogActions controlsRef={controlsRef} productsRef={resultsTopRef}
+        categories={categories.status === 'success' ? categories.data : []}
+        categoryStatus={categories.status} filters={filters} />
     </div>
   );
 }

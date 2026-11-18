@@ -10,6 +10,7 @@ function load(name){
  const base=path.resolve(root,name)
  if(name==='config/env')return{getWhatsAppNumber:()=>whatsappNumber}
  if(name==='features/analytics')return{trackContact:noop}
+ if(name==='app/compositions/QuickCatalogActions')return{QuickCatalogActions:noop}
  if(base.endsWith(path.join('store','business.store')))return{useCatalogPricing:()=>policy}
  if(base===path.join(root,'features','catalog'))return{
   WholesaleNotice:load('features/catalog/components/ProductPrices').WholesaleNotice,

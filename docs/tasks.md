@@ -396,3 +396,11 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] Skeletons y producto dinámico con presentación deduplicada.
 - [x] 130 pruebas, lint/build, QA en ocho anchos y comparación local de rendimiento fría/caliente.
 - [ ] Revisión visual del propietario y smoke desplegado en QA antes de promover a producción.
+
+## Acceso flotante al catálogo y entrada a fichas
+- [x] Barra contextual Filtrar/Buscar en Inicio y Catálogo con categorías existentes y filtros URL combinables.
+- [x] Diálogo Base UI con foco, Escape, limpieza y prioridad de cookies, toasts, menú y carrito.
+- [x] Coordinación de colisiones en el observador existente de WhatsApp.
+- [x] Entrada y cambio de ficha con scroll inicial y galería primero, con skeleton consistente.
+- [x] 134 pruebas, lint/build y QA local en siete anchos. Comparación de solicitudes, CLS y bundle documentada.
+- [ ] Smoke desplegado en QA y comprobación en Safari/Chrome móvil físico con teclado y safe areas.
