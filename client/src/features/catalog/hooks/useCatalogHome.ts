@@ -22,7 +22,7 @@ export function useCatalogHome(): CatalogRequestState<CatalogHomeData> & { retry
     const { signal } = controller
     Promise.all([
       getCatalogCategories(signal),
-      getCatalogProducts({ page: 1, limit: 8 }, signal),
+      getCatalogProducts({ page: 1, limit: 12 }, signal),
     ]).then(([categories, products]) => {
       if (signal.aborted) return
       rememberCatalogProducts(products.items)

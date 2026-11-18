@@ -5,6 +5,7 @@ const noop=()=>null
 let whatsappNumber = '5491123456789'
 const shareBrowser = {}
 const notifications = []
+let homeState = { status: 'success', data: { categories: [], products: { items: [] }, heroLoading: false } }
 function load(name){
  const base=path.resolve(root,name)
  if(name==='config/env')return{getWhatsAppNumber:()=>whatsappNumber}
@@ -12,7 +13,9 @@ function load(name){
  if(base.endsWith(path.join('store','business.store')))return{useCatalogPricing:()=>policy}
  if(base===path.join(root,'features','catalog'))return{
   WholesaleNotice:load('features/catalog/components/ProductPrices').WholesaleNotice,
-  useCatalogHome:()=>({status:'success',data:{categories:[],products:{items:[]},heroLoading:false}}),
+  useCatalogHome:()=>homeState,
+  ProductCard:load('features/catalog/components/ProductCard').ProductCard,
+  ProductCardSkeleton:load('features/catalog/components/ProductSkeletons').ProductCardSkeleton,
   useCatalogListing:()=>({categories:{status:'success',data:[]},products:{status:'success',data:{items:[],pagination:{totalPages:1,currentPage:1,totalRecords:0}}}}),
   ...load('features/catalog/utils/catalog-url'),
   CatalogSearch:noop,CategoryFilter:noop,CatalogErrorState:noop,CatalogLoadingState:noop,CatalogEmptyState:noop,ProductGrid:noop,CatalogPaginationControls:noop,
@@ -44,6 +47,46 @@ const {storefrontContent,getProductFaq}=load('content/storefront-content')
 const {formatCurrency}=load('shared/utils/format-currency')
 const product={idProduct:1,slug:'producto',name:'Producto',description:'Descripción completa.',price:999,priceSale:22000,priceWholesale:19000,imageUrl:null,gallery:[],richContent:null,category:{slug:'categoria',name:'Categoría',idProductCategory:1},availabilityStatus:'in_stock',saleMode:'stock',availabilityNote:null,stockAvailable:10}
 
+test('Home feed inserts categories in DOM order and renders each product only once', () => {
+ const { HomeProductFeed } = load('pages/home/components/HomeProductFeed')
+ const products = Array.from({ length: 12 }, (_, i) => ({ ...product, idProduct: i + 1, slug: 'producto-' + i, name: 'Producto ' + i }))
+ const html = render(HomeProductFeed, {
+  products: [...products, products[0], { ...products[1], idProduct: 99 }],
+  categories: [{ idProductCategory: 1, name: 'Tecnología', slug: 'tecnologia' }],
+ })
+ assert.equal((html.match(/<article /g) || []).length, 12)
+ assert(html.indexOf('Ver Producto 1') < html.indexOf('id="home-categories"'))
+ assert(html.indexOf('id="home-categories"') < html.indexOf('Ver Producto 2'))
+ assert.equal((html.match(/aria-label="Ver Producto 0"/g) || []).length, 1)
+})
+
+test('Home feed handles few products, missing categories and loading without fake product links', () => {
+ const { HomeProductFeed } = load('pages/home/components/HomeProductFeed')
+ const noCategories = render(HomeProductFeed, { products: [product], categories: [] })
+ assert.equal((noCategories.match(/<li /g) || []).length, 1)
+ assert(noCategories.includes('Seguí explorando el catálogo'))
+ const loading = render(HomeProductFeed, { products: [], categories: [], loading: true })
+ assert(loading.includes('Cargando productos'))
+ assert(!loading.includes('<article '))
+ assert(!loading.includes('href="/productos/producto"'))
+})
+
+test('Home uses the selected product in the feed or a separate card without repeating its SKU', () => {
+ const { HomePage } = load('pages/home/HomePage')
+ const saved = homeState
+ try {
+  homeState = { status: 'success', data: { categories: [], products: { items: [product] }, heroProduct: product, heroLoading: false } }
+  const same = render(HomePage)
+  assert.equal((same.match(/href="\/productos\/producto"/g) || []).length, 1)
+  assert(same.indexOf('<article ') < same.indexOf('id="home-opening"'))
+  homeState.data.heroProduct = { ...product, slug: 'externo' }
+  const separate = render(HomePage)
+  assert.equal((separate.match(/href="\/productos\/externo"/g) || []).length, 1)
+ } finally {
+  homeState = saved
+ }
+})
+
 test('Home highlights only categories supplied by Cajora and preserves other links', () => {
  const { HomeCategories } = load('pages/home/components/HomeCategories')
  const categories = [
@@ -65,12 +108,12 @@ test('Home highlights only categories supplied by Cajora and preserves other lin
  assert(!partial.includes('categoria-perfumeria.webp'))
  assert(!partial.includes('categoria-belleza.webp'))
  const fallback = render(HomeCategories, { categories: [
-  { idProductCategory: 6, name: 'Accesorios de computación', slug: 'accesorios-de-computacion' },
+  { idProductCategory: 6, name: 'Auriculares', slug: 'auriculares' },
   categories[2],
  ] })
- assert(fallback.includes('href="/productos?categoria=accesorios-de-computacion"'))
+ assert(fallback.includes('href="/productos?categoria=auriculares"'))
  assert(fallback.includes('categoria-tecnologia.webp'))
- assert(fallback.includes('>Accesorios de computación</span>'))
+ assert(fallback.includes('>Auriculares</span>'))
  assert(!fallback.includes('>Tecnología</span>'))
 })
 
