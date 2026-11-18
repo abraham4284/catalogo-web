@@ -23,7 +23,6 @@ export function CatalogPage() {
   const filters = readCatalogFilters(searchParams);
   const { categories, products: state, retry } = useCatalogListing(filters);
   const resultsTopRef = useRef<HTMLDivElement>(null);
-  const controlsRef = useRef<HTMLDivElement>(null);
   const previousPageRef = useRef(filters.page);
 
   useEffect(() => {
@@ -56,7 +55,7 @@ export function CatalogPage() {
     <div className="min-w-0 space-y-6">
       <h1 className="text-3xl font-semibold">Productos</h1>
       <WholesaleNotice inquiryHref={getWhatsAppWholesaleInquiryHref()} />
-      <div ref={controlsRef} className="space-y-6">
+      <div className="space-y-6">
       <CatalogSearch
         search={filters.search}
         onSearch={(search) =>
@@ -108,9 +107,9 @@ export function CatalogPage() {
           </>
         )}
       </div>
-      <QuickCatalogActions controlsRef={controlsRef} productsRef={resultsTopRef}
+      {state.status === 'success' && state.data.items.length > 0 && <QuickCatalogActions productsRef={resultsTopRef}
         categories={categories.status === 'success' ? categories.data : []}
-        categoryStatus={categories.status} filters={filters} />
+        categoryStatus={categories.status} filters={filters} />}
     </div>
   );
 }

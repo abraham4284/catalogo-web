@@ -26,9 +26,6 @@ export function FloatingWhatsAppContact() {
         && a.top < b.bottom + 8 && a.bottom > b.top - 8
       const quickBar = document.querySelector<HTMLElement>('[data-catalog-quick-bar]')
       const quickBounds = quickBar?.getBoundingClientRect()
-      if (quickBar && quickBounds) {
-        quickBar.dataset.obscured = String(!quickBar.contains(document.activeElement) && bounds.some((rect) => intersects(rect, quickBounds)))
-      }
       const anchor = anchorRef.current
       if (!anchor) return
       const contact = anchor.getBoundingClientRect()

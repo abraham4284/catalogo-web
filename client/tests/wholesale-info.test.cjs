@@ -29,6 +29,7 @@ function load(name){
  const output=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText
  const req = name => {
   if (name.startsWith('@phosphor-icons/react/dist/csr/')) return { [name.split('/').at(-1) + 'Icon']: noop }
+  if (name === '@base-ui/react/dialog') return { Dialog: { Close: ({ children, ...props }) => React.createElement('button', props, children) } }
   if (name === 'react-hot-toast') return {
    __esModule: true,
    default: {
@@ -361,4 +362,27 @@ test('Contact retains the form and exposes official social links and configured 
  } finally {
   whatsappNumber = saved
  }
+})
+
+
+test('quick search names the real category and exposes a compact accessible search form', () => {
+ const { QuickCatalogSearch } = load('features/catalog/components/QuickCatalogSearch')
+ const html = render(QuickCatalogSearch, { categories: [product.category], filters: { page: 2, categorySlug: 'categoria', search: 'oud' }, onSearch: noop })
+ assert(html.includes('Quitar filtro de categoría Categoría'))
+ assert(html.includes('Buscando en:'))
+ assert(html.includes('placeholder="¿Qué estás buscando?"'))
+ assert(html.includes('enterKeyHint="search"'))
+ assert(html.includes('maxLength="150"'))
+ assert(html.includes('value="oud"'))
+ assert(html.includes('Limpiar búsqueda'))
+ assert(html.includes('Cerrar búsqueda'))
+})
+
+test('quick search safely represents unresolved categories without showing slugs as names', () => {
+ const { QuickCatalogSearch } = load('features/catalog/components/QuickCatalogSearch')
+ const html = render(QuickCatalogSearch, { categories: [], filters: { page: 1, categorySlug: 'unresolved-private-slug' }, onSearch: noop })
+ assert(html.includes('Categoría seleccionada'))
+ assert(!html.includes('unresolved-private-slug'))
+ const global = render(QuickCatalogSearch, { categories: [], filters: { page: 1 }, onSearch: noop })
+ assert(!global.includes('Quitar filtro de categoría'))
 })

@@ -29,6 +29,7 @@ export function StoreLayout({ announcement, footerNote, onCookiePreferences, ...
         </div>
       </main>
       <StoreFooter onCookiePreferences={onCookiePreferences} note={footerNote} onPrefetchRoute={headerProps.onPrefetchRoute} />
+      {(pathname === '/' || pathname === '/productos') && <div aria-hidden="true" className="h-[calc(5.5rem+env(safe-area-inset-bottom))] shrink-0 bg-foreground" />}
     </div>
   )
 }
