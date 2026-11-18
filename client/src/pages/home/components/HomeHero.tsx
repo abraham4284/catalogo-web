@@ -1,50 +1,51 @@
 import { Link } from 'react-router-dom'
-import { BrandLogo } from '@/shared/components/brand/BrandLogo'
+import { ArrowRightIcon } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { PackageIcon } from '@phosphor-icons/react/dist/csr/Package'
+import { TruckIcon } from '@phosphor-icons/react/dist/csr/Truck'
+import { WhatsappLogoIcon } from '@phosphor-icons/react/dist/csr/WhatsappLogo'
 import { storefrontContent } from '@/content/storefront-content'
-import { ProductImage } from '@/shared/components/media/ProductImage'
-import type { CatalogProductListItem } from '@/features/catalog'
 
-type HomeHeroProps = {
-  status: 'loading' | 'success' | 'error'
-  product?: Pick<CatalogProductListItem, 'name' | 'slug' | 'imageUrl'>
-}
+const focus = 'focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4'
+const button = `inline-flex min-h-11 items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold ${focus}`
+const benefitIcons = [WhatsappLogoIcon, TruckIcon, PackageIcon] as const
 
-function HeroVisual({ status, product }: HomeHeroProps) {
-  const visualProduct = status === 'success' ? product : undefined
-  const surface = status === 'loading' ? 'bg-muted motion-safe:animate-pulse'
-    : visualProduct ? 'bg-card p-5' : 'bg-foreground p-5'
-  const content = (
-    <>
-      <div className={`flex aspect-[4/5] max-h-112 items-center justify-center ${surface}`}>
-        {status === 'loading' ? null : visualProduct
-          ? <ProductImage src={visualProduct.imageUrl} alt={visualProduct.name} loading="eager" />
-          : <BrandLogo variant="mark" decorative className="w-56" />}
-      </div>
-      <p className="line-clamp-2 h-10 break-words text-sm leading-5 text-muted-foreground">
-        {visualProduct && <>{visualProduct.name}<span aria-hidden="true" className="ml-3 text-primary">↗</span></>}
-      </p>
-    </>
-  )
-  return visualProduct ? (
-    <Link to={`/productos/${visualProduct.slug}`} aria-label={`Ver ${visualProduct.name}`} className="block space-y-3 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">{content}</Link>
-  ) : <div aria-hidden="true" className="space-y-3">{content}</div>
-}
+export function HomeHero() {
+  const hero = storefrontContent.hero
 
-export function HomeHero({ status, product }: HomeHeroProps) {
-  const content = storefrontContent.hero
   return (
-    <section className="grid min-w-0 items-center gap-10 py-2 sm:py-6 md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-16">
-      <div className="min-w-0 space-y-6 py-2">
-        <p className="text-xs font-semibold uppercase tracking-widest text-primary">{content.eyebrow}</p>
-        <h1 className="max-w-2xl text-5xl font-semibold leading-[1.08] tracking-tight sm:text-6xl lg:text-7xl">{content.title}</h1>
-        <p className="max-w-md leading-relaxed text-muted-foreground">{content.description}</p>
-        <div className="flex flex-wrap gap-3">
-          <Link to={content.href} className="inline-flex min-h-11 items-center rounded-lg bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">{content.ctaLabel}<span aria-hidden="true" className="ml-6">→</span></Link>
-          <a href="#como-comprar" className="inline-flex min-h-11 items-center rounded-lg border border-input px-5 py-3 text-sm font-medium hover:bg-secondary focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">Cómo comprar</a>
+    <section aria-labelledby="home-title">
+      <div className="relative isolate overflow-hidden rounded-2xl border border-primary/15 bg-[var(--hero-surface)] [--hero-surface:color-mix(in_srgb,var(--accent)_58%,var(--card))] md:flex md:min-h-94 md:items-center">
+        <div className="relative z-10 space-y-5 p-5 sm:p-8 md:w-[57%] lg:p-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.13em] text-primary">{hero.eyebrow}</p>
+          <h1 id="home-title" className="max-w-[14ch] text-[1.85rem] leading-[1.08] font-semibold tracking-tight sm:text-4xl lg:text-5xl">{hero.title}</h1>
+          <p className="max-w-[43ch] text-sm leading-relaxed text-foreground lg:text-base">{hero.description}</p>
+          <div className="flex flex-wrap gap-3">
+            <Link to={hero.href} className={`${button} bg-primary text-primary-foreground hover:bg-primary/90`}>
+              {hero.ctaLabel}<ArrowRightIcon size={16} aria-hidden="true" />
+            </Link>
+            <a href="#como-comprar" className={`${button} border border-input bg-card hover:bg-accent`}>Cómo comprar</a>
+          </div>
         </div>
+        <img src={hero.image} alt="" width={1920} height={1080} fetchPriority="high"
+          className="block h-auto w-full md:absolute md:inset-y-0 md:right-0 md:h-full md:w-[78%] md:object-cover md:object-right" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(90deg,var(--hero-surface)_35%,transparent_60%)] md:block" />
       </div>
-      <div className="hidden min-w-0 md:block">
-        <HeroVisual status={status} product={product} />
+
+      <div className="mt-4 divide-y rounded-xl border bg-card px-4 sm:px-6">
+        <ol aria-label="Cómo comprar" className="flex flex-wrap items-center gap-x-3 gap-y-2 py-3 text-sm font-medium">
+          {hero.buyingSteps.map((step, index) => (
+            <li key={step} className="inline-flex items-center gap-3">
+              {index > 0 && <ArrowRightIcon size={14} className="shrink-0 text-primary" aria-hidden="true" />}
+              {step}
+            </li>
+          ))}
+        </ol>
+        <ul aria-label="Servicios de VITRUNO" className="flex flex-wrap gap-x-7 gap-y-2 py-3 text-sm text-muted-foreground">
+          {hero.benefits.map((benefit, index) => {
+            const Icon = benefitIcons[index]
+            return <li key={benefit} className="flex items-center gap-2"><Icon size={18} className="shrink-0 text-primary" aria-hidden="true" />{benefit}</li>
+          })}
+        </ul>
       </div>
     </section>
   )

@@ -381,3 +381,11 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] Actualizar la semántica de stockAvailable y cubrir regresiones con respuestas públicas.
 - [x] Ejecutar 125 pruebas, lint, build y smoke local con fixtures en cinco anchos.
 - [ ] Validar Cajora QA y VITRUNO QA con inventario de prueba autorizado. Comparar listado y detalle, verificar transferencia 5 → 3+2 y comprobar depósitos no predeterminados activos e inactivos.
+
+## Rediseño comercial de Home
+- [x] Hero multirrubro con CTAs, pasos de compra y servicios.
+- [x] Categorías fotográficas con destinos de Cajora, próximo local y ficha compacta del producto existente.
+- [x] 127 pruebas, lint, build, QA responsive y smoke con Cajora local.
+- [ ] Revisar la Home desplegada en QA con los cinco WebP y las categorías de ese entorno antes de promover a producción.
+
+- [x] Crédito discreto de desarrollo en el footer con enlace externo seguro. Lint y build correctos.

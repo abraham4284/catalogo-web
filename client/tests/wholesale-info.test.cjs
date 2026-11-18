@@ -44,6 +44,51 @@ const {storefrontContent,getProductFaq}=load('content/storefront-content')
 const {formatCurrency}=load('shared/utils/format-currency')
 const product={idProduct:1,slug:'producto',name:'Producto',description:'Descripción completa.',price:999,priceSale:22000,priceWholesale:19000,imageUrl:null,gallery:[],richContent:null,category:{slug:'categoria',name:'Categoría',idProductCategory:1},availabilityStatus:'in_stock',saleMode:'stock',availabilityNote:null,stockAvailable:10}
 
+test('Home highlights only categories supplied by Cajora and preserves other links', () => {
+ const { HomeCategories } = load('pages/home/components/HomeCategories')
+ const categories = [
+  { idProductCategory: 1, name: 'TECNOLOGÍA', slug: 'tech-local' },
+  { idProductCategory: 2, name: 'Perfumes', slug: 'fragancias' },
+  { idProductCategory: 3, name: 'Cables y carga', slug: 'cables-y-carga' },
+  { idProductCategory: 4, name: 'Duplicado', slug: 'tech-local' },
+  { idProductCategory: 5, name: ' Belleza y cuidado personal ', slug: 'cuidado' },
+ ]
+ const html = render(HomeCategories, { categories })
+ assert.equal((html.match(/<img /g) || []).length, 3)
+ for (const [slug, asset] of [['tech-local', 'tecnologia'], ['fragancias', 'perfumeria'], ['cuidado', 'belleza']]) {
+  const link = html.split(`href="/productos?categoria=${slug}"`)[1]?.split('</a>')[0]
+  assert(link?.includes(`src="/images/home/categoria-${asset}.webp"`))
+ }
+ const partial = render(HomeCategories, { categories: [categories[0], categories[2], categories[0]] })
+ assert.equal((partial.match(/categoria=tech-local/g) || []).length, 1)
+ assert(partial.includes('href="/productos?categoria=cables-y-carga"'))
+ assert(!partial.includes('categoria-perfumeria.webp'))
+ assert(!partial.includes('categoria-belleza.webp'))
+ const fallback = render(HomeCategories, { categories: [
+  { idProductCategory: 6, name: 'Accesorios de computación', slug: 'accesorios-de-computacion' },
+  categories[2],
+ ] })
+ assert(fallback.includes('href="/productos?categoria=accesorios-de-computacion"'))
+ assert(fallback.includes('categoria-tecnologia.webp'))
+ assert(fallback.includes('>Accesorios de computación</span>'))
+ assert(!fallback.includes('>Tecnología</span>'))
+})
+
+test('Home featured link preserves retail price and commercial state even without an image', () => {
+ const { HomeFeaturedProduct } = load('pages/home/components/HomeFeaturedProduct')
+ for (const [availabilityStatus, label] of [['in_stock', 'Disponible'], ['out_of_stock', 'Agotado'], ['on_order', 'Por encargo']]) {
+  const html = render(HomeFeaturedProduct, { product: { ...product, availabilityStatus } })
+  assert.equal((html.match(/<a /g) || []).length, 1)
+  assert(html.includes('href="/productos/producto"'))
+  assert(html.includes(formatCurrency(product.priceSale)))
+  assert(html.includes(label))
+  assert(html.includes('Sin imagen'))
+  assert(html.includes('Ver producto'))
+ }
+ assert.equal(render(HomeFeaturedProduct, {}), '')
+ assert.equal(render(HomeFeaturedProduct, { product: { ...product, name: ' ' } }), '')
+})
+
 test('catalog search explains product/category search with a visible label and keeps form constraints',()=>{
  const {CatalogSearch}=load('features/catalog/components/CatalogSearch')
  const html=render(CatalogSearch,{search:'auriculares',onSearch:()=>{}})
