@@ -14,11 +14,10 @@ import {
 
 export function HomePage() {
   const state = useCatalogHome()
-  const controlsRef = useRef<HTMLDivElement>(null)
   const productsRef = useRef<HTMLElement>(null)
   return (
     <div className="space-y-5 sm:space-y-8">
-      <div ref={controlsRef}><HomeHero /></div>
+      <HomeHero />
       {state.status === 'loading' && (
         <section aria-label="Productos" className="space-y-4">
           <div className="flex min-h-11 items-center"><h2 className="text-2xl font-semibold sm:text-3xl">Productos</h2></div>
@@ -39,7 +38,7 @@ export function HomePage() {
               <HomeFeaturedProduct product={state.data.heroProduct} loading={state.data.heroLoading} />
             )}
           </section>
-          <QuickCatalogActions controlsRef={controlsRef} productsRef={productsRef} categories={state.data.categories} categoryStatus="success" filters={{ page: 1 }} />
+          {state.data.products.items.length > 0 && <QuickCatalogActions productsRef={productsRef} categories={state.data.categories} categoryStatus="success" filters={{ page: 1 }} />}
         </>
       )}
       <HomeOpeningBanner />
