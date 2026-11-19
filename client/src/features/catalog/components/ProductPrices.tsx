@@ -9,9 +9,9 @@ export function ProductPrices({ priceSale, priceWholesale, variant = 'card' }: {
   const hasWholesale = showWholesale && priceWholesale !== null && Number.isFinite(priceWholesale) && priceWholesale > 0
   const retailLabel = variant === 'detail' ? 'Precio minorista' : 'Minorista'
   const wholesaleLabel = variant === 'detail' ? 'Precio mayorista' : 'Mayorista'
-  const primaryClass = variant === 'detail' ? 'text-3xl font-semibold tracking-tight' : 'text-2xl font-semibold tracking-tight'
+  const primaryClass = variant === 'detail' ? 'text-3xl font-semibold tracking-tight' : 'text-lg font-semibold tracking-tight sm:text-2xl'
 
-  return <dl className={`space-y-2 break-words ${showWholesale ? 'min-h-24' : 'min-h-14'}`}>
+  return <dl className={`space-y-2 ${variant === 'card' ? '[overflow-wrap:anywhere]' : 'break-words'} ${showWholesale ? 'min-h-24' : 'min-h-14'}`}>
     <div className="flex flex-col-reverse">
       <dt className="text-xs text-muted-foreground">{hasWholesale ? wholesaleLabel : retailLabel}</dt>
       <dd className={primaryClass}>{formatCurrency(hasWholesale ? priceWholesale : priceSale)}</dd>

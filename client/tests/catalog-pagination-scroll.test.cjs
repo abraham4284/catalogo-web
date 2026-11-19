@@ -7,8 +7,9 @@ const ts = require('typescript')
 // Execute the real page with controlled URL/data and React hook lifetimes.
 // Scroll is a DOM side effect, so record it without adding a DOM test dependency.
 function pageHarness(initial = '', items = []) {
-  const refs = [], effects = [], cleanups = [], scrolls = [], searches = [], frames = new Map()
-  let frameId = 0
+  const refs = [], effects = [], callbacks = [], cleanups = [], scrolls = [], searches = [], frames = new Map()
+  let frameId = 0, key = 0, navigationType = 'POP'
+  const documentScrolls = []
   let refIndex, effectIndex, pending, query = initial, status = 'loading', focusCalls = 0
   const target = { scrollIntoView: options => scrolls.push(options), focus: () => focusCalls++ }
   const noop = () => null
@@ -17,6 +18,7 @@ function pageHarness(initial = '', items = []) {
     useEffect(callback, deps) {
       const index = effectIndex++, previous = effects[index]
       if (!previous || deps.some((value, i) => !Object.is(value, previous[i]))) pending.push(() => { cleanups[index]?.(); cleanups[index] = callback() })
+      callbacks[index] = callback
       effects[index] = deps
     },
   }
@@ -30,10 +32,12 @@ function pageHarness(initial = '', items = []) {
   const filename = path.resolve(__dirname, '../src/pages/catalog/CatalogPage.tsx')
   const output = ts.transpileModule(fs.readFileSync(filename,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX}}).outputText
   const module = { exports:{} }
-  const req = name => name === 'react' ? hooks : name === 'react-router-dom' ? { Navigate:noop,useSearchParams:()=>[new URLSearchParams(query),noop] } : name === '@/features/catalog' ? catalog : name === '@/app/compositions/ProductCommerceActions' ? {ProductCommerceActions:noop} : name === '@/app/compositions/QuickCatalogActions' ? {QuickCatalogActions:noop} : name === '@/features/whatsapp/utils/whatsapp-general-inquiry' ? {getWhatsAppWholesaleInquiryHref:noop} : require(name)
-  new Function('require','module','exports','requestAnimationFrame','cancelAnimationFrame',output)(req,module,module.exports,callback=>{frames.set(++frameId,callback);return frameId},id=>frames.delete(id))
+  const req = name => name === 'react' ? hooks : name === 'react-router-dom' ? { Navigate:noop,useLocation:()=>({key:String(key)}),useNavigationType:()=>navigationType,useSearchParams:()=>[new URLSearchParams(query),noop] } : name === '@/features/catalog' ? catalog : name === '@/app/compositions/ProductCommerceActions' ? {ProductCommerceActions:noop} : name === '@/app/compositions/QuickCatalogActions' ? {QuickCatalogActions:noop} : name === '@/features/whatsapp/utils/whatsapp-general-inquiry' ? {getWhatsAppWholesaleInquiryHref:noop} : require(name)
+  new Function('require','module','exports','requestAnimationFrame','cancelAnimationFrame','window',output)(req,module,module.exports,callback=>{frames.set(++frameId,callback);return frameId},id=>frames.delete(id),{scrollTo:options=>documentScrolls.push(options)})
   const flushFrame = () => { const callbacks=[...frames.values()]; frames.clear(); callbacks.forEach(callback=>callback()) }
-  function render(nextQuery = query, nextStatus = status, flush = true) {
+  function render(nextQuery = query, nextStatus = status, flush = true, action) {
+    if (nextQuery !== query) { key++; navigationType = action ?? 'PUSH' }
+    else if (action) { key++; navigationType = action }
     query=nextQuery;status=nextStatus;refIndex=0;effectIndex=0;pending=[]
     const tree=module.exports.CatalogPage()
     refs.filter(ref=>ref.current===target).forEach(ref=>{ref.current=null})
@@ -48,7 +52,7 @@ function pageHarness(initial = '', items = []) {
     if (flush) flushFrame()
     return tree
   }
-  return {render,scrolls,searches,catalog,flushFrame,focusCalls:()=>focusCalls}
+  return {render,scrolls,documentScrolls,searches,catalog,flushFrame,replayEffects:()=>{cleanups.forEach(cleanup=>cleanup?.());callbacks.forEach((callback,index)=>{cleanups[index]=callback()})},focusCalls:()=>focusCalls}
 }
 
 function findComponent(node, component) {
@@ -85,7 +89,7 @@ test('pagination scrolls on 1→2→3→2→1 immediately while loading',()=>{
   assert.deepEqual(page.scrolls,Array(4).fill({behavior:'auto',block:'start'}))
   assert.equal(page.focusCalls(),0)
 })
-test('same-page search/category, retry and data completion do not scroll',()=>{
+test('category scrolls document once; search, retries and data completion do not repeat it',()=>{
   const page=pageHarness();page.render()
   for (const [query,status] of [['search=uno','loading'],['search=uno','success'],['categoria=perfumes','loading'],['categoria=perfumes','error'],['categoria=perfumes','loading'],['categoria=perfumes','success'],['categoria=perfumes','success']]) page.render(query,status)
   assert.deepEqual(page.scrolls,[])
@@ -116,4 +120,41 @@ test('rapid page changes cancel superseded animation frames',()=>{
   assert.equal(page.scrolls.length,0)
   page.flushFrame()
   assert.deepEqual(page.scrolls,[{behavior:'auto',block:'start'}])
+})
+
+
+test('category changes and clearing from page three reset document once instead of pagination scroll', () => {
+ const page = pageHarness('page=3&categoria=uno&search=term'); page.render()
+ for (const query of ['categoria=dos&search=term', 'categoria=tres&search=term', 'search=term']) {
+  page.render(query, 'loading'); page.render(query, 'success')
+ }
+ assert.deepEqual(page.documentScrolls, Array(3).fill({ top:0, left:0, behavior:'instant' }))
+ assert.deepEqual(page.scrolls, [])
+})
+
+test('entering catalog by PUSH starts at document top while initial load and POP preserve history', () => {
+ const entry = pageHarness('categoria=uno'); entry.render(undefined, undefined, true, 'PUSH')
+ assert.equal(entry.documentScrolls.length, 1)
+ entry.render('categoria=uno', 'success'); assert.equal(entry.documentScrolls.length, 1)
+ const history = pageHarness('categoria=uno'); history.render()
+ history.render('categoria=dos&page=2', 'success', true, 'POP')
+ assert.deepEqual(history.documentScrolls, []); assert.deepEqual(history.scrolls, [])
+ history.render('categoria=tres', 'loading'); assert.equal(history.documentScrolls.length, 1)
+})
+
+test('superseded category reset is canceled and same URL data refresh cannot reset scroll', () => {
+ const page = pageHarness(); page.render()
+ page.render('categoria=uno', 'loading', false)
+ page.render('categoria=dos', 'loading', false)
+ page.flushFrame(); assert.equal(page.documentScrolls.length, 1)
+ page.render('categoria=dos', 'success'); assert.equal(page.documentScrolls.length, 1)
+})
+
+
+test('Strict Mode effect replay reschedules a canceled category entry frame', () => {
+ const page = pageHarness('categoria=uno')
+ page.render(undefined, undefined, false, 'PUSH')
+ page.replayEffects(); page.flushFrame()
+ assert.deepEqual(page.documentScrolls, [{ top:0, left:0, behavior:'instant' }])
+ assert.deepEqual(page.scrolls, [])
 })
