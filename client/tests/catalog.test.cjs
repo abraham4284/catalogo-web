@@ -39,11 +39,19 @@ delete detailProduct.secondaryImageUrl
 const detailFixture = { ...detailProduct, gallery: [], richContent: null }
 const pagination = { page: 1, currentPage: 1, limit: 24, total: 1, totalRecords: 1, totalPages: 1 }
 
-test('quick actions stay visible below the first real product row in either scroll direction', () => {
+test('quick actions activate at 65 percent of the viewport on the second real product row', () => {
   const { load, src } = loadCatalog()
-  const { isCatalogQuickVisible: visible } = load(path.join(src, 'features/catalog/utils/catalog-quick-visibility.ts'))
-  for (const bottom of [800, 20, 0, -23.9]) assert.equal(visible(bottom), false)
-  for (const bottom of [-24, -25, -1000, -10000, -1000, -25]) assert.equal(visible(bottom), true)
+  const { isCatalogQuickVisible: visible, getSecondProductRowIndex: second } = load(path.join(src, 'features/catalog/utils/catalog-quick-visibility.ts'))
+  assert.equal(visible(null, 800), false)
+  assert.equal(visible(0, 0), false)
+  assert.equal(visible(521, 800), false)
+  for (const top of [520, 500, 20, -1000, -10000, 500, 520]) assert.equal(visible(top, 800), true)
+  for (const columns of [1, 2, 3, 4]) {
+    assert.equal(second(Array(columns).fill(100)), -1)
+    assert.equal(second([...Array(columns).fill(100), 700]), columns)
+  }
+  assert.equal(second([]), -1)
+  assert.equal(second([100, 100.5, 100, 700]), 3)
 })
 
 test('definitive contract requires commercial fields and rejects legacy substitution', () => {

@@ -7,7 +7,7 @@ import { SlidersHorizontalIcon } from '@phosphor-icons/react/dist/csr/SlidersHor
 import type { CatalogCategory } from '../types/catalog.types'
 import { getCatalogHref, type CatalogFilters } from '../utils/catalog-url'
 import { QuickCatalogSearch } from './QuickCatalogSearch'
-import { isCatalogQuickVisible } from '../utils/catalog-quick-visibility'
+import { useCatalogQuickVisibility } from '../hooks/useCatalogQuickVisibility'
 
 export type CatalogQuickActionsProps = {
   categories: readonly CatalogCategory[]
@@ -17,23 +17,13 @@ export type CatalogQuickActionsProps = {
 }
 
 export function CatalogQuickActions({ categories, categoryStatus, filters, productsRef }: CatalogQuickActionsProps) {
-  const [visible, setVisible] = useState(false)
+  const visible = useCatalogQuickVisibility(productsRef)
   const [mode, setMode] = useState<'filter' | 'search'>('filter')
   const [open, setOpen] = useState(false)
   const [present, setPresent] = useState(false)
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const popupRef = useRef<HTMLDivElement | null>(null)
   const navigate = useNavigate()
-
-  useEffect(() => {
-    // A product's grid item stretches to the height of its real row.
-    const firstRow = productsRef.current?.querySelector('article')?.parentElement
-    if (!firstRow) return
-    const update = () => setVisible(isCatalogQuickVisible(firstRow.getBoundingClientRect().bottom))
-    const observer = new IntersectionObserver(update, { rootMargin: '24px 0px 0px 0px' })
-    observer.observe(firstRow)
-    return () => observer.disconnect()
-  }, [productsRef])
 
   useEffect(() => {
     if (!present || !window.visualViewport) return
@@ -78,7 +68,7 @@ export function CatalogQuickActions({ categories, categoryStatus, filters, produ
             <Dialog.Popup ref={popupRef}
               initialFocus={() => mode === 'search' ? document.getElementById('quick-catalog-search') : true}
               finalFocus={() => triggerRef.current?.isConnected && visible ? triggerRef.current : document.getElementById('main-content')}
-              className={`fixed bottom-[calc(max(1rem,env(safe-area-inset-bottom))+var(--keyboard-inset,0px))] left-1/2 z-50 max-h-[min(70dvh,calc(var(--quick-viewport-height,100dvh)-2rem))] w-[calc(100%-2rem)] -translate-x-1/2 transition-[opacity,translate] duration-200 ease-out data-[starting-style]:translate-y-2 data-[starting-style]:opacity-0 data-[ending-style]:translate-y-2 data-[ending-style]:opacity-0 data-[ending-style]:duration-150 motion-reduce:translate-y-0 motion-reduce:transition-none motion-reduce:data-[starting-style]:translate-y-0 motion-reduce:data-[ending-style]:translate-y-0 overflow-y-auto overscroll-contain border bg-background text-foreground shadow-xl focus:outline-none ${mode === 'search' ? 'max-w-xl rounded-[2rem] p-2 sm:p-3' : 'max-w-md rounded-2xl p-4 sm:p-5'}`}>
+              className={`fixed bottom-[calc(max(1rem,env(safe-area-inset-bottom))+var(--keyboard-inset,0px))] left-1/2 z-50 max-h-[min(70dvh,calc(var(--quick-viewport-height,100dvh)-2rem))] w-[calc(100%-2rem)] -translate-x-1/2 transition-[opacity,translate] duration-200 ease-out data-[starting-style]:translate-y-2 data-[starting-style]:opacity-0 data-[ending-style]:translate-y-2 data-[ending-style]:opacity-0 data-[ending-style]:duration-150 motion-reduce:translate-y-0 motion-reduce:transition-none motion-reduce:data-[starting-style]:translate-y-0 motion-reduce:data-[ending-style]:translate-y-0 overflow-y-auto overscroll-contain border text-foreground focus:outline-none ${mode === 'search' ? 'max-w-2xl rounded-[2rem] border-background/70 bg-background/90 p-2 shadow-[0_6px_28px_color-mix(in_srgb,var(--primary)_18%,transparent)] backdrop-blur-sm sm:p-3' : 'max-w-md rounded-2xl bg-background p-4 shadow-xl sm:p-5'}`}>
               <div className={mode === 'search' ? 'sr-only' : 'mb-3 flex items-center justify-between gap-3'}>
                 <Dialog.Title className="text-lg font-semibold">{mode === 'filter' ? 'Filtrar por categoría' : 'Buscar productos o categorías'}</Dialog.Title>
                 {mode === 'filter' && <Dialog.Close className="min-h-11 min-w-11 rounded-lg border px-3 text-sm focus-visible:outline-2 focus-visible:outline-ring">Cerrar</Dialog.Close>}

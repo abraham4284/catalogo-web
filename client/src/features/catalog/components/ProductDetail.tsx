@@ -17,8 +17,8 @@ export function ProductDetail({ product, actions }: { product: CatalogProductDet
     <div className="min-w-0 space-y-12">
       <div className="grid min-w-0 gap-8 lg:grid-cols-2 lg:gap-12">
         <div className="min-w-0 space-y-4">
-          <ProductGallery key={product.idProduct} name={product.name} imageUrl={product.imageUrl} gallery={product.gallery} />
           <ProductBreadcrumbs product={product} />
+          <ProductGallery key={product.idProduct} name={product.name} imageUrl={product.imageUrl} gallery={product.gallery} />
         </div>
         <div className="min-w-0 self-start space-y-6 break-words py-2 lg:pl-4">
           <div className="flex items-center justify-between gap-4">

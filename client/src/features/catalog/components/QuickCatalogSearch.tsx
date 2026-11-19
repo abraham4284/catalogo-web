@@ -25,7 +25,7 @@ export function QuickCatalogSearch({ categories, filters, onSearch }: QuickCatal
       <div className="flex items-center gap-1 sm:gap-2">
         <MagnifyingGlassIcon size={20} aria-hidden="true" className="ml-2 shrink-0 text-muted-foreground" />
         <label htmlFor="quick-catalog-search" className="sr-only">Buscar productos o categorías</label>
-        <input id="quick-catalog-search" name="search" type="search" enterKeyHint="search" maxLength={150} defaultValue={filters.search ?? ''} placeholder="¿Qué estás buscando?" className="min-h-11 min-w-0 flex-1 rounded-full bg-background px-1 text-sm focus-visible:outline-2 focus-visible:outline-ring sm:px-2 sm:text-base" />
+        <input id="quick-catalog-search" name="search" type="search" enterKeyHint="search" maxLength={150} defaultValue={filters.search ?? ''} placeholder="¿Qué estás buscando?" className="min-h-11 min-w-0 flex-1 rounded-full border-2 border-primary/80 bg-background/95 px-2 text-sm placeholder:text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring sm:px-3 sm:text-base" />
         <button type="submit" className="min-h-11 rounded-full bg-primary px-3 text-sm font-medium text-primary-foreground focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-2 sm:px-5">Buscar</button>
         <Dialog.Close aria-label="Cerrar búsqueda" className="inline-flex size-11 shrink-0 items-center justify-center rounded-full focus-visible:outline-2 focus-visible:outline-ring"><XIcon size={18} aria-hidden="true" /></Dialog.Close>
       </div>

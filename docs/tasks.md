@@ -411,3 +411,10 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] Cápsula accesible con entrada/salida 200/150 ms, reduced motion y categoría temporal sin consultas.
 - [x] 136 pruebas, lint/build y Edge local en 320/375/390/540/768/1024/1440; evidencia en docs/catalog-capsule-validation.md.
 - [ ] Smoke desplegado en QA y pruebas físicas de teclado Android/iOS, Safari y notch/safe areas antes de promoción manual.
+
+## Breadcrumbs, barra temprana y buscador glass — 2026-11-18
+- [x] Breadcrumbs antes de galería y skeleton consistente, compactos sin overflow.
+- [x] Activación al cruzar la segunda fila real por el 65% del viewport, con columnas reales y ausencia sin segunda fila.
+- [x] Cápsula glass con contorno violeta permanente; filtros, foco y transiciones conservados.
+- [x] 138 pruebas, lint/build; Edge local en siete anchos, solicitudes y CLS comparados. Evidencia en docs/catalog-glass-validation.md.
+- [ ] Smoke desplegado en QA y teclado/notch/lector de pantalla en dispositivos físicos antes de promover manualmente.

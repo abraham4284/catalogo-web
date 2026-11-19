@@ -22,11 +22,11 @@ export function ProductDetailSkeleton() {
     <h1 className="sr-only">Detalle de producto</h1><p role="status" className="sr-only">Cargando producto…</p>
     <div aria-hidden="true" className="grid min-w-0 gap-8 lg:grid-cols-2 lg:gap-12">
       <div className="min-w-0 space-y-4">
+        <Skeleton className="h-11 w-full" />
         <div className="grid min-w-0 gap-4 lg:grid-cols-[5.5rem_minmax(0,1fr)]">
           <Skeleton className="aspect-square w-full rounded-xl lg:col-start-2 lg:row-start-1" />
           <div className="flex gap-3 overflow-hidden p-1 lg:col-start-1 lg:row-start-1 lg:flex-col">{[0, 1, 2].map((n) => <Skeleton key={n} className="size-20 shrink-0 rounded-lg" />)}</div>
         </div>
-        <Skeleton className="h-5 w-3/4" />
       </div>
       <div className="min-w-0 space-y-6 py-2 lg:pl-4"><Skeleton className="h-5 w-32" /><Skeleton className="h-20 w-full" /><Skeleton className="h-9 w-40" /><Skeleton className="h-6 w-24 rounded-full" /><Skeleton className="h-24 w-full" /><Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" /></div>
     </div>

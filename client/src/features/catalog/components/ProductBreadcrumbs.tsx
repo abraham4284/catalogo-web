@@ -6,14 +6,14 @@ export function ProductBreadcrumbs({ product }: { product: Pick<CatalogProductDe
   const links = [{ href: '/', name: 'Inicio' }, { href: '/productos', name: 'Productos' }, { href: getCatalogHref({ page: 1, categorySlug: product.category.slug }), name: product.category.name }]
   return (
     <nav aria-label="Breadcrumb">
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+      <ol className="flex min-h-11 min-w-0 items-center gap-1 text-xs sm:gap-2 sm:text-sm text-muted-foreground">
         {links.map((link) => (
-          <li key={link.href} className="flex min-w-0 items-center gap-2">
-            <Link to={link.href} className="inline-flex min-h-11 items-center break-words hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring">{link.name}</Link>
+          <li key={link.href} className="flex min-w-0 items-center gap-1 sm:gap-2">
+            <Link to={link.href} title={link.name} className="inline-flex min-h-11 min-w-0 items-center hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"><span className="max-w-[20vw] truncate sm:max-w-none">{link.name}</span></Link>
             <span aria-hidden="true">/</span>
           </li>
         ))}
-        <li aria-current="page" className="min-w-0 break-words text-foreground">{product.name}</li>
+        <li aria-current="page" title={product.name} className="min-w-0 flex-1 truncate text-foreground">{product.name}</li>
       </ol>
     </nav>
   )
