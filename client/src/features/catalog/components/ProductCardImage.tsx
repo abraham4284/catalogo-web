@@ -17,8 +17,8 @@ export function ProductCardImage({ imageUrl, secondaryImageUrl, name, availabili
     <div onPointerEnter={(event) => { if (event.pointerType === 'mouse' || event.pointerType === 'pen') setLoadedSecondary(secondaryImageUrl ?? undefined) }} className="product-card-image relative flex aspect-square items-center justify-center overflow-hidden rounded-lg bg-muted">
       <ProductImage src={imageUrl} alt={name} loading="lazy" />
       {secondaryImageUrl && loadedSecondary === secondaryImageUrl && secondaryImageUrl !== imageUrl && <SecondaryImage key={secondaryImageUrl} src={secondaryImageUrl} />}
-      {availabilityStatus === 'out_of_stock' && <span className="pointer-events-none absolute right-3 top-3 z-10 rounded-full bg-foreground px-3 py-1 text-xs font-semibold text-primary-foreground">AGOTADO</span>}
-      <LastUnitBadge availabilityStatus={availabilityStatus} stockAvailable={stockAvailable} className="pointer-events-none absolute right-3 top-3 z-10" />
+      {availabilityStatus === 'out_of_stock' && <span className="pointer-events-none absolute right-1 top-1 z-10 max-w-[calc(100%-0.5rem)] rounded-full sm:right-3 sm:top-3 bg-foreground px-3 py-1 text-xs font-semibold text-primary-foreground">AGOTADO</span>}
+      <LastUnitBadge availabilityStatus={availabilityStatus} stockAvailable={stockAvailable} className="pointer-events-none absolute right-1 top-1 z-10 max-w-[calc(100%-0.5rem)] text-center sm:right-3 sm:top-3" />
     </div>
   )
 }

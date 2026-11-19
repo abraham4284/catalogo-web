@@ -1,30 +1,15 @@
-import { useSyncExternalStore } from 'react'
 import { Link } from 'react-router-dom'
 import { ProductCard, ProductCardSkeleton, type CatalogCategory, type CatalogProductListItem } from '@/features/catalog'
 import { ProductCommerceActions } from '@/app/compositions/ProductCommerceActions'
 import { HomeCategories } from './HomeCategories'
 
-const breakpoints = ['(min-width: 540px)', '(min-width: 768px)', '(min-width: 1280px)']
-
-function subscribeToColumns(onChange: () => void) {
-  const queries = breakpoints.map((query) => window.matchMedia(query))
-  queries.forEach((query) => query.addEventListener('change', onChange))
-  return () => queries.forEach((query) => query.removeEventListener('change', onChange))
-}
-
-function getInitialCount() {
-  if (window.matchMedia(breakpoints[2]).matches) return 8
-  if (window.matchMedia(breakpoints[1]).matches) return 6
-  if (window.matchMedia(breakpoints[0]).matches) return 4
-  return 2
-}
+const PRODUCTS_BEFORE_CATEGORIES = 8
 
 export function HomeProductFeed({ products, categories, loading = false }: {
   products: readonly CatalogProductListItem[]
   categories: readonly CatalogCategory[]
   loading?: boolean
 }) {
-  const initialCount = useSyncExternalStore(subscribeToColumns, getInitialCount, () => 2)
   const ids = new Set<number>()
   const slugs = new Set<string>()
   const uniqueProducts = products.filter(({ idProduct, slug }) => {
@@ -34,7 +19,7 @@ export function HomeProductFeed({ products, categories, loading = false }: {
     return true
   })
   const items = loading ? Array.from({ length: 12 }, () => undefined) : uniqueProducts
-  const insertion = Math.min(initialCount, items.length)
+  const insertion = Math.min(PRODUCTS_BEFORE_CATEGORIES, items.length)
   const categoryItem = (
     <li key="categories" className="col-span-full min-w-0 py-2">
       {loading ? <div aria-hidden="true" className="space-y-4">
@@ -47,7 +32,7 @@ export function HomeProductFeed({ products, categories, loading = false }: {
   return (
     <div className="space-y-5">
       {loading && <p role="status" className="sr-only">Cargando productos…</p>}
-      <ul aria-label="Productos y categorías" className="grid grid-cols-1 gap-x-4 gap-y-8 min-[540px]:grid-cols-2 sm:gap-x-6 md:grid-cols-3 xl:grid-cols-4">
+      <ul aria-label="Productos y categorías" className="grid grid-cols-2 gap-x-3 gap-y-6 sm:gap-x-6 md:grid-cols-3 xl:grid-cols-4">
         {items.flatMap((product, index) => {
           const card = (
             <li key={product ? `product-${product.idProduct}` : `skeleton-${index}`} className="min-w-0" aria-hidden={loading || undefined}>

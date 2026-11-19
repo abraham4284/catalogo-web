@@ -57,8 +57,10 @@ test('Home feed inserts categories in DOM order and renders each product only on
   categories: [{ idProductCategory: 1, name: 'Tecnología', slug: 'tecnologia' }],
  })
  assert.equal((html.match(/<article /g) || []).length, 12)
- assert(html.indexOf('Ver Producto 1') < html.indexOf('id="home-categories"'))
- assert(html.indexOf('id="home-categories"') < html.indexOf('Ver Producto 2'))
+ assert.equal((html.slice(0, html.indexOf('id="home-categories"')).match(/<article /g) || []).length, 8)
+ assert(html.indexOf('Ver Producto 7') < html.indexOf('id="home-categories"'))
+ assert(html.indexOf('id="home-categories"') < html.indexOf('Ver Producto 8'))
+ assert.equal((html.slice(html.indexOf('id="home-categories"')).match(/<article /g) || []).length, 4)
  assert.equal((html.match(/aria-label="Ver Producto 0"/g) || []).length, 1)
 })
 
@@ -398,4 +400,34 @@ test('product breadcrumbs precede the main gallery once and retain canonical lin
  const { ProductDetailSkeleton } = load('features/catalog/components/ProductSkeletons')
  const skeleton = render(ProductDetailSkeleton, {})
  assert(skeleton.indexOf('h-11 w-full') < skeleton.indexOf('aspect-square'))
+})
+
+
+test('Home inserts categories after all three available products and handles empty responses', () => {
+ const { HomeProductFeed } = load('pages/home/components/HomeProductFeed')
+ const categories = [{ idProductCategory: 1, name: 'Tecnología', slug: 'tecnologia' }]
+ const products = Array.from({ length: 3 }, (_, i) => ({ ...product, idProduct: i + 1, slug: 'short-' + i }))
+ const html = render(HomeProductFeed, { products, categories })
+ assert.equal((html.slice(0, html.indexOf('id="home-categories"')).match(/<article /g) || []).length, 3)
+ const empty = render(HomeProductFeed, { products: [], categories: [] })
+ assert(!empty.includes('<article ')); assert(!empty.includes('home-categories'))
+ const realCategories = render(HomeProductFeed, { products: [], categories })
+ assert(!realCategories.includes('<article ')); assert(realCategories.includes('home-categories'))
+ const noCategories = render(HomeProductFeed, { products, categories: [] })
+ assert.equal((noCategories.match(/<article /g) || []).length, 3)
+ assert(!noCategories.includes('home-categories')); assert(!noCategories.includes('col-span-full'))
+})
+
+test('Home loading keeps twelve skeletons with categories after eight and two mobile columns', () => {
+ const { HomeProductFeed } = load('pages/home/components/HomeProductFeed')
+ const html = render(HomeProductFeed, { products: [], categories: [], loading: true })
+ const list = html.slice(html.indexOf('<ul'), html.indexOf('</ul>'))
+ assert.equal((list.match(/<li /g) || []).length, 13)
+ const before = list.slice(0, list.indexOf('col-span-full'))
+ assert.equal((before.match(/aria-hidden="true"><div/g) || []).length, 8)
+ assert(list.includes('grid-cols-2')); assert(!list.includes('grid-cols-1'))
+ assert(!list.includes('<article ')); assert(!list.includes('href='))
+ const { ProductGridSkeleton } = load('features/catalog/components/ProductSkeletons')
+ const grid = render(ProductGridSkeleton, {})
+ assert(grid.includes('grid-cols-2')); assert(!grid.includes('grid-cols-1'))
 })
