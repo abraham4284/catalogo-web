@@ -432,3 +432,10 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] Nuevas entradas/cambios de categoría por PUSH comienzan en scrollY=0; POP conserva restauración nativa.
 - [x] 144 pruebas, lint/build y Edge local en 320/375/390/768/1440, carga lenta e historial. Evidencia en docs/category-filter-scroll-validation.md.
 - [ ] Smoke desplegado y comprobación física de navegación touch/teclado móvil antes de promoción manual.
+
+## Zoom-in y purple glow — 2026-11-19
+- [x] Barra con entrada escala/opacidad de 200 ms, sin reactivarse durante scroll continuo.
+- [x] Buscador con zoom de 220 ms, halo violeta estático y salida completa de 150 ms también al enviar.
+- [x] Reduced motion sin movimiento; cierre/foco/prioridades conservados.
+- [x] 146 pruebas, lint/build y Edge en seis anchos; solicitudes, CLS y bundle comparados en docs/purple-glow-validation.md.
+- [ ] Smoke en QA y teclado/safe areas en dispositivos físicos antes de promoción manual.
