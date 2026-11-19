@@ -386,3 +386,16 @@ test('quick search safely represents unresolved categories without showing slugs
  const global = render(QuickCatalogSearch, { categories: [], filters: { page: 1 }, onSearch: noop })
  assert(!global.includes('Quitar filtro de categoría'))
 })
+
+
+test('product breadcrumbs precede the main gallery once and retain canonical links', () => {
+ const html = render(ProductDetail, { product: { ...product, imageUrl: '/cover.webp' } })
+ assert.equal((html.match(/aria-label="Breadcrumb"/g) || []).length, 1)
+ assert.equal((html.match(/<h1/g) || []).length, 1)
+ assert(html.indexOf('aria-label="Breadcrumb"') < html.indexOf('src="/cover.webp"'))
+ assert(html.includes('href="/productos?categoria=categoria"'))
+ assert(html.includes('title="Producto"'))
+ const { ProductDetailSkeleton } = load('features/catalog/components/ProductSkeletons')
+ const skeleton = render(ProductDetailSkeleton, {})
+ assert(skeleton.indexOf('h-11 w-full') < skeleton.indexOf('aspect-square'))
+})
