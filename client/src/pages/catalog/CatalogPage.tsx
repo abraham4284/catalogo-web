@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { WholesaleNotice } from '@/features/catalog'
 import { getWhatsAppWholesaleInquiryHref } from '@/features/whatsapp/utils/whatsapp-general-inquiry'
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigationType, useSearchParams } from "react-router-dom";
 import { ProductCommerceActions } from "@/app/compositions/ProductCommerceActions";
 import { QuickCatalogActions } from '@/app/compositions/QuickCatalogActions'
 import {
@@ -23,18 +23,27 @@ export function CatalogPage() {
   const filters = readCatalogFilters(searchParams);
   const { categories, products: state, retry } = useCatalogListing(filters);
   const resultsTopRef = useRef<HTMLDivElement>(null);
-  const previousPageRef = useRef(filters.page);
+  const { key } = useLocation();
+  const navigationType = useNavigationType();
+  const previousFiltersRef = useRef<{ page: number; categorySlug?: string } | null>(null);
 
   useEffect(() => {
-    if (previousPageRef.current !== filters.page) {
-      previousPageRef.current = filters.page;
-      // Run after native history restoration, while the new results are loading.
-      const frame = requestAnimationFrame(() => {
-        resultsTopRef.current?.scrollIntoView({ behavior: "auto", block: "start" });
-      });
-      return () => cancelAnimationFrame(frame);
+    const previous = previousFiltersRef.current;
+    const next = { page: filters.page, categorySlug: filters.categorySlug };
+    // POP belongs to native history restoration, including returns from a product.
+    const resetDocument = navigationType === 'PUSH' && (!previous || previous.categorySlug !== filters.categorySlug);
+    if (navigationType === 'POP' || (!resetDocument && previous?.page === filters.page)) {
+      previousFiltersRef.current = next;
+      return;
     }
-  }, [filters.page]);
+    // One frame coordinates route focus/history; data completion never repeats it.
+    const frame = requestAnimationFrame(() => {
+      previousFiltersRef.current = next;
+      if (resetDocument) window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      else if (previous) resultsTopRef.current?.scrollIntoView({ behavior: 'auto', block: 'start' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [key, navigationType, filters.page, filters.categorySlug]);
 
   if (
     state.status === "success" &&

@@ -418,3 +418,17 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] Cápsula glass con contorno violeta permanente; filtros, foco y transiciones conservados.
 - [x] 138 pruebas, lint/build; Edge local en siete anchos, solicitudes y CLS comparados. Evidencia en docs/catalog-glass-validation.md.
 - [ ] Smoke desplegado en QA y teclado/notch/lector de pantalla en dispositivos físicos antes de promover manualmente.
+
+## Ocho productos antes de categorías y dos columnas móviles — 2026-11-19
+- [x] Inserción fija después de ocho artículos únicos; doce skeletons con igual distribución y sin suscripciones a breakpoints.
+- [x] Home, ProductGrid y skeleton con dos columnas móviles, tres desde md y cuatro desde xl.
+- [x] Cards compactas, precios íntegros, badges y CTAs táctiles; sin cambios comerciales ni consultas nuevas.
+- [x] 140 pruebas, lint y build correctos.
+- [x] QA local en nueve anchos, zoom 200%, estados extremos, filtros/paginación y comparación de rendimiento. Evidencia en docs/home-mobile-two-columns-validation.md.
+- [ ] Smoke desplegado en QA y verificación física Android/iOS antes de promoción manual.
+
+## Reset de scroll al aplicar categoría — 2026-11-19
+- [x] Coordinar categoría y paginación en un único efecto local de CatalogPage.
+- [x] Nuevas entradas/cambios de categoría por PUSH comienzan en scrollY=0; POP conserva restauración nativa.
+- [x] 144 pruebas, lint/build y Edge local en 320/375/390/768/1440, carga lenta e historial. Evidencia en docs/category-filter-scroll-validation.md.
+- [ ] Smoke desplegado y comprobación física de navegación touch/teclado móvil antes de promoción manual.

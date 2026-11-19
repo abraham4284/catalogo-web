@@ -1,17 +1,17 @@
 import { Skeleton } from '@/shared/components/ui/Skeleton'
 
 export function ProductCardSkeleton() {
-  return <div aria-hidden="true" className="min-w-0 space-y-5 p-1">
+  return <div aria-hidden="true" className="min-w-0 space-y-3 p-1 sm:space-y-5">
     <Skeleton className="aspect-square w-full rounded-xl" />
-    <div className="space-y-3"><Skeleton className="h-4 w-24" /><Skeleton className="h-6 w-4/5" /><Skeleton className="h-16 w-full" /><Skeleton className="h-7 w-28" /><Skeleton className="h-6 w-24 rounded-full" /></div>
-    <Skeleton className="h-11 w-full" /><Skeleton className="h-11 w-full" />
+    <div className="space-y-3"><Skeleton className="h-4 w-24 max-w-full" /><Skeleton className="h-6 w-4/5" /><Skeleton className="h-16 w-full" /><Skeleton className="h-7 w-28 max-w-full" /><Skeleton className="h-6 w-24 max-w-full rounded-full" /></div>
+    <Skeleton className="h-14 w-full sm:h-11" /><Skeleton className="h-14 w-full sm:h-11" />
   </div>
 }
 
 export function ProductGridSkeleton({ count = 8, message = 'Cargando productos…' }: { count?: number; message?: string }) {
   return <div aria-busy="true" data-skeleton="products">
     <p role="status" className="sr-only">{message}</p>
-    <div aria-hidden="true" className="grid grid-cols-1 gap-x-4 gap-y-8 min-[540px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:gap-x-6">
+    <div aria-hidden="true" className="grid grid-cols-2 gap-x-3 gap-y-6 md:grid-cols-3 xl:grid-cols-4 sm:gap-x-6">
       {Array.from({ length: count }, (_, index) => <ProductCardSkeleton key={index} />)}
     </div>
   </div>
