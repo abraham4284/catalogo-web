@@ -447,3 +447,11 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] Lint/build y 26 pruebas del archivo afectado correctos. Suite completa: 146/147; falla previa en mensaje WhatsApp con emoji esperado, ajena al cambio.
 - [x] QA local de cuatro rutas en seis anchos, orden 8+categorías+4, ausencia de descarga del banner y tres solicitudes API iniciales de Home.
 - [ ] Smoke desplegado en QA y navegación touch/teclado físico del mapa. Evidencia en docs/footer-maps-validation.md.
+
+## UX Contacto: local físico y enlaces de acción — 2026-11-25
+- [x] Verificar CID de Vitruno con dirección 1504 en Google Maps real.
+- [x] Dirección/horarios oficiales y filas enlazadas completas para ubicación y WhatsApp; redes existentes.
+- [x] Conservar formulario, tracking sin duplicación, configuración WhatsApp y único mapa lazy del footer.
+- [x] Lint/build y 27 pruebas relacionadas correctos. Suite completa 147/148 por discrepancia previa del emoji WhatsApp.
+- [x] Edge en seis anchos, zoom 200%, click en icono/texto, teclado y validación/handoff del formulario. Evidencia en docs/contact-local-validation.md.
+- [ ] Smoke desplegado en QA y aplicaciones Android/iOS reales antes de promoción manual.

@@ -5,11 +5,12 @@ const noop=()=>null
 let whatsappNumber = '5491123456789'
 const shareBrowser = {}
 const notifications = []
+const contactEvents = []
 let homeState = { status: 'success', data: { categories: [], products: { items: [] }, heroLoading: false } }
 function load(name){
  const base=path.resolve(root,name)
  if(name==='config/env')return{getWhatsAppNumber:()=>whatsappNumber}
- if(name==='features/analytics')return{trackContact:noop}
+ if(name==='features/analytics')return{trackContact:source=>contactEvents.push(source)}
  if(name==='app/compositions/QuickCatalogActions')return{QuickCatalogActions:noop}
  if(base.endsWith(path.join('store','business.store')))return{useCatalogPricing:()=>policy}
  if(base===path.join(root,'features','catalog'))return{
@@ -346,7 +347,10 @@ test('FAQ renders the wholesale message and help links while Contact remains ava
 test('Contact retains the form and exposes official social links and configured WhatsApp', () => {
  const { ContactPage } = load('pages/contact/ContactPage')
  const html = render(ContactPage)
- assert(html.includes('Atención online'))
+ assert(html.includes('Congreso 1504'))
+ assert(html.includes('San Miguel de Tucumán, Tucumán'))
+ assert(html.includes('Lunes a sábados'))
+ assert(html.includes('09:00 a 20:00 h'))
  assert(html.includes('id="contact-name"'))
  assert(html.includes('id="contact-email"'))
  assert(html.includes('id="contact-message"'))
@@ -355,13 +359,16 @@ test('Contact retains the form and exposes official social links and configured 
   'https://www.instagram.com/vitruno.ar/',
   'https://www.facebook.com/people/Vitruno/61595884155088/',
  ]) assert(html.includes(`href="${href}" target="_blank" rel="noopener noreferrer"`))
- assert(html.includes('Consultar por WhatsApp'))
+ assert(html.includes('Consultanos por WhatsApp'))
+ assert(html.includes('https://www.google.com/maps?cid=6814538745617586702'))
  assert(!/TikTok|<address|<iframe/.test(html))
  const saved = whatsappNumber
  try {
   whatsappNumber = undefined
   const unconfigured = render(ContactPage)
-  assert(!unconfigured.includes('Consultar por WhatsApp'))
+  assert(!unconfigured.includes('Consultanos por WhatsApp'))
+  assert(unconfigured.includes('El contacto por WhatsApp no está disponible'))
+  assert(!unconfigured.includes('href="https://wa.me/'))
   assert(unconfigured.includes('Continuar por WhatsApp'))
  } finally {
   whatsappNumber = saved
@@ -450,4 +457,32 @@ test('footer location uses the supplied Vitruno embed before existing navigation
  assert(html.includes('href="https://abrahamapas.onrender.com/" target="_blank" rel="noopener noreferrer"'))
  assert(html.includes('Abrahamdev'))
  assert(!html.includes('width="600"')); assert(!html.includes('height="450"'))
+})
+
+
+test('Contact location and WhatsApp each wrap icon and copy in one safe action, tracking once', () => {
+ const { ContactPage } = load('pages/contact/ContactPage')
+ const tree = ContactPage(), links = []
+ function walk(node) {
+  if (Array.isArray(node)) return node.forEach(walk)
+  if (!node?.props) return
+  if (node.type === 'a') links.push(node)
+  walk(node.props.children)
+ }
+ walk(tree)
+ const maps = links.filter(link => link.props.href === storefrontContent.physicalStore.mapsHref)
+ const whatsapp = links.filter(link => link.props.href.startsWith('https://wa.me/'))
+ assert.equal(maps.length, 1); assert.equal(whatsapp.length, 1)
+ for (const link of [...maps, ...whatsapp]) {
+  assert.equal(link.props.target, '_blank'); assert.equal(link.props.rel, 'noopener noreferrer')
+  const children = link.props.children.type === React.Fragment ? link.props.children.props.children : link.props.children
+  assert.equal(String(children[0]?.props?.['aria-hidden']), 'true')
+  assert(children[1]?.props?.children)
+ }
+ const before = contactEvents.length; whatsapp[0].props.onClick()
+ assert.deepEqual(contactEvents.slice(before), ['contact_page'])
+ const html = render(ContactPage)
+ assert(!html.includes('<iframe')); assert(!html.includes('mailto:')); assert(!html.includes('tel:'))
+ assert(!html.includes('name="phone"')); assert(/(?:Correo electrónico|Email) \(opcional\)/.test(html))
+ assert(html.includes('Los datos de')); assert(html.includes('no se guardan en el sitio'))
 })

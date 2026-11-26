@@ -180,6 +180,13 @@ const orderProductFaq = {
 
 export const storefrontContent = {
   ...baseStorefrontContent,
+  physicalStore: {
+    address: "Congreso 1504",
+    city: "San Miguel de Tucumán, Tucumán",
+    days: "Lunes a sábados",
+    hours: "09:00 a 20:00 h",
+    mapsHref: "https://www.google.com/maps?cid=6814538745617586702",
+  },
   social: {
     instagram: "https://www.instagram.com/vitruno.ar/",
     facebook: "https://www.facebook.com/people/Vitruno/61595884155088/",
