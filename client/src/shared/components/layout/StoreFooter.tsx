@@ -1,3 +1,4 @@
+import { StoreLocationMap } from './StoreLocationMap'
 import { Link } from 'react-router-dom'
 import { storeNavigation } from './store-navigation'
 import { BrandLogo } from '@/shared/components/brand/BrandLogo'
@@ -5,6 +6,7 @@ import { BrandLogo } from '@/shared/components/brand/BrandLogo'
 export function StoreFooter({ note, onPrefetchRoute, onCookiePreferences }: { note: string; onCookiePreferences: () => void; onPrefetchRoute: (href: string) => void }) {
   return (
     <footer className="bg-foreground text-background [--ring:var(--background)]">
+      <StoreLocationMap />
       <div className="mx-auto flex w-full max-w-7xl flex-col items-center justify-center gap-4 px-4 py-8 text-center text-sm sm:flex-row sm:flex-wrap sm:justify-between sm:px-6 sm:text-left lg:px-8">
         <div className="flex min-w-0 flex-col items-center gap-2 sm:items-start">
           <BrandLogo className="w-52 lg:w-56" />

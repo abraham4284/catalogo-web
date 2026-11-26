@@ -439,3 +439,11 @@ Implementado en dev por confirmación del usuario; qa es su referencia de revisi
 - [x] Reduced motion sin movimiento; cierre/foco/prioridades conservados.
 - [x] 146 pruebas, lint/build y Edge en seis anchos; solicitudes, CLS y bundle comparados en docs/purple-glow-validation.md.
 - [ ] Smoke en QA y teclado/safe areas en dispositivos físicos antes de promoción manual.
+
+## Google Maps en footer y retiro de próxima apertura — 2026-11-25
+- [x] Mapa exacto de Vitruno al principio del footer, lazy y con altura responsive reservada.
+- [x] Preservar navegación, cookies, crédito Abrahamdev y espaciador de StoreLayout.
+- [x] Retirar banner/componente/configuración sin uso; conservar el WebP histórico.
+- [x] Lint/build y 26 pruebas del archivo afectado correctos. Suite completa: 146/147; falla previa en mensaje WhatsApp con emoji esperado, ajena al cambio.
+- [x] QA local de cuatro rutas en seis anchos, orden 8+categorías+4, ausencia de descarga del banner y tres solicitudes API iniciales de Home.
+- [ ] Smoke desplegado en QA y navegación touch/teclado físico del mapa. Evidencia en docs/footer-maps-validation.md.

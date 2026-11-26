@@ -82,7 +82,9 @@ test('Home uses the selected product in the feed or a separate card without repe
   homeState = { status: 'success', data: { categories: [], products: { items: [product] }, heroProduct: product, heroLoading: false } }
   const same = render(HomePage)
   assert.equal((same.match(/href="\/productos\/producto"/g) || []).length, 1)
-  assert(same.indexOf('<article ') < same.indexOf('id="home-opening"'))
+  assert(!same.includes('home-opening'))
+  assert(!same.includes('Próximamente'))
+  assert(!same.includes('banner-proxima-apertura.webp'))
   homeState.data.heroProduct = { ...product, slug: 'externo' }
   const separate = render(HomePage)
   assert.equal((separate.match(/href="\/productos\/externo"/g) || []).length, 1)
@@ -430,4 +432,22 @@ test('Home loading keeps twelve skeletons with categories after eight and two mo
  const { ProductGridSkeleton } = load('features/catalog/components/ProductSkeletons')
  const grid = render(ProductGridSkeleton, {})
  assert(grid.includes('grid-cols-2')); assert(!grid.includes('grid-cols-1'))
+})
+
+
+test('footer location uses the supplied Vitruno embed before existing navigation and credit', () => {
+ const { StoreFooter } = load('shared/components/layout/StoreFooter')
+ const html = render(StoreFooter, { note:'Nota existente', onCookiePreferences:noop, onPrefetchRoute:noop })
+ assert.equal((html.match(/<iframe/g) || []).length, 1)
+ assert(html.includes('title="Ubicación de VITRUNO en Google Maps"'))
+ assert(html.includes('!1s0x94225b7833ffa62f%3A0x5e921ae258ac1a0e!2sVitruno'))
+ assert(html.includes('loading="lazy"'))
+ assert(html.includes('allowFullScreen=""'))
+ assert(html.includes('referrerPolicy="strict-origin-when-cross-origin"'))
+ assert(html.indexOf('<iframe') < html.indexOf('aria-label="Navegación del pie"'))
+ assert(html.includes('Nota existente'))
+ assert(html.includes('Preferencias de cookies'))
+ assert(html.includes('href="https://abrahamapas.onrender.com/" target="_blank" rel="noopener noreferrer"'))
+ assert(html.includes('Abrahamdev'))
+ assert(!html.includes('width="600"')); assert(!html.includes('height="450"'))
 })

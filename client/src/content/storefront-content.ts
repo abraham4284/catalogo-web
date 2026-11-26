@@ -44,12 +44,6 @@ const baseStorefrontContent = {
       image: "/images/home/categoria-belleza.webp",
     },
   ],
-  homeOpening: {
-    image: "/images/home/banner-proxima-apertura.webp",
-    eyebrow: "VITRUNO en Tucumán",
-    title: "Próximamente abrimos nuestro local físico.",
-    description: "Estamos preparando un espacio para estar más cerca tuyo.",
-  },
   editorial: {
     eyebrow: "Nuestra manera de elegir",
     title: "Productos que tengan sentido para vos.",
