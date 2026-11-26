@@ -1,6 +1,5 @@
 import { HomeHero } from './components/HomeHero'
 import { HomeProductFeed } from './components/HomeProductFeed'
-import { HomeOpeningBanner } from './components/HomeOpeningBanner'
 import { HomeFeaturedProduct } from './components/HomeFeaturedProduct'
 import { HomeEditorial } from './components/HomeEditorial'
 import { HomeBuyingGuide } from './components/HomeBuyingGuide'
@@ -41,7 +40,6 @@ export function HomePage() {
           {state.data.products.items.length > 0 && <QuickCatalogActions productsRef={productsRef} categories={state.data.categories} categoryStatus="success" filters={{ page: 1 }} />}
         </>
       )}
-      <HomeOpeningBanner />
       <HomeEditorial />
       <HomeBuyingGuide />
     </div>
